@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AmalgamClient_Setup", "AmalgamClient_Setup.wixproj", "{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE} = {DB8FD42B-6DCF-4090-8556-ECC1818369BE}
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{5BDE8287-AC11-44B1-8AD7-9E25A1E90E3E}"
+	ProjectSection(SolutionItems) = preProject
+		..\ThirdParty\dokan.dll = ..\ThirdParty\dokan.dll
+		..\ThirdParty\NLog.dll = ..\ThirdParty\NLog.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "..\ThirdParty\DokanNet\DokanNet.csproj", "{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmalgamClientTray", "..\AmalgamClientTray\AmalgamClientTray.csproj", "{DB8FD42B-6DCF-4090-8556-ECC1818369BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starksoft.Net.Ftp", "..\Starksoft.Net.Ftp\Starksoft.Net.Ftp.csproj", "{5F228FCD-54F1-491D-93CE-3D768655FADC}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs08
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AmalgamClient_Setup.wixproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
+		SccProjectTopLevelParentUniqueName2 = AmalgamClient_Setup.sln
+		SccProjectName2 = ../ThirdParty/DokanNet
+		SccLocalPath2 = ..\\ThirdParty\\DokanNet
+		SccProjectUniqueName3 = ..\\AmalgamClientTray\\AmalgamClientTray.csproj
+		SccProjectName3 = ../AmalgamClientTray
+		SccLocalPath3 = ..\\AmalgamClientTray
+		SccProjectUniqueName4 = ..\\Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
+		SccProjectName4 = ../Starksoft.Net.Ftp
+		SccLocalPath4 = ..\\Starksoft.Net.Ftp
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.ActiveCfg = Debug|x86
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.Build.0 = Debug|x86
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.ActiveCfg = Release|x86
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.Build.0 = Release|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.ActiveCfg = Debug|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.Build.0 = Debug|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.ActiveCfg = Release|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.Build.0 = Release|x86
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Debug|x86.ActiveCfg = Debug|x86
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Debug|x86.Build.0 = Debug|x86
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Release|x86.ActiveCfg = Release|x86
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Release|x86.Build.0 = Release|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.ActiveCfg = Debug|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.Build.0 = Debug|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.ActiveCfg = Release|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {5BDE8287-AC11-44B1-8AD7-9E25A1E90E3E}
+	EndGlobalSection
+EndGlobal
