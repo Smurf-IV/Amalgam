@@ -21,7 +21,7 @@ namespace AmalgamClientTray.ClientForms
 
       public string Password = @"anonymous@Home.net";
 
-      public string TargetShareName = @"/";
+      public string TargetShareName = @"";
 
       public string VolumeLabel = @"ClientLiquesceFTP";
 
