@@ -77,17 +77,4 @@ namespace AmalgamClientTray.FTP
          }
       }
    }
-
-   internal class FileFTP
-   {
-      #region Static functions
-      static public bool Exists(FtpClientExt ftpCmdInstance, string path)
-      {
-         FileFTPInfo local = new FileFTPInfo(ftpCmdInstance, path);
-         return local.Exists;
-      }
-
-      #endregion
-   }
-
 }

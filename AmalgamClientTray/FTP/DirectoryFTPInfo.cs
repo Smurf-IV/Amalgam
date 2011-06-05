@@ -56,16 +56,4 @@ namespace AmalgamClientTray.FTP
          return FtpCmdInstance.GetDirList(path).ToArray();
       }
    }
-
-   internal class DirectoryFTP
-   {
-      #region Static functions
-      static public bool Exists(FtpClientExt ftpCmdInstance, string path)
-      {
-         DirectoryFTPInfo local = new DirectoryFTPInfo(ftpCmdInstance, path);
-         return local.Exists;
-      }
-
-      #endregion
-   }
 }
