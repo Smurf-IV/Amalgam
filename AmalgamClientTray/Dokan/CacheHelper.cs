@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace AmalgamClientTray.Dokan
 {
    /// <summary>
    /// stolen from the discussions in http://blogs.infosupport.com/blogs/frankb/archive/2009/03/15/CacheDictionary-for-.Net-3.5_2C00_-using-ReaderWriterLockSlim-_3F00_.aspx
    /// And then made it more useable for the cache timeout implementation.
-   /// I did play with the ConcurrentDictonary, but this made the simplecity of using a Mutex and a normal dictionary very difficult to read.
+   /// I did play with the ConcurrentDictonary, but this made the simplicity of using a Mutex and a normal dictionary very difficult to read.
    /// </summary>
    /// <example>
-   /// Use it like a dictionay and then add the functions required
+   /// Use it like a dictionary and then add the functions required
    /// </example>
    /// <remarks>
-   /// Does not implement all the interfaces of IDictioanry.
-   /// All Thread access locking is perfromed with this object, so no need for access locking by the caller.
+   /// Does not implement all the interfaces of IDictionary.
+   /// All Thread access locking is performed with this object, so no need for access locking by the caller.
    /// </remarks>
    public class CacheHelper<TKey, TValue>
    {
-#region private fields
+      #region private fields
+      private readonly bool useAPICallToRelease;
       private readonly object cacheLock = new object();
       private class ValueObject<TValueObj>
       {
-         private readonly DateTimeOffset Created;
+         private DateTimeOffset Created;
          public readonly TValueObj CacheValue;
 
          public ValueObject(uint expireSeconds, TValueObj value)
@@ -32,25 +35,40 @@ namespace AmalgamClientTray.Dokan
 
          public bool IsValid
          {
-            get { return Created > DateTime.Now; }
+            get
+            {
+               return (Lock
+                  || (Created > DateTime.Now)
+                  );
+            }
          }
+
+         public void Touch(uint expireSeconds)
+         {
+            Created = new DateTimeOffset(DateTime.Now).AddSeconds(expireSeconds);
+         }
+
+         public bool Lock { private get; set; }
+
       }
 
       private readonly uint expireSeconds;
       private readonly Dictionary<TKey, ValueObject<TValue>> Cache = new Dictionary<TKey, ValueObject<TValue>>();
 
-#endregion
+      #endregion
 
       /// <summary>
       /// Constructor with the timout value
       /// </summary>
       /// <param name="expireSeconds">timeout cannot be -ve</param>
+      /// <param name="useApiCallToRelease">When an function call is made then it will go check the staleness of the cache</param>
       /// <remarks>
       /// expiresecounds must be less than 14 hours otherwise the DateTimeOffset for each object will throw an exception
       /// </remarks>
-      public CacheHelper(uint expireSeconds)
+      public CacheHelper(uint expireSeconds, bool useApiCallToRelease = true)
       {
          this.expireSeconds = expireSeconds;
+         useAPICallToRelease = useApiCallToRelease;
       }
 
       /// <summary>
@@ -69,15 +87,17 @@ namespace AmalgamClientTray.Dokan
                {
                   if (value.IsValid)
                      return value.CacheValue;
-                  else
+                  // else
                   {
                      Cache.Remove(key);
+                     if (useAPICallToRelease)
+                        ThreadPool.QueueUserWorkItem(CheckStaleness);
                   }
                }
             }
             throw new KeyNotFoundException();
 
-            return default(TValue);
+            // return default(TValue);
          }
          set
          {
@@ -85,6 +105,28 @@ namespace AmalgamClientTray.Dokan
             {
                Cache[key] = new ValueObject<TValue>(expireSeconds, value);
             }
+         }
+      }
+
+      /// <summary>
+      /// Go through the cache and remove the stale items
+      /// </summary>
+      /// <remarks>
+      /// This can be called from a thread, and is used when the useAPICallToRelease is true in the constructor
+      /// </remarks>
+      /// <param name="state">set to null</param>
+      public void CheckStaleness(object state)
+      {
+         lock (cacheLock)
+         {
+            try
+            {
+               foreach (var i in Cache.Where(kvp => ((kvp.Value == null) || !kvp.Value.IsValid)).ToList())
+               {
+                  Cache.Remove(i.Key);
+               }
+            }
+            catch { }
          }
       }
 
@@ -99,16 +141,18 @@ namespace AmalgamClientTray.Dokan
          lock (cacheLock)
          {
             ValueObject<TValue> valueobj;
-            if (Cache.TryGetValue(key, out valueobj) )
+            if (Cache.TryGetValue(key, out valueobj))
             {
                if (valueobj.IsValid)
                {
                   value = valueobj.CacheValue;
                   return true;
                }
-               else
+               // else
                {
                   Cache.Remove(key);
+                  if (useAPICallToRelease)
+                     ThreadPool.QueueUserWorkItem(CheckStaleness);
                }
             }
          }
@@ -126,6 +170,25 @@ namespace AmalgamClientTray.Dokan
          lock (cacheLock)
          {
             Cache.Remove(key);
+         }
+      }
+
+      /// <summary>
+      /// Used to prevent an object from being removed from the cache;
+      /// e.g. when a file is open
+      /// </summary>
+      /// <param name="key"></param>
+      /// <param name="state"></param>
+      /// <returns></returns>
+      public void Lock(TKey key, bool state)
+      {
+         lock (cacheLock)
+         {
+            ValueObject<TValue> valueobj = Cache[key];
+            valueobj.Lock = state;
+            // If this is unlocking then assume that the target object will "Allowed" to be around for a while
+            if (!state)
+               valueobj.Touch(expireSeconds);
          }
       }
    }
