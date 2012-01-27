@@ -4,7 +4,7 @@ using Starksoft.Net.Ftp;
 
 namespace AmalgamClientTray.FTP
 {
-   abstract class FileSystemFTPInfo //: FileSystemInfo
+   public abstract class FileSystemFTPInfo //: FileSystemInfo
    {
       protected readonly string path;
       protected readonly FtpClientExt FtpCmdInstance;

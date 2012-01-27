@@ -27,7 +27,7 @@ namespace AmalgamClientTray.Dokan
       // lock
       private readonly ReaderWriterLockSlim openFilesSync = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       // dictionary of all open files
-      private readonly Dictionary<UInt64, FileStreamFTP> openFiles = new Dictionary<UInt64, FileStreamFTP>();
+      private readonly Dictionary<UInt64, OptimizedFTPFileReadHandler> openFiles = new Dictionary<UInt64, OptimizedFTPFileReadHandler>();
 
       private readonly CacheHelper<string, FileSystemFTPInfo> cachedFileSystemFTPInfo = new CacheHelper<string, FileSystemFTPInfo>(32);
 
@@ -116,7 +116,7 @@ namespace AmalgamClientTray.Dokan
 
             // Increment now in case there is an exception later
             info.refFileHandleContext = ++openFilesLastKey; // never be Zero !
-            openFiles.Add(openFilesLastKey, new FileStreamFTP(csd, rawCreationDisposition, foundFileInfo as FileFTPInfo));
+            openFiles.Add(openFilesLastKey, new OptimizedFTPFileReadHandler(csd, rawCreationDisposition, foundFileInfo as FileFTPInfo));
          }
          catch (Exception ex)
          {
@@ -222,15 +222,19 @@ namespace AmalgamClientTray.Dokan
          {
             Log.Trace("Cleanup IN DokanProcessId[{0}] with dokanFilename [{1}]", info.ProcessId, dokanFilename);
             CloseAndRemove(info);
-            if (info.DeleteOnClose)
-            {
                string path = GetPath(dokanFilename);
                FileSystemFTPInfo foundInfo;
                if (cachedFileSystemFTPInfo.TryGetValue(path, out foundInfo))
                {
-                  cachedFileSystemFTPInfo.Remove(path);
-                  foundInfo.Delete();
-               }
+                  if (info.DeleteOnClose)
+                  {
+                     cachedFileSystemFTPInfo.Remove(path);
+                     foundInfo.Delete();
+                  }
+                  else
+                  {
+                     cachedFileSystemFTPInfo.Lock(path, false);
+                  }
             }
          }
          catch (Exception ex)
@@ -250,7 +254,6 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("CloseFile IN DokanProcessId[{0}]", info.ProcessId);
-            CloseAndRemove(info);
          }
          catch (Exception ex)
          {
@@ -273,6 +276,7 @@ namespace AmalgamClientTray.Dokan
          {
             Log.Debug("ReadFile IN offset=[{1}] DokanProcessId[{0}]", info.ProcessId, rawOffset);
             rawReadLength = 0;
+            string path = GetPath(dokanFilename);
             if (info.refFileHandleContext == 0)
             {
                // Some applications (like Notepad) come in "under the wire" and not via the CreateFile to perform a read
@@ -281,7 +285,7 @@ namespace AmalgamClientTray.Dokan
                   // Increment now in case there is an exception later
                   info.refFileHandleContext = ++openFilesLastKey; // never be Zero !
                   openFiles.Add(openFilesLastKey,
-                                new FileStreamFTP(csd, (uint)FileMode.Open, new FileFTPInfo(ftpCmdInstance, GetPath(dokanFilename)))
+                                new OptimizedFTPFileReadHandler(csd, (uint)FileMode.Open, new FileFTPInfo(ftpCmdInstance, path))
                                 );
                   closeOpenedContext = true;
                }
@@ -307,6 +311,13 @@ namespace AmalgamClientTray.Dokan
                   }
                   errorCode = DokanNet.Dokan.DOKAN_SUCCESS;
                }
+            }
+            if (!closeOpenedContext
+               && rawReadLength > 0
+               )
+            {
+               // A successful read means that this file must exist, so lock it in the cache
+               cachedFileSystemFTPInfo.Lock(path, true);
             }
          }
          catch (Exception ex)
@@ -355,6 +366,12 @@ namespace AmalgamClientTray.Dokan
                      errorCode = DokanNet.Dokan.DOKAN_SUCCESS;
                   }
                }
+               if (rawNumberOfBytesWritten > 0)
+               {
+                  // A successful read means that this file must exist, so lock it in the cache
+                  cachedFileSystemFTPInfo.Lock(GetPath(dokanFilename), true);
+               }
+
             }
          }
          catch (Exception ex)
@@ -809,15 +826,14 @@ namespace AmalgamClientTray.Dokan
             using (openFilesSync.UpgradableReadLock())
             {
                // The File can be closed by the remote client via Delete (as it does not know to close first!)
-               FileStreamFTP fileStream;
+               OptimizedFTPFileReadHandler fileStream;
                if (openFiles.TryGetValue(info.refFileHandleContext, out fileStream))
                {
                   using (openFilesSync.WriteLock())
                   {
                      openFiles.Remove(info.refFileHandleContext);
                   }
-                  Log.Trace("CloseAndRemove [{0}] info.refFileHandleContext[{1}]", fileStream.Name,
-                            info.refFileHandleContext);
+                  Log.Trace("CloseAndRemove [{0}] info.refFileHandleContext[{1}]", fileStream.Name, info.refFileHandleContext);
                   fileStream.Close();
                }
                else
@@ -826,6 +842,10 @@ namespace AmalgamClientTray.Dokan
                }
             }
             info.refFileHandleContext = 0;
+         }
+         else
+         {
+            Log.Warn("CloseAndRemove has a zero!");
          }
       }
    }

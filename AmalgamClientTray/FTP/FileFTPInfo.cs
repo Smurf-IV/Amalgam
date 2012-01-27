@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AmalgamClientTray.FTP
 {
-   class FileFTPInfo : FileSystemFTPInfo
+   public class FileFTPInfo : FileSystemFTPInfo
    {
       #region Overrides of FileSystemFTPInfo
 

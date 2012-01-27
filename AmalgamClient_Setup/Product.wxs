@@ -35,6 +35,7 @@
       <Property Id="ARPURLINFOABOUT" Value="http://Amalgam.codeplex.com/" />
       <Icon Id="InstallerIcon" SourceFile="$(sys.SOURCEFILEDIR)..\Amalgam.ico" />
       <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
+      <WixVariable Id="WixUILicenseRtf" Value="GPLv2.rtf" />
 
       <!-- Properties to allow detection of .Net installation -->
       <PropertyRef Id="NETFRAMEWORK40FULL"/>

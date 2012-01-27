@@ -14,6 +14,13 @@ namespace AmalgamClientTray.TrayHandlers
       public NotifyIconHandler()
       {
          InitializeComponent();
+         if (Properties.Settings.Default.UpdateRequired)
+         {
+            // Thanks go to http://cs.rthand.com/blogs/blog_with_righthand/archive/2005/12/09/246.aspx
+            Properties.Settings.Default.Upgrade();
+            Properties.Settings.Default.UpdateRequired = false;
+            Properties.Settings.Default.Save();
+         }
          notifyIcon1.Text = "AmalgamClient State Unknown";
          notifyIcon1.BalloonTipIcon = ToolTipIcon.Warning;
          // Use last state to prevent balloon tip showing on start !
