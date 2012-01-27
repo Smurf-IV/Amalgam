@@ -36,6 +36,7 @@ namespace AmalgamClientTray.ClientForms
       public ManagementForm()
       {
          InitializeComponent();
+         WindowLocation.GeometryFromString(Properties.Settings.Default.WindowLocation, this);
          FileInfo fi = new FileInfo(configFile);
          if (!fi.Exists)
          {
@@ -264,6 +265,13 @@ namespace AmalgamClientTray.ClientForms
             {
                Log.ErrorException("Cannot save configDetails: ", ex);
             }
+      }
+
+      private void ManagementForm_FormClosing(object sender, FormClosingEventArgs e)
+      {
+         // persist our geometry string.
+         Properties.Settings.Default.WindowLocation = WindowLocation.GeometryToString(this);
+         Properties.Settings.Default.Save();
       }
 
    }

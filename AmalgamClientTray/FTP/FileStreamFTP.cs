@@ -6,7 +6,7 @@ using Starksoft.Net.Ftp;
 
 namespace AmalgamClientTray.FTP
 {
-   class FileStreamFTP
+   public class FileStreamFTP
    {
       private readonly ClientShareDetail csd;
       private readonly uint rawCreationDisposition; // http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx

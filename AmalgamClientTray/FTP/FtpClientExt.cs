@@ -9,7 +9,7 @@ using Starksoft.Net.Ftp;
 namespace AmalgamClientTray.FTP
 {
    [Flags]
-   internal enum Features
+   public enum Features
    {
       LIST,
       CWD = 0x1,
@@ -26,7 +26,7 @@ namespace AmalgamClientTray.FTP
    /// Extends the FtpClient to deal with the features that the server may be presenting, otherwise drop back to the older API's.
    /// Will also perform Command locking to allow multiple threads to use the main command Instance
    /// </summary>
-   internal class FtpClientExt
+   public class FtpClientExt
    {
       private readonly FtpClient ftpInstance;
       private readonly object commandLock = new object();

@@ -89,6 +89,7 @@
     <Compile Include="Dokan\DokanManagement.cs" />
     <Compile Include="Dokan\HandleMappingThread.cs" />
     <Compile Include="Dokan\LiquesceOps.cs" />
+    <Compile Include="FTP\OptimizedFTPFileReadHandler.cs" />
     <Compile Include="Dokan\RWLSExtension.cs" />
     <Compile Include="Dokan\Utils.cs" />
     <Compile Include="FTP\DirectoryFTPInfo.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="TrayHandlers\NotifyIconHandler.designer.cs">
       <DependentUpon>NotifyIconHandler.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClientForms\WindowLocation.cs" />
     <EmbeddedResource Include="ClientForms\LogDisplay.resx">
       <DependentUpon>LogDisplay.cs</DependentUpon>
     </EmbeddedResource>
