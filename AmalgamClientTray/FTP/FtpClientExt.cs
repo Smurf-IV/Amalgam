@@ -75,6 +75,8 @@ namespace AmalgamClientTray.FTP
 
       public void SetAttributes(string path, FileAttributes value)
       {
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
@@ -97,6 +99,8 @@ designed to display the last-write time.
 
       public void MakeDirectory(string path)
       {
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
@@ -106,6 +110,8 @@ designed to display the last-write time.
 
       public long GetFileSize(string path)
       {
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
@@ -177,6 +183,8 @@ designed to display the last-write time.
 
       public void GetFile(string path, MemoryStream memStream)
       {
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             FtpResponseCollection response = null;
@@ -200,6 +208,11 @@ designed to display the last-write time.
          }
       }
 
+      private static string NormaliseForFTP(string path)
+      {
+         return path.Replace("\\", "/"); // .TrimStart('/');
+      }
+
       /// <summary>
       /// Put the stream into the specified file
       /// </summary>
@@ -211,12 +224,23 @@ designed to display the last-write time.
          lock (commandLock)
          {
             CheckConnected();
+            // replace the windows style directory delimiter with a unix style delimiter
+            remotePath = NormaliseForFTP( remotePath );
             ftpInstance.PutFile(inputStream, remotePath, (append ? FileAction.CreateOrAppend : FileAction.Create));
          }
       }
 
       public bool ChangeDirectory(string path)
       {
+         if (path == null)
+            throw new ArgumentNullException("path");
+
+         if (path.Length == 0)
+            throw new ArgumentException("must have a value", "path");
+
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP( path );
+
          lock (commandLock)
          {
             FtpRequest request = new FtpRequest(FtpCmd.Cwd, ftpInstance.CharacterEncoding, path)
@@ -236,6 +260,8 @@ designed to display the last-write time.
       public List<FileSystemFTPInfo> GetDirList(string path)
       {
          List<FileSystemFTPInfo> foundValues;
+         // replace the windows style directory delimiter with a unix style delimiter
+         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             Features featureToUse = ((SupportedFeatures & Features.MLSD) == Features.MLSD)
@@ -254,8 +280,8 @@ designed to display the last-write time.
                            FtpResponseCode.RequestedFileActionOkayAndCompleted);
             }
             FtpResponseCollection dirResults = (string.IsNullOrEmpty(path))
-                                                  ? Feature(true, featureToUse, true)
-                                                  : Feature(true, featureToUse, true, path);
+                                                  ? Feature((featureToUse != Features.MLSD), featureToUse)
+                                                  : Feature((featureToUse != Features.MLSD), featureToUse, true, path);
             if (featureToUse == Features.MLSD)
             {
                foundValues = new MlstCollection(this, path, dirResults);
@@ -264,13 +290,7 @@ designed to display the last-write time.
             {
                // Do it the harder way ??
                FtpItemCollection results = new FtpItemCollection(path, dirResults.GetRawText(), ftpInstance.ItemParser);
-               foundValues = new List<FileSystemFTPInfo>(results.Count);
-               foundValues.AddRange(
-                  results.Select(
-                     item =>
-                     (item.ItemType == FtpItemType.Directory)
-                        ? (FileSystemFTPInfo) new DirectoryFTPInfo(this, item.FullPath)
-                        : new FileFTPInfo(this, item.FullPath)));
+               foundValues = FileSystemFTPInfo.ConvertFrom(results, this);
             }
          }
          return foundValues;
@@ -301,6 +321,8 @@ designed to display the last-write time.
       /// <returns>May return null if nothing found</returns>
       public FileSystemFTPInfo GetFileDetails(string target)
       {
+         // replace the windows style directory delimiter with a unix style delimiter
+         target = NormaliseForFTP( target );
          List<FileSystemFTPInfo> foundValues;
          lock (commandLock)
          {
@@ -322,8 +344,8 @@ designed to display the last-write time.
                            );
             }
             FtpResponseCollection dirResults = (string.IsNullOrEmpty(target))
-                                                  ? Feature(false, featureToUse)
-                                                  : Feature(false, featureToUse, true, target);
+                                                  ? Feature((featureToUse != Features.MLST), featureToUse)
+                                                  : Feature((featureToUse != Features.MLST), featureToUse, true, target);
             if (featureToUse == Features.MLST)
             {
                foundValues = new MlstCollection(this, target, dirResults);
@@ -332,13 +354,7 @@ designed to display the last-write time.
             {
                // Do it the harder way ??
                FtpItemCollection results = new FtpItemCollection(target, dirResults.GetRawText(), ftpInstance.ItemParser);
-               foundValues = new List<FileSystemFTPInfo>(results.Count);
-               foundValues.AddRange(
-                  results.Select(
-                     item =>
-                     (item.ItemType == FtpItemType.Directory)
-                        ? (FileSystemFTPInfo) new DirectoryFTPInfo(this, item.FullPath)
-                        : new FileFTPInfo(this, item.FullPath)));
+               foundValues = FileSystemFTPInfo.ConvertFrom(results, this);
             }
          }
          return foundValues.Count > 0 ? foundValues[0] : null;

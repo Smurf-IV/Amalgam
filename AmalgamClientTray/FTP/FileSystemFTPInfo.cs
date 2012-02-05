@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Starksoft.Net.Ftp;
 
@@ -161,5 +162,30 @@ namespace AmalgamClientTray.FTP
       public abstract void Delete();
 
       #endregion
+
+      public static List<FileSystemFTPInfo> ConvertFrom(FtpItemCollection results, FtpClientExt ftpCmdInstance)
+      {
+         List<FileSystemFTPInfo> _list = new List<FileSystemFTPInfo>(results.Count);
+         foreach (FtpItem item in results)
+         {
+            FileSystemFTPInfo info = (item.ItemType == FtpItemType.Directory)
+               ? (FileSystemFTPInfo) new DirectoryFTPInfo(ftpCmdInstance, item.FullPath)
+               : new FileFTPInfo(ftpCmdInstance, item.FullPath);
+            // Set it to be offline to allow explorer some extra time to find details before timg out.
+            info.attributes = (item.ItemType == FtpItemType.Directory) ? FileAttributes.Directory : FileAttributes.Offline;
+            if ( item.Attributes[0] == 'l' )
+               info.attributes |= FileAttributes.ReparsePoint;
+            // drwx-
+            if ( (item.Attributes[1] == 'r' )
+               && (item.Attributes[2] != 'w')
+               )
+               info.attributes |= FileAttributes.ReadOnly;
+            info.length = item.Size;
+            info.creationTimeUtc = item.Modified;
+            info.lastWriteTimeUtc = item.Modified;
+            _list.Add(info);
+         }
+         return _list;
+      }
    }
 }

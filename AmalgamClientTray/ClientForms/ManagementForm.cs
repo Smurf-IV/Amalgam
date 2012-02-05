@@ -13,8 +13,8 @@ namespace AmalgamClientTray.ClientForms
    {
       static private readonly Logger Log = LogManager.GetCurrentClassLogger();
       private ClientPropertiesDisplay cpd;
-      private static readonly string userAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"AmalgamClientTray");
-      private readonly string configFile = Path.Combine(userAppData, @"Client.Properties.config.xml");
+      internal static readonly string userAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"AmalgamClientTray");
+      internal static readonly string configFile = Path.Combine(userAppData, @"Client.Properties.config.xml");
 
       private ClientConfigDetails csd;
 
@@ -45,7 +45,8 @@ namespace AmalgamClientTray.ClientForms
                di.Create();
             // The file will now be created when the ReadConfig is called
          }
-         ReadConfigDetails();
+         ReadConfigDetails(out csd);
+         ClientConfigDetails = csd;
       }
 
       private void ManagementForm_Load(object sender, EventArgs e)
@@ -131,6 +132,7 @@ namespace AmalgamClientTray.ClientForms
             csd.SharesToRestore[0].Port = cpd.Port;
             csd.SharesToRestore[0].SecurityProtocol = cpd.SecurityProtocol;
             csd.SharesToRestore[0].UserName = cpd.UserName;
+            csd.SharesToRestore[0].Password = cpd.Password;
             csd.SharesToRestore[0].TargetShareName = cpd.TargetShareName;
             string oldDriveLetter = csd.SharesToRestore[0].DriveLetter;
             csd.SharesToRestore[0].DriveLetter = cpd.DriveLetter;
@@ -138,7 +140,7 @@ namespace AmalgamClientTray.ClientForms
             csd.SharesToRestore[0].BufferWireTransferSize = cpd.BufferWireTransferSize;
 
             Log.Info("Write the values to the Service config file");
-            WriteOutConfigDetails();
+            WriteOutConfigDetails(csd);
             if (DialogResult.Yes == MessageBox.Show(this, "This is about to stop then start the \"Share Enabler Service\".\nDo you want to this to happen now ?",
                "Stop then Start the Service Now..", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
@@ -151,7 +153,7 @@ namespace AmalgamClientTray.ClientForms
                         Handlers.ClientMappings.Remove(oldDriveLetter);
                   }
                   HandleMappingThread newMapping = new HandleMappingThread();
-                  Handlers.ClientMappings[oldDriveLetter] = newMapping;
+                  Handlers.ClientMappings[csd.SharesToRestore[0].DriveLetter] = newMapping;
                   newMapping.Start(csd.SharesToRestore[0]);
                }
                catch (Exception ex)
@@ -203,7 +205,8 @@ namespace AmalgamClientTray.ClientForms
       {
          try
          {
-            ReadConfigDetails();
+            ReadConfigDetails( out csd);
+            ClientConfigDetails = csd;
          }
          catch (Exception ex)
          {
@@ -211,8 +214,9 @@ namespace AmalgamClientTray.ClientForms
          }
       }
 
-      private void ReadConfigDetails()
+      internal static void ReadConfigDetails( out ClientConfigDetails csd)
       {
+         csd = null;
          try
          {
             // Initialise a default to allow type get !
@@ -221,7 +225,7 @@ namespace AmalgamClientTray.ClientForms
             Log.Info("Attempting to read ClientConfigDetails from: [{0}]", configFile);
             using (TextReader textReader = new StreamReader(configFile))
             {
-               ClientConfigDetails = x.Deserialize(textReader) as ClientConfigDetails;
+               csd = x.Deserialize(textReader) as ClientConfigDetails;
             }
          }
          catch (Exception ex)
@@ -234,7 +238,7 @@ namespace AmalgamClientTray.ClientForms
             if (csd == null)
             {
                Log.Info("Creating new ClientConfigDetails");
-               ClientConfigDetails = new ClientConfigDetails();
+               csd = new ClientConfigDetails();
                try
                {
                   if (File.Exists(configFile))
@@ -244,13 +248,13 @@ namespace AmalgamClientTray.ClientForms
                {
                   Log.WarnException("ReadConfigDetails", ex);
                }
-               WriteOutConfigDetails();
+               WriteOutConfigDetails( csd);
             }
          }
       }
 
 
-      private void WriteOutConfigDetails()
+      private static void WriteOutConfigDetails( ClientConfigDetails csd)
       {
          if (csd != null)
             try
