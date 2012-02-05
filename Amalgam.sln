@@ -2,6 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AmalgamClient_Setup", "AmalgamClient_Setup\AmalgamClient_Setup.wixproj", "{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DB8FD42B-6DCF-4090-8556-ECC1818369BE} = {DB8FD42B-6DCF-4090-8556-ECC1818369BE}
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}
+		{5F228FCD-54F1-491D-93CE-3D768655FADC} = {5F228FCD-54F1-491D-93CE-3D768655FADC}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmalgamClientTray", "AmalgamClientTray\AmalgamClientTray.csproj", "{DB8FD42B-6DCF-4090-8556-ECC1818369BE}"
 EndProject
@@ -20,52 +25,39 @@ Global
 		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs08
-		SccProjectUniqueName0 = AmalgamClient_Setup\\AmalgamClient_Setup.wixproj
-		SccProjectName0 = AmalgamClient_Setup
-		SccLocalPath0 = AmalgamClient_Setup
-		SccProjectUniqueName1 = AmalgamClientTray\\AmalgamClientTray.csproj
-		SccProjectName1 = AmalgamClientTray
-		SccLocalPath1 = AmalgamClientTray
-		SccProjectUniqueName2 = Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
-		SccProjectName2 = Starksoft.Net.Ftp
-		SccLocalPath2 = Starksoft.Net.Ftp
-		SccProjectUniqueName3 = ThirdParty\\DokanNet\\DokanNet.csproj
-		SccProjectTopLevelParentUniqueName3 = Amalgam.sln
-		SccProjectName3 = ThirdParty/DokanNet
-		SccLocalPath3 = ThirdParty\\DokanNet
-		SccLocalPath4 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = AmalgamClient_Setup\\AmalgamClient_Setup.wixproj
+		SccProjectName1 = AmalgamClient_Setup
+		SccLocalPath1 = AmalgamClient_Setup
+		SccProjectUniqueName2 = AmalgamClientTray\\AmalgamClientTray.csproj
+		SccProjectName2 = AmalgamClientTray
+		SccLocalPath2 = AmalgamClientTray
+		SccProjectUniqueName3 = Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
+		SccProjectName3 = Starksoft.Net.Ftp
+		SccLocalPath3 = Starksoft.Net.Ftp
+		SccProjectUniqueName4 = ThirdParty\\DokanNet\\DokanNet.csproj
+		SccProjectTopLevelParentUniqueName4 = Amalgam.sln
+		SccProjectName4 = ThirdParty/DokanNet
+		SccLocalPath4 = ThirdParty\\DokanNet
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
-		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.ActiveCfg = Debug|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.Build.0 = Debug|x86
-		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|Any CPU.ActiveCfg = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.ActiveCfg = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.Build.0 = Release|x86
-		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Debug|x86.ActiveCfg = Debug|x86
 		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Debug|x86.Build.0 = Debug|x86
-		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Release|Any CPU.ActiveCfg = Release|x86
 		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Release|x86.ActiveCfg = Release|x86
 		{DB8FD42B-6DCF-4090-8556-ECC1818369BE}.Release|x86.Build.0 = Release|x86
-		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.ActiveCfg = Debug|x86
 		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.Build.0 = Debug|x86
-		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|Any CPU.ActiveCfg = Release|x86
 		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.ActiveCfg = Release|x86
 		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.Build.0 = Release|x86
-		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.ActiveCfg = Debug|x86
-		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.Build.0 = Debug|x86
-		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.ActiveCfg = Release|x86
 		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
@@ -74,5 +66,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {1C37BD08-C253-4744-B4FC-2AC52E15E6D0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UseGlobalSettings = False
 	EndGlobalSection
 EndGlobal

@@ -11,7 +11,7 @@
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
 
    <!-- Change this when creating new release YY-MM-DD -->
-   <?define Version = "11.05.27" ?>
+   <?define Version = "12.2.5.98" ?>
 
    <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
 
@@ -48,12 +48,17 @@
       <Property Id="DOKANVERCHECK32">
          <DirectorySearch Id="Dokan.sys.version" Path="[SystemFolder]\Drivers">
             <!--Make sure that the min / max _straddle_ the actual version..  Check for 0.6.0 x32 Size -->
-            <FileSearch Name="Dokan.sys" MinSize="91903" MaxSize="91905" />
+            <!-- It appears that there is yet another version for Windows 7 x32  (95744?)!! -->
+            <!-- Win2k3 R2 (x32) size = 96,256 Bytes -->
+            <!-- WinXP SP3 (x32) size = 91,904 Bytes -->
+            <FileSearch Name="Dokan.sys" MinSize="91903" MaxSize="96257" />
          </DirectorySearch>
       </Property>
       <Property Id="DOKANVERCHECK64">
          <DirectorySearch Id="Dokan.sys64.version" Path="[System64Folder]\Drivers">
             <!--Make sure that the min / max _straddle_ the actual version.. Check for 0.6.0 x64 Size -->
+            <!-- Win 7 x64 = 120,408 Bytes -->
+            <!-- Win2k8 R2 = 120,408 Bytes -->
             <FileSearch Name="Dokan.sys" MinSize="120407" MaxSize="120409" />
          </DirectorySearch>
       </Property>

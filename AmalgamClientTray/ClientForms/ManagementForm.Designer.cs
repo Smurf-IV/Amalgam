@@ -61,7 +61,7 @@
          // 
          // btnSave
          // 
-         this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnSave.Enabled = false;
          this.btnSave.Location = new System.Drawing.Point(521, 364);
          this.btnSave.Name = "btnSave";
@@ -99,6 +99,7 @@
          this.MinimizeBox = false;
          this.MinimumSize = new System.Drawing.Size(464, 374);
          this.Name = "ManagementForm";
+         this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
          this.Text = "Liquesce Share Enabler Client Management";
          this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ManagementForm_FormClosing);
          this.Load += new System.EventHandler(this.ManagementForm_Load);

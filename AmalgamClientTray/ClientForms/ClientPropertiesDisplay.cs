@@ -46,54 +46,50 @@ namespace AmalgamClientTray.ClientForms
       [DescriptionAttribute("The Name to be used in explorer."),
       DisplayName("Drive Label")
       , CategoryAttribute("Local")
-      , ReadOnly(true)
       ]
       public string VolumeLabel { get; set; }
 
       [DescriptionAttribute("The drive letter used in explorer"),
-      DisplayName("Drive Letter")
+      DisplayName("Drive letter")
       , CategoryAttribute("Local")
       ]
       public string DriveLetter { get; set; }
 
       [DescriptionAttribute("The name allocated to the share on the target machine."),
-      DisplayName("Target Share Connect")
-      , CategoryAttribute("Remote")
-      , ReadOnly(true)
+      DisplayName("Target directory to be used as root")
+      , CategoryAttribute("User Details")
       ]
       public string TargetShareName { get; set; }
 
       [DescriptionAttribute("The User to be used as the ACL Check up."),
-      DisplayName("User to connect to the target share")
-      , CategoryAttribute("Remote")
-      , ReadOnly(true)
+      DisplayName("FTP User for the connection")
+      , CategoryAttribute("User Details")
       ]
       public string UserName { get; set; }
 
 
       [DescriptionAttribute("The Password to be used as the ACL Check up."),
-      DisplayName("User to connect to the target share")
-      , CategoryAttribute("Remote")
-      , ReadOnly(true)
+      DisplayName("Password associated with the above user.")
+      , CategoryAttribute("User Details")
       ]
       public string Password { get; set; }
 
       [DescriptionAttribute("The machine name or IP address of the Target share.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allow communications."),
-      DisplayName("Target Machine")
-      , CategoryAttribute("Remote")
+      DisplayName("Target FTP Machine")
+      , CategoryAttribute("Remote Machine")
       ]
       public string TargetMachineName { get; set; }
 
-      [DescriptionAttribute("The Target port.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allow communications."),
+      [DescriptionAttribute("The Target port.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allowing communications."),
       DisplayName("Target FTP Port")
-      , CategoryAttribute("Remote")
+      , CategoryAttribute("Remote Machine")
       ]
       public ushort Port { get; set; }
 
 
       [DescriptionAttribute("The Target SecurityProtocol.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allow communications."),
       DisplayName("Target FTP SecurityProtocol")
-      , CategoryAttribute("Remote")
+      , CategoryAttribute("Remote Machine")
       , ReadOnly(true)
       ]
       public FtpSecurityProtocol SecurityProtocol { get; set; }
