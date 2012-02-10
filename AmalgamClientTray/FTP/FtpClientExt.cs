@@ -230,32 +230,32 @@ designed to display the last-write time.
          }
       }
 
-      public bool ChangeDirectory(string path)
-      {
-         if (path == null)
-            throw new ArgumentNullException("path");
+      //public bool ChangeDirectory(string path)
+      //{
+      //   if (path == null)
+      //      throw new ArgumentNullException("path");
 
-         if (path.Length == 0)
-            throw new ArgumentException("must have a value", "path");
+      //   if (path.Length == 0)
+      //      throw new ArgumentException("must have a value", "path");
 
-         // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP( path );
+      //   // replace the windows style directory delimiter with a unix style delimiter
+      //   path = NormaliseForFTP( path );
 
-         lock (commandLock)
-         {
-            FtpRequest request = new FtpRequest(FtpCmd.Cwd, ftpInstance.CharacterEncoding, path)
-                                    {
-                                       HappyCodes =
-                                          FtpRequest.BuildResponseArray(
-                                             FtpResponseCode.RequestedFileActionOkayAndCompleted,
-                                             FtpResponseCode.RequestedActionNotTakenFileUnavailable
-                                          )
-                                    };
-            CheckConnected();
-            ftpInstance.SendRequest(request);
-            return ftpInstance.LastResponse.Code == FtpResponseCode.RequestedFileActionOkayAndCompleted;
-         }
-      }
+      //   lock (commandLock)
+      //   {
+      //      FtpRequest request = new FtpRequest(FtpCmd.Cwd, ftpInstance.CharacterEncoding, path)
+      //                              {
+      //                                 HappyCodes =
+      //                                    FtpRequest.BuildResponseArray(
+      //                                       FtpResponseCode.RequestedFileActionOkayAndCompleted,
+      //                                       FtpResponseCode.RequestedActionNotTakenFileUnavailable
+      //                                    )
+      //                              };
+      //      CheckConnected();
+      //      ftpInstance.SendRequest(request);
+      //      return ftpInstance.LastResponse.Code == FtpResponseCode.RequestedFileActionOkayAndCompleted;
+      //   }
+      //}
 
       public List<FileSystemFTPInfo> GetDirList(string path)
       {
@@ -315,7 +315,7 @@ designed to display the last-write time.
       }
 
       /// <summary>
-      /// Get as amany details as it can about the target.
+      /// Get as many details as it can about the target.
       /// </summary>
       /// <param name="target">If empty then will assume CWD has been used</param>
       /// <returns>May return null if nothing found</returns>

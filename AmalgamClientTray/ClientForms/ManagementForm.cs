@@ -138,6 +138,7 @@ namespace AmalgamClientTray.ClientForms
             csd.SharesToRestore[0].DriveLetter = cpd.DriveLetter;
             csd.SharesToRestore[0].VolumeLabel = cpd.VolumeLabel;
             csd.SharesToRestore[0].BufferWireTransferSize = cpd.BufferWireTransferSize;
+            csd.SharesToRestore[0].CacheFileMaxSize = cpd.CacheFileMaxSize;
 
             Log.Info("Write the values to the Service config file");
             WriteOutConfigDetails(csd);

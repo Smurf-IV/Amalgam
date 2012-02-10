@@ -13,13 +13,13 @@ namespace AmalgamClientTray.ClientForms
       // Also the V 0.6 of Dokan is supposed to be able to use Mount points so this can then be reused for that..
       public string DriveLetter = @"S";
 
-      public string TargetMachineName = @"localhost";
+      public string TargetMachineName = @"ftp.kernel.org";
       public ushort Port = 21;
       public FtpSecurityProtocol SecurityProtocol = FtpSecurityProtocol.None;
 
       public string UserName = @"anonymous";
 
-      public string Password = @"anonymous@Home.net";
+      public string Password = @"me@me.com";
 
       public string TargetShareName = @"";
 
@@ -29,6 +29,8 @@ namespace AmalgamClientTray.ClientForms
       // In here as different targets may have different capabilities
       // Set the minimum to be 4096 bytes
       public UInt32 BufferWireTransferSize = 8192;
+
+      public UInt32 CacheFileMaxSize = 8192;
 
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global

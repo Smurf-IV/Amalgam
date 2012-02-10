@@ -757,20 +757,21 @@ namespace AmalgamClientTray.Dokan
          Log.Trace("Unmount IN DokanProcessId[{0}]", info.ProcessId);
          using (openFilesSync.WriteLock())
          {
-            foreach (FileStreamFTP obj2 in openFiles.Values)
-            {
-               try
+            if (openFiles != null)
+               foreach (OptimizedFTPFileReadHandler obj2 in openFiles.Values)
                {
-                  if (obj2 != null)
+                  try
                   {
-                     obj2.Close();
+                     if (obj2 != null)
+                     {
+                        obj2.Close();
+                     }
+                  }
+                  catch (Exception ex)
+                  {
+                     Log.InfoException("Unmount closing files threw: ", ex);
                   }
                }
-               catch (Exception ex)
-               {
-                  Log.InfoException("Unmount closing files threw: ", ex);
-               }
-            }
             openFiles.Clear();
          }
          Log.Trace("Unmount out");

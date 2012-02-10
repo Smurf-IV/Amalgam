@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using AmalgamClientTray.ClientForms;
@@ -8,14 +9,14 @@ namespace AmalgamClientTray.FTP
 {
    public class FileStreamFTP
    {
-      private readonly ClientShareDetail csd;
+      protected readonly ClientShareDetail csd;
       private readonly uint rawCreationDisposition; // http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
-      public FileFTPInfo fsi { get; set; }
+      private FileFTPInfo fsi { get; set; }
       private bool completedOpen;
-      private Exception exceptionThrown = null;
-      private FtpClientExt ftpFileClient;
+      private Exception exceptionThrown;
+      protected FtpClientExt ftpFileClient;
 
-      public FileStreamFTP(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo)
+      protected FileStreamFTP(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo)
       {
          this.csd = csd;
          this.rawCreationDisposition = rawCreationDisposition;
@@ -48,6 +49,11 @@ namespace AmalgamClientTray.FTP
          }
       }
 
+      public string FullName
+      {
+         get { return fsi.FullName; }
+      }
+
       public string Name
       {
          get { return fsi.Name; }
@@ -70,22 +76,22 @@ namespace AmalgamClientTray.FTP
             ftpFileClient.Close();
       }
 
-      public void Seek(long rawOffset, SeekOrigin begin)
+      virtual public void Seek(long rawOffset, SeekOrigin begin)
       {
          if (begin != SeekOrigin.Begin)
             throw new ArgumentOutOfRangeException("begin", "This function only supports offsets from SeekOrigin.Begin");
          CheckOpened();
-         ftpFileClient.Feature(false, Features.REST, false, rawOffset.ToString());
+         ftpFileClient.Feature(false, Features.REST, false, rawOffset.ToString(CultureInfo.InvariantCulture));
       }
 
-      public uint Read(byte[] buf, uint rawBufferLength)
+      virtual public uint Read(byte[] buf, uint rawBufferLength)
       {
          CheckOpened();
-         // TODO: Eventually use a temp file and use a continuous Asynch Filestream into it via
-         //         internal void TransferData(TransferDirection direction, FtpRequest request, Stream data, long restartPosition)
-         MemoryStream memStream = new MemoryStream(buf, true);
-         ftpFileClient.GetFile(fsi.FullName, memStream);
-         return (uint)memStream.Position;
+         using (MemoryStream memStream = new MemoryStream(buf, true))
+         {
+            ftpFileClient.GetFile(fsi.FullName, memStream);
+            return (uint) memStream.Position;
+         }
       }
 
       /// <summary>
@@ -94,13 +100,13 @@ namespace AmalgamClientTray.FTP
       /// <param name="buf"></param>
       /// <param name="rawNumberOfBytesToWrite"></param>
       /// <returns></returns>
-      public bool Write(byte[] buf, uint rawNumberOfBytesToWrite)
+      virtual public bool Write(byte[] buf, uint rawNumberOfBytesToWrite)
       {
          CheckOpened();
-         // TODO: Eventually use a temp file and use a continuous Asynch Filestream into it via
-         //         internal void TransferData(TransferDirection direction, FtpRequest request, Stream data, long restartPosition)
-         MemoryStream memStream = new MemoryStream(buf, 0, (int) rawNumberOfBytesToWrite, false);
-         ftpFileClient.PutFile(memStream, fsi.FullName, (rawCreationDisposition == (uint) FileMode.Append));
+         using (MemoryStream memStream = new MemoryStream(buf, 0, (int)rawNumberOfBytesToWrite, false))
+         {
+            ftpFileClient.PutFile(memStream, fsi.FullName, (rawCreationDisposition == (uint) FileMode.Append));
+         }
          return true;
       }
    }

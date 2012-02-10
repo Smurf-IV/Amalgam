@@ -5,6 +5,7 @@ namespace AmalgamClientTray.FTP
 {
    /// <summary>
    /// Stolen from http://stackoverflow.com/questions/3240968/should-dispose-or-finalize-be-used-to-delete-temporary-files
+   /// and then had some modifications to allow attributes and filestream usage
    /// </summary>
    /// <example>
    /// using (TemporaryFile temporaryFile = new TemporaryFile(true)) 
@@ -20,12 +21,14 @@ namespace AmalgamClientTray.FTP
       /// If you decide, after constructing a TemporaryFile, that you want to prevent it from being deleted, 
       /// simply set the TemporaryFile.Keep property to true:
       /// </summary>
+// ReSharper disable MemberCanBePrivate.Global
       public bool Keep { get; set; }
+// ReSharper restore MemberCanBePrivate.Global
 
       /// <summary>
       /// Accessor for the generated filePathName
       /// </summary>
-      public string FilePath { get; private set; }
+      public FileStream IO { get; private set; }
 
       /// <summary>
       /// Default constructor
@@ -41,7 +44,7 @@ namespace AmalgamClientTray.FTP
       /// <param name="shortLived"></param>
       public TemporaryFile(bool shortLived)
       {
-         FilePath = CreateTemporaryFile(shortLived);
+         IO = CreateTemporaryFile(shortLived);
       }
 
       /// <summary>
@@ -75,13 +78,13 @@ namespace AmalgamClientTray.FTP
       /// other objects. Only unmanaged resources can be disposed.
       /// </summary>
       /// <param name="disposing"></param>
-      protected virtual void Dispose(bool disposing)
+      private void Dispose(bool disposing)
       {
          if (!isDisposed)
          {
             isDisposed = true;
 
-            if (!this.Keep)
+            if (!Keep)
             {
                TryDelete();
             }
@@ -92,7 +95,8 @@ namespace AmalgamClientTray.FTP
       {
          try
          {
-            File.Delete(FilePath);
+            IO.Close();
+            File.Delete(IO.Name);
          }
          catch (IOException)
          {
@@ -107,17 +111,20 @@ namespace AmalgamClientTray.FTP
       /// </summary>
       /// <param name="shortLived"></param>
       /// <returns></returns>
-      public static string CreateTemporaryFile(bool shortLived)
+      private static FileStream CreateTemporaryFile(bool shortLived)
       {
-         string temporaryFile = Path.GetTempFileName();
-         
+         FileInfo fi = new FileInfo(string.Concat(Path.GetTempPath(), Guid.NewGuid(), ".tmp"));
+         FileStream fs = fi.Open(FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+         FileAttributes attributes = fi.Attributes;
          if (shortLived)
          {
             // Set the temporary attribute
-            File.SetAttributes(temporaryFile, File.GetAttributes(temporaryFile) | FileAttributes.Temporary);
+            attributes |= FileAttributes.Temporary;
          }
+         attributes |= FileAttributes.NotContentIndexed;
+         fi.Attributes = attributes;
 
-         return temporaryFile;
+         return fs;
       }
    }
 }

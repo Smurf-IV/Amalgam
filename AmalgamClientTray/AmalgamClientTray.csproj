@@ -89,6 +89,7 @@
     <Compile Include="Dokan\DokanManagement.cs" />
     <Compile Include="Dokan\HandleMappingThread.cs" />
     <Compile Include="Dokan\LiquesceOps.cs" />
+    <Compile Include="FTP\FTPTempFile.cs" />
     <Compile Include="FTP\OptimizedFTPFileReadHandler.cs" />
     <Compile Include="Dokan\RWLSExtension.cs" />
     <Compile Include="Dokan\Utils.cs" />
