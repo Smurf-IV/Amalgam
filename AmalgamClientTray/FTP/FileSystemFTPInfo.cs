@@ -114,16 +114,6 @@ namespace AmalgamClientTray.FTP
                attributes = FileAttributes.Device;
                try
                {
-                  // Use CWD
-                  if (FtpCmdInstance.ChangeDirectory(path))
-                  {
-                     attributes = FileAttributes.Directory;
-                  }
-               }
-               catch { }
-               // No try to see if it a file and / or get more data against the directory
-               try
-               {
                   FileSystemFTPInfo info = FtpCmdInstance.GetFileDetails((attributes != FileAttributes.Directory) ? path : string.Empty);
                   if (info != null)
                   {
@@ -135,15 +125,6 @@ namespace AmalgamClientTray.FTP
                   }
                }
                catch { }
-               //finally
-               {
-                  if ((path != "\\")
-                     && ((attributes & FileAttributes.Directory) == FileAttributes.Directory )
-                  )
-                  {
-                     FtpCmdInstance.ChangeDirectory("/");
-                  }
-               }
             }
             return attributes;
          }

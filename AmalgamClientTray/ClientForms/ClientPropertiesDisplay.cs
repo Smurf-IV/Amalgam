@@ -22,11 +22,12 @@ namespace AmalgamClientTray.ClientForms
             DriveLetter = csd.DriveLetter;
             VolumeLabel = csd.VolumeLabel;
             BufferWireTransferSize = csd.BufferWireTransferSize;
+            CacheFileMaxSize = csd.CacheFileMaxSize;
          }
       }
 
 
-      [DescriptionAttribute("The number of Bytes allocated to be chunked over the Wire.\rRange 4096 <-> near 1GB"),
+      [DescriptionAttribute("The number of Bytes allocated to be chunked over the Wire.\rRange 4096 <-> near 1GB."),
       DisplayName("Buffer Wire Transfer Size")
       , CategoryAttribute("Local")
       ]
@@ -40,6 +41,24 @@ namespace AmalgamClientTray.ClientForms
             if (value >= 1 << 12
                 && value <= 1 << 30)
                bufferWireTransferSize = value;
+         }
+      }
+
+      [DescriptionAttribute("The number of Bytes allocated to each of the temporary cache files.\rRange 4096 <-> near 32MB."),
+      DisplayName("Cache File Max Size")
+      , CategoryAttribute("Local")
+      ]
+      public UInt32 CacheFileMaxSize
+      {
+         get
+         {
+            return cacheFileMaxSize;
+         }
+         set
+         {
+            if (value >= 1 << 12
+                && value <= 1 << 25)
+               cacheFileMaxSize = value;
          }
       }
 
@@ -96,6 +115,7 @@ namespace AmalgamClientTray.ClientForms
 
       
       private UInt32 bufferWireTransferSize;
+      private UInt32 cacheFileMaxSize;
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
 
