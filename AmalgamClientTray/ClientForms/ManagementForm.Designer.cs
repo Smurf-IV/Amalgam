@@ -44,7 +44,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
          this.propertyGrid1.Location = new System.Drawing.Point(14, 13);
          this.propertyGrid1.Name = "propertyGrid1";
-         this.propertyGrid1.Size = new System.Drawing.Size(609, 406);
+         this.propertyGrid1.Size = new System.Drawing.Size(523, 406);
          this.propertyGrid1.TabIndex = 18;
          // 
          // btnConnect
@@ -63,7 +63,7 @@
          // 
          this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnSave.Enabled = false;
-         this.btnSave.Location = new System.Drawing.Point(521, 430);
+         this.btnSave.Location = new System.Drawing.Point(435, 430);
          this.btnSave.Name = "btnSave";
          this.btnSave.Size = new System.Drawing.Size(101, 25);
          this.btnSave.TabIndex = 20;
@@ -88,7 +88,7 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(638, 468);
+         this.ClientSize = new System.Drawing.Size(552, 468);
          this.Controls.Add(this.btnLogView);
          this.Controls.Add(this.btnSave);
          this.Controls.Add(this.btnConnect);

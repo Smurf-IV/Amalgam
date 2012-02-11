@@ -20,6 +20,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "ThirdParty\DokanNet\DokanNet.csproj", "{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B17502AC-3EF2-4CF1-BBCB-4AE868F8A285}"
+	ProjectSection(SolutionItems) = preProject
+		AmalgamClientTray\Dokan\CacheHelper.cs = AmalgamClientTray\Dokan\CacheHelper.cs
+		ThirdParty\Shared\MessageBoxExtForm.cs = ThirdParty\Shared\MessageBoxExtForm.cs
+		ThirdParty\Shared\MessageBoxExtForm.Designer.cs = ThirdParty\Shared\MessageBoxExtForm.Designer.cs
+		ThirdParty\Shared\MessageBoxExtForm.resx = ThirdParty\Shared\MessageBoxExtForm.resx
+		AmalgamClientTray\Dokan\RWLSExtension.cs = AmalgamClientTray\Dokan\RWLSExtension.cs
+		AmalgamClientTray\FTP\TemporaryFile.cs = AmalgamClientTray\FTP\TemporaryFile.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5

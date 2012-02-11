@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using AmalgamClientTray.Dokan;
 using NLog;
+using Shared;
 using Starksoft.Net.Ftp;
 
 namespace AmalgamClientTray.ClientForms
@@ -120,6 +121,7 @@ namespace AmalgamClientTray.ClientForms
       #region Button Actions
       private void btnConnect_Click(object sender, EventArgs e)
       {
+         string help = null, system = null, status = null;
          try
          {
             UseWaitCursor = true;
@@ -129,6 +131,9 @@ namespace AmalgamClientTray.ClientForms
             {
                ftp.Open(cpd.UserName, cpd.Password);
                // ftp.IsConnected;
+               help = ftp.GetHelp();
+               system = ftp.GetSystemType();
+               status = ftp.GetStatus();
                ftp.Close();
             }
             btnSave.Enabled = true;
@@ -136,12 +141,16 @@ namespace AmalgamClientTray.ClientForms
          catch (Exception ex)
          {
             Log.ErrorException("btnConnect_Click", ex);
-            MessageBox.Show(this, ex.Message, "Failed to contact Target", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBoxExt.Show(this, ex.Message, "Failed to contact Target", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
          finally
          {
             UseWaitCursor = false;
             Enabled = true;
+         }
+         if (!string.IsNullOrWhiteSpace(help))
+         {
+            MessageBoxExt.Show(this, string.Format("Help: {0}\nSystem: {1}\nStatus: {2}", help, system, status), @"Target server information", MessageBoxButtons.OK, MessageBoxIcon.Information);
          }
       }
 
@@ -168,7 +177,7 @@ namespace AmalgamClientTray.ClientForms
 
             Log.Info("Write the values to the Service config file");
             WriteOutConfigDetails(csd);
-            if (DialogResult.Yes == MessageBox.Show(this, "This is about to stop then start the \"Share Enabler Service\".\nDo you want to this to happen now ?",
+            if (DialogResult.Yes == MessageBoxExt.Show(this, "This is about to stop then start the \"Share Enabler Service\".\nDo you want to this to happen now ?",
                "Stop then Start the Service Now..", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
             {
                try
@@ -186,7 +195,7 @@ namespace AmalgamClientTray.ClientForms
                catch (Exception ex)
                {
                   Log.ErrorException("btnSend_Click", ex);
-                  MessageBox.Show(this, ex.Message, "Failed, Check the logs", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                  MessageBoxExt.Show(this, ex.Message, "Failed, Check the logs", MessageBoxButtons.OK, MessageBoxIcon.Error);
                }
             }
          }
@@ -223,7 +232,7 @@ namespace AmalgamClientTray.ClientForms
          catch (Exception ex)
          {
             Log.ErrorException("OpenFile has an exception: ", ex);
-            MessageBox.Show(this, ex.Message, "Failed to open the client log view", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBoxExt.Show(this, ex.Message, "Failed to open the client log view", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
       #endregion
