@@ -28,14 +28,15 @@ namespace AmalgamClientTray.ClientForms
       /// </summary>
       private void InitializeComponent()
       {
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogDisplay));
          this.textBox1 = new System.Windows.Forms.ListBox();
          this.SuspendLayout();
          // 
          // textBox1
          // 
-         this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                     | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
          this.textBox1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
          this.textBox1.HorizontalScrollbar = true;
@@ -55,6 +56,7 @@ namespace AmalgamClientTray.ClientForms
          this.ClientSize = new System.Drawing.Size(692, 573);
          this.Controls.Add(this.textBox1);
          this.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.Margin = new System.Windows.Forms.Padding(2);
          this.MinimizeBox = false;
          this.MinimumSize = new System.Drawing.Size(350, 300);
