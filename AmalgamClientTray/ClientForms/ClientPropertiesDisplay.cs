@@ -53,7 +53,7 @@ namespace AmalgamClientTray.ClientForms
       }
 
 
-      [DescriptionAttribute("The number of Bytes allocated to be chunked over the Wire.\rRange 4096 <-> near 1GB."),
+      [DescriptionAttribute("The number of Bytes allocated to be chunked over the Wire.\rRange 4096 <-> near 1GB.\rWarning: during long transfers some FTP servers can log you out!"),
       DisplayName("Buffer Wire Transfer Size")
       , CategoryAttribute("Local")
       ]

@@ -748,7 +748,7 @@ namespace Starksoft.Net.Ftp
       /// 
       /// Returns an integer representing the port number used to connect to a remote server.
       /// </remarks>
-      public uint Port
+      public UInt32 Port
       {
          get { return _port; }
          set
@@ -878,7 +878,7 @@ namespace Starksoft.Net.Ftp
       /// not consume all available network bandwidth.
       /// </remarks>
       /// <seealso cref="MaxDownloadSpeed"/>
-      public uint MaxUploadSpeed
+      public UInt32 MaxUploadSpeed
       {
          get { return _maxUploadSpeed; }
          set
@@ -901,7 +901,7 @@ namespace Starksoft.Net.Ftp
       /// not consume all available network bandwidth.
       /// </remarks>
       /// <seealso cref="MaxUploadSpeed"/>
-      public uint MaxDownloadSpeed
+      public UInt32 MaxDownloadSpeed
       {
          get { return _maxDownloadSpeed; }
          set
@@ -935,7 +935,7 @@ namespace Starksoft.Net.Ftp
       /// Gets or sets the TCP buffer size used when communicating with the FTP server in bytes.
       /// </summary>
       /// <remarks>Returns an integer value representing the buffer size.  The default value is 8192.</remarks>
-      public uint TcpBufferSize
+      public UInt32 TcpBufferSize
       {
          get { return _tcpBufferSize; }
          set
@@ -955,7 +955,7 @@ namespace Starksoft.Net.Ftp
       /// </remarks>
       /// <seealso cref="TransferTimeout"/>
       /// <seealso cref="CommandTimeout"/>
-      public uint TcpTimeout
+      public UInt32 TcpTimeout
       {
          get { return _tcpTimeout; }
          set
@@ -975,7 +975,7 @@ namespace Starksoft.Net.Ftp
       /// </remarks>
       /// <seealso cref="TcpTimeout"/>
       /// <seealso cref="CommandTimeout"/>
-      public uint TransferTimeout
+      public UInt32 TransferTimeout
       {
          get { return _transferTimeout; }
          set
@@ -995,7 +995,7 @@ namespace Starksoft.Net.Ftp
       /// </remarks>
       /// <seealso cref="TcpTimeout"/>
       /// <seealso cref="TransferTimeout"/>
-      public uint CommandTimeout
+      public UInt32 CommandTimeout
       {
          get { return _commandTimeout; }
          set
@@ -1018,7 +1018,7 @@ namespace Starksoft.Net.Ftp
       /// </remarks>
       /// <seealso cref="ActivePortRangeMax"/>
       /// <seealso cref="DataTransferMode"/>
-      public uint ActivePortRangeMin
+      public UInt32 ActivePortRangeMin
       {
          get { return _activePortRangeMin; }
          set
@@ -1048,7 +1048,7 @@ namespace Starksoft.Net.Ftp
       /// </remarks>
       /// <seealso cref="ActivePortRangeMin"/>
       /// <seealso cref="DataTransferMode"/>
-      public uint ActivePortRangeMax
+      public UInt32 ActivePortRangeMax
       {
          get { return _activePortRangeMax; }
          set
@@ -1326,6 +1326,12 @@ namespace Starksoft.Net.Ftp
 
       }
 
+      /// <summary>
+      /// 
+      /// </summary>
+      /// <param name="direction"></param>
+      /// <param name="request"></param>
+      /// <param name="data"></param>
       public void TransferData(TransferDirection direction, FtpRequest request, Stream data)
       {
          TransferData(direction, request, data, 0);
@@ -1660,7 +1666,7 @@ namespace Starksoft.Net.Ftp
       /// </summary>
       /// <param name="timeout">Maximum time to wait before timing out.</param>
       /// <param name="happyResponseCodes">Server response codes to wait for.</param>
-      internal protected void WaitForHappyCodes(uint timeout, params FtpResponseCode[] happyResponseCodes)
+      internal protected void WaitForHappyCodes(UInt32 timeout, params FtpResponseCode[] happyResponseCodes)
       {
          // Need to check if the reponse has come in while the code has been wiating for the data connection closure
          foreach (FtpResponse response in _responseList.Where(response => !response.IsInformational))
@@ -1802,7 +1808,7 @@ namespace Starksoft.Net.Ftp
             Thread.Sleep(WAIT_FOR_DATA_INTERVAL);
             sleepTime += WAIT_FOR_DATA_INTERVAL;
             if (sleepTime > timeout)
-               throw new FtpCommandResponseTimeoutException("A timeout occurred while waiting for the destination to send a response.  The last reponse from the destination is '" + _response.Text + "'");
+               throw new FtpCommandResponseTimeoutException("A timeout occurred while waiting for the destination to send a response.\nThe last reponse from the destination is '" + _response.Text + "'");
          }
 
          // return next response object from the queue

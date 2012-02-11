@@ -529,7 +529,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("SetFileAttributes IN DokanProcessId[{0}]", info.ProcessId);
-            throw new NotImplementedException("WriteFile");
+            throw new NotImplementedException("SetFileAttributes");
             //string path = GetPath(dokanFilename);
             //// This uses  if (!Win32Native.SetFileAttributes(fullPathInternal, (int) fileAttributes))
             //// And can throw PathTOOLong
@@ -555,7 +555,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("SetFileTime IN DokanProcessId[{0}]", info.ProcessId);
-            throw new NotImplementedException("WriteFile");
+            throw new NotImplementedException("SetFileTimeNative");
             //using (openFilesSync.ReadLock())
             //{
             //   if (info.refFileHandleContext != 0)
@@ -631,7 +631,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("DeleteFile IN DokanProcessId[{0}]", info.ProcessId);
-            throw new NotImplementedException("WriteFile");
+            throw new NotImplementedException("DeleteFile");
             // dokanReturn = (File.Exists(GetPath(dokanFilename)) ? DokanNet.Dokan.DOKAN_SUCCESS : DokanNet.Dokan.ERROR_FILE_NOT_FOUND);
          }
          catch (Exception ex)
@@ -652,7 +652,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("DeleteDirectory IN DokanProcessId[{0}]", info.ProcessId);
-            throw new NotImplementedException("WriteFile");
+            throw new NotImplementedException("DeleteDirectory");
             //string path = GetPath(dokanFilename);
             //DirectoryInfo dirInfo = new DirectoryInfo(path);
             //if (dirInfo.Exists)
@@ -682,7 +682,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("MoveFile IN DokanProcessId[{0}]", info.ProcessId);
-            throw new NotImplementedException("WriteFile");
+            throw new NotImplementedException("MoveFile");
             //Log.Info("MoveFile replaceIfExisting [{0}] dokanFilename: [{1}] newname: [{2}]", replaceIfExisting, dokanFilename, newname);
             //if (dokanFilename == newname)   // This is some weirdness that SyncToy tries to pull !!
             //   return DokanNet.Dokan.DOKAN_SUCCESS;
@@ -806,12 +806,12 @@ namespace AmalgamClientTray.Dokan
 
       public int GetFileSecurityNative(string file, ref SECURITY_INFORMATION rawRequestedInformation, ref SECURITY_DESCRIPTOR rawSecurityDescriptor, uint rawSecurityDescriptorLength, ref uint rawSecurityDescriptorLengthNeeded, DokanFileInfo info)
       {
-         throw new NotImplementedException();
+         throw new NotImplementedException("GetFileSecurityNative");
       }
 
       public int SetFileSecurityNative(string file, ref SECURITY_INFORMATION rawSecurityInformation, ref SECURITY_DESCRIPTOR rawSecurityDescriptor, uint rawSecurityDescriptorLength, DokanFileInfo info)
       {
-         throw new NotImplementedException();
+         throw new NotImplementedException("SetFileSecurityNative");
       }
 
       #endregion
