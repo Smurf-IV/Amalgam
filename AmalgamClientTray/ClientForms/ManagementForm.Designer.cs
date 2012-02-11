@@ -44,13 +44,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
          this.propertyGrid1.Location = new System.Drawing.Point(14, 13);
          this.propertyGrid1.Name = "propertyGrid1";
-         this.propertyGrid1.Size = new System.Drawing.Size(609, 340);
+         this.propertyGrid1.Size = new System.Drawing.Size(609, 406);
          this.propertyGrid1.TabIndex = 18;
          // 
          // btnConnect
          // 
          this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.btnConnect.Location = new System.Drawing.Point(15, 364);
+         this.btnConnect.Location = new System.Drawing.Point(15, 430);
          this.btnConnect.Name = "btnConnect";
          this.btnConnect.Size = new System.Drawing.Size(101, 25);
          this.btnConnect.TabIndex = 19;
@@ -63,7 +63,7 @@
          // 
          this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnSave.Enabled = false;
-         this.btnSave.Location = new System.Drawing.Point(521, 364);
+         this.btnSave.Location = new System.Drawing.Point(521, 430);
          this.btnSave.Name = "btnSave";
          this.btnSave.Size = new System.Drawing.Size(101, 25);
          this.btnSave.TabIndex = 20;
@@ -75,7 +75,7 @@
          // btnLogView
          // 
          this.btnLogView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.btnLogView.Location = new System.Drawing.Point(152, 364);
+         this.btnLogView.Location = new System.Drawing.Point(152, 430);
          this.btnLogView.Name = "btnLogView";
          this.btnLogView.Size = new System.Drawing.Size(101, 25);
          this.btnLogView.TabIndex = 21;
@@ -88,7 +88,7 @@
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(638, 402);
+         this.ClientSize = new System.Drawing.Size(638, 468);
          this.Controls.Add(this.btnLogView);
          this.Controls.Add(this.btnSave);
          this.Controls.Add(this.btnConnect);

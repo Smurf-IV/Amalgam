@@ -29,11 +29,11 @@
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NotifyIconHandler));
          this.rightClickContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-         this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-         this.timer1 = new System.Windows.Forms.Timer(this.components);
          this.managementApp = new System.Windows.Forms.ToolStripMenuItem();
          this.repeatLastMessage = new System.Windows.Forms.ToolStripMenuItem();
+         this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
          this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
          this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
          this.rightClickContextMenu.SuspendLayout();
@@ -47,40 +47,35 @@
             this.managementApp,
             this.repeatLastMessage,
             this.toolStripSeparator1,
-            this.exitToolStripMenuItem
-            });
+            this.exitToolStripMenuItem});
          this.rightClickContextMenu.Name = "rightClickContextMenu";
-         this.rightClickContextMenu.Size = new System.Drawing.Size(223, 182);
-         // 
-         // toolStripSeparator1
-         // 
-         this.toolStripSeparator1.Name = "toolStripSeparator1";
-         this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
-         // 
-         // timer1
-         // 
-         this.timer1.Interval = 5000;
-         this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+         this.rightClickContextMenu.Size = new System.Drawing.Size(211, 100);
          // 
          // managementApp
          // 
          this.managementApp.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+         this.managementApp.Image = ((System.Drawing.Image)(resources.GetObject("managementApp.Image")));
          this.managementApp.Name = "managementApp";
-         this.managementApp.Size = new System.Drawing.Size(222, 30);
+         this.managementApp.Size = new System.Drawing.Size(210, 30);
          this.managementApp.Text = "&Management App..";
          this.managementApp.Click += new System.EventHandler(this.managementApp_Click);
          // 
          // repeatLastMessage
          // 
          this.repeatLastMessage.Name = "repeatLastMessage";
-         this.repeatLastMessage.Size = new System.Drawing.Size(222, 30);
+         this.repeatLastMessage.Size = new System.Drawing.Size(210, 30);
          this.repeatLastMessage.Text = "&Repeat Last message...";
          this.repeatLastMessage.Click += new System.EventHandler(this.repeatLastMessage_Click);
+         // 
+         // toolStripSeparator1
+         // 
+         this.toolStripSeparator1.Name = "toolStripSeparator1";
+         this.toolStripSeparator1.Size = new System.Drawing.Size(207, 6);
          // 
          // exitToolStripMenuItem
          // 
          this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-         this.exitToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
+         this.exitToolStripMenuItem.Size = new System.Drawing.Size(210, 30);
          this.exitToolStripMenuItem.Text = "&Exit";
          this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
          // 
@@ -111,6 +106,5 @@
       private System.Windows.Forms.ToolStripMenuItem managementApp;
       private System.Windows.Forms.ToolStripMenuItem repeatLastMessage;
       private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-      private System.Windows.Forms.Timer timer1;
    }
 }
