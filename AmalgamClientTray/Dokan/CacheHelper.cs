@@ -1,4 +1,24 @@
-﻿using System;
+﻿#region Copyright (C)
+// ---------------------------------------------------------------------------------------------------------------
+//  <copyright file="CacheHelper.cs" company="Smurf-IV">
+// 
+//  Copyright (C) 2010-2012 Smurf-IV
+// 
+//  This program is free software: you can redistribute it and/or modify.
+// 
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// 
+//  </copyright>
+//  <summary>
+//  Url: http://liquesce.wordpress.com/2011/06/07/c-dictionary-cache-that-has-a-timeout-on-its-values/
+//  Email: http://www.codeplex.com/site/users/view/smurfiv
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -73,6 +93,7 @@ namespace AmalgamClientTray.Dokan
 
       /// <summary>
       /// Value replacement and retrieval
+      /// Will not throw an exception if the object is NOT found
       /// </summary>
       /// <param name="key"></param>
       /// <returns></returns>
@@ -82,8 +103,8 @@ namespace AmalgamClientTray.Dokan
          {
             lock (cacheLock)
             {
-               ValueObject<TValue> value = Cache[key];
-               if (value != null)
+               ValueObject<TValue> value;
+               if (Cache.TryGetValue(key, out value))
                {
                   if (value.IsValid)
                      return value.CacheValue;
@@ -132,6 +153,7 @@ namespace AmalgamClientTray.Dokan
 
       /// <summary>
       /// Does the value exist at this key that has not timed out ?
+      /// Will not throw an exception if the object is NOT found
       /// </summary>
       /// <param name="key"></param>
       /// <param name="value"></param>
@@ -176,19 +198,41 @@ namespace AmalgamClientTray.Dokan
       /// <summary>
       /// Used to prevent an object from being removed from the cache;
       /// e.g. when a file is open
+      /// Will not throw an exception if the object is NOT found
       /// </summary>
       /// <param name="key"></param>
-      /// <param name="state"></param>
-      /// <returns></returns>
+      /// <param name="state">true to lock</param>
       public void Lock(TKey key, bool state)
       {
          lock (cacheLock)
          {
-            ValueObject<TValue> valueobj = Cache[key];
-            valueobj.Lock = state;
-            // If this is unlocking then assume that the target object will "Allowed" to be around for a while
-            if (!state)
+            ValueObject<TValue> valueobj;
+            if (Cache.TryGetValue(key, out valueobj))
+            {
+               valueobj.Lock = state;
+               // If this is unlocking then assume that the target object will "be allowed" to be around for a while
+               if (!state)
+                  valueobj.Touch(expireSeconds);
+            }
+         }
+      }
+
+      /// <summary>
+      /// Used to prevent an object from being removed from the cache;
+      /// e.g. when a file is open
+      /// Will not throw an exception if the object is NOT found
+      /// </summary>
+      /// <param name="key"></param>
+      /// <param name="state">true to lock</param>
+      public void Touch(TKey key)
+      {
+         lock (cacheLock)
+         {
+            ValueObject<TValue> valueobj;
+            if (Cache.TryGetValue(key, out valueobj))
+            {
                valueobj.Touch(expireSeconds);
+            }
          }
       }
    }
