@@ -106,7 +106,7 @@ namespace AmalgamClientTray.FTP
          lock (commandLock)
          {
             CheckConnected();
-            // ftpInstance.ChangeMode(path, (int) value);
+            ftpInstance.ChangeMode(path, (int) value);
             /*
 There is no command in the FTP protocol to do this.
 
@@ -221,7 +221,7 @@ designed to display the last-write time.
                ftpInstance.TransferData(TransferDirection.ToClient, request, memStream);
                response = ftpInstance.LastResponseList;
             }
-            catch( Exception ex )
+            catch
             {
                if ((response == null)
                   && (memStream.Position != memStream.Length)

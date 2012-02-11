@@ -1,6 +1,4 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System;
 
 
 [assembly: AssemblyTitle("Starksoft.Net.Ftp")]
@@ -18,6 +16,6 @@ using System;
 
 
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: CLSCompliant(true)]
-namespace Starksoft.Net.Ftp
-{ }
+//[assembly: CLSCompliant(true)]
+//namespace Starksoft.Net.Ftp
+//{ }

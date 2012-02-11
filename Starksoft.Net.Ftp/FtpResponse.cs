@@ -91,6 +91,9 @@ namespace Starksoft.Net.Ftp
             get { return _code; }
         }
 
+       /// <summary>
+       /// 
+       /// </summary>
        public bool IsInformational
         {
             get { return _isInformational; }
