@@ -30,6 +30,7 @@ using AmalgamClientTray.ClientForms;
 using AmalgamClientTray.FTP;
 using DokanNet;
 using NLog;
+using NLog.Config;
 using Starksoft.Net.Ftp;
 
 namespace AmalgamClientTray.Dokan
@@ -63,17 +64,28 @@ namespace AmalgamClientTray.Dokan
             if (!IsRunning)
             {
                Log.Info("Starting up");
+               SetNLogLevel(csd.ApplicationLogLevel);
+
+               string mountPoint = csd.DriveLetter;
+               mountedDriveLetter = csd.DriveLetter[0];
+               try
+               {
+                  Log.Info("DokanVersion:[{0}], DokanDriverVersion[{1}]", DokanNet.Dokan.DokanVersion(), DokanNet.Dokan.DokanDriverVersion());
+                  DokanNet.Dokan.DokanUnmount(mountedDriveLetter);
+               }
+               catch (Exception ex)
+               {
+                  Log.InfoException("Make sure it's unmounted threw:", ex);
+               }
                IsRunning = true;
 
-               // TODO: Search all usages of the DriveLetter and make sure they become MountPoint compatible
-               string mountPoint = csd.DriveLetter;
                //if (mountPoint.Length == 1)
                //   mountPoint += ":\\"; // Make this into a MountPoint for V 0.6.0
                DokanOptions options = new DokanOptions
                {
                   MountPoint = mountPoint,
-                  ThreadCount = Properties.Settings.Default.DokanThreads,
-                  DebugMode = Properties.Settings.Default.DokanDebug,
+                  ThreadCount = csd.DokanThreadCount,
+                  DebugMode = csd.DokanDebugMode,
                   //      public bool UseStdErr;
                   // UseAltStream = true, // This needs all sorts of extra API's
                   UseKeepAlive = true,  // When you set TRUE on DokanOptions->UseKeepAlive, dokan library automatically unmounts 15 seconds after user-mode file system hanged up
@@ -143,6 +155,55 @@ namespace AmalgamClientTray.Dokan
             IsRunning = false;
          }
       }
+
+      private static void SetNLogLevel(string serviceLogLevel)
+      {
+         LoggingConfiguration currentConfig = LogManager.Configuration;
+         //LogManager.DisableLogging();
+         foreach (LoggingRule rule in currentConfig.LoggingRules)
+         {
+            rule.EnableLoggingForLevel(LogLevel.Fatal);
+            rule.EnableLoggingForLevel(LogLevel.Error);
+            rule.EnableLoggingForLevel(LogLevel.Info);
+            // Turn on in order
+            switch (serviceLogLevel)
+            {
+               case "Trace":
+                  rule.EnableLoggingForLevel(LogLevel.Trace);
+                  goto case "Debug"; // Drop through
+               default:
+               case "Debug":
+                  rule.EnableLoggingForLevel(LogLevel.Debug);
+                  goto case "Warn"; // Drop through
+               case "Warn":
+                  rule.EnableLoggingForLevel(LogLevel.Warn);
+                  break;
+            }
+            // Turn off the rest
+            switch (serviceLogLevel)
+            {
+               case "Warn":
+                  rule.DisableLoggingForLevel(LogLevel.Debug);
+                  goto default; // Drop through
+               default:
+                  //case "Debug":
+                  rule.DisableLoggingForLevel(LogLevel.Trace);
+                  break;
+               case "Trace":
+                  // Prevent turning off again !
+                  break;
+            }
+         }
+         //LogManager.EnableLogging();
+         //LogManager.Configuration = null;
+         LogManager.ReconfigExistingLoggers();
+         //LogManager.Configuration = currentConfig;
+         Log.Warn("Test @ [{0}]", serviceLogLevel);
+         Log.Debug("Test @ [{0}]", serviceLogLevel);
+         Log.Trace("Test @ [{0}]", serviceLogLevel);
+      }
+
+
       public void Stop()
       {
          if (IsRunning)

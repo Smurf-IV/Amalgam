@@ -25,6 +25,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using Starksoft.Net.Ftp;
 
 namespace AmalgamClientTray.ClientForms
@@ -59,6 +60,12 @@ namespace AmalgamClientTray.ClientForms
       public UInt32 CacheFileMaxSize = 8192;
 
       public UInt32 CacheInfoExpireSeconds = 300;
+
+      public List<string> FileNamesToIgnore = new List<string> { "AutoRun.inf", "Desktop.ini", "desktop.ini", "MAPI32.DLL" };
+
+      public bool DokanDebugMode = false;
+      public ushort DokanThreadCount = 5;
+      public string ApplicationLogLevel = "Warn"; // NLog's LogLevel.Debug.ToString()
 
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
