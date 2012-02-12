@@ -27,7 +27,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using AmalgamClientTray.ClientForms;
 using Starksoft.Net.Ftp;
 
@@ -39,7 +38,6 @@ namespace AmalgamClientTray.FTP
       private readonly uint rawCreationDisposition; // http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
       private FileFTPInfo fsi { get; set; }
       private bool completedOpen;
-      private Exception exceptionThrown;
       protected FtpClientExt ftpFileClient;
 
       protected FileStreamFTP(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo)
@@ -47,23 +45,21 @@ namespace AmalgamClientTray.FTP
          this.csd = csd;
          this.rawCreationDisposition = rawCreationDisposition;
          fsi = foundFileInfo;
-         // Queue the main work as a thread pool task as we want this method to finish promptly.
-         ThreadPool.QueueUserWorkItem(ConnectFTP);
-         fsi.Open((FileMode)rawCreationDisposition);
       }
 
 
-      private void ConnectFTP(object state)
+      private void ConnectFTP()
       {
          try
          {
             ftpFileClient = new FtpClientExt(new FtpClient(csd.TargetMachineName, csd.Port, csd.SecurityProtocol), csd.BufferWireTransferSize);
             ftpFileClient.Open(csd.UserName, csd.Password);
+            fsi.Open((FileMode)rawCreationDisposition);
             completedOpen = true;
          }
          catch (Exception ex)
          {
-            exceptionThrown = ex;
+            throw;
          }
       }
 
@@ -80,26 +76,21 @@ namespace AmalgamClientTray.FTP
          get { return fsi.FullName; }
       }
 
-      public string Name
-      {
-         get { return fsi.Name; }
-      }
-
       private void CheckOpened()
       {
          if (!completedOpen)
          {
-            if (exceptionThrown != null)
-               throw exceptionThrown;
-            Thread.Sleep(1000);
-            CheckOpened();
+            ConnectFTP();
          }
       }
 
       public void Close()
       {
          if (ftpFileClient != null)
+         {
+            completedOpen = false;
             ftpFileClient.Close();
+         }
       }
 
       virtual public void Seek(long rawOffset, SeekOrigin begin)

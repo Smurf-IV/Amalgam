@@ -27,16 +27,11 @@
 using System;
 using System.Windows.Forms;
 using AmalgamClientTray.ClientForms;
-using NLog;
 
 namespace AmalgamClientTray.TrayHandlers
 {
    public partial class NotifyIconHandler : UserControl
    {
-      private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-      //private LiquesceSvcState lastState = LiquesceSvcState.Unknown;
-      //private readonly StateChangeHandler stateChangeHandler = new StateChangeHandler();
-
       public NotifyIconHandler()
       {
          InitializeComponent();
@@ -47,10 +42,6 @@ namespace AmalgamClientTray.TrayHandlers
             Properties.Settings.Default.UpdateRequired = false;
             Properties.Settings.Default.Save();
          }
-         notifyIcon1.Text = "AmalgamClient State Unknown";
-         notifyIcon1.BalloonTipIcon = ToolTipIcon.Warning;
-         // Use last state to prevent balloon tip showing on start !
-         //SetState(lastState, "Application tray is starting");
          notifyIcon1.Icon = Properties.Resources.Amalgam;
       }
 
@@ -68,11 +59,6 @@ namespace AmalgamClientTray.TrayHandlers
       private void notifyIcon1_DoubleClick(object sender, EventArgs e)
       {
          managementApp_Click(sender, e);
-      }
-
-      private void repeatLastMessage_Click(object sender, EventArgs e)
-      {
-         notifyIcon1.ShowBalloonTip(5000);
       }
 
    }

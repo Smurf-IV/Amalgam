@@ -49,6 +49,7 @@ namespace AmalgamClientTray.ClientForms
             VolumeLabel = csd.VolumeLabel;
             BufferWireTransferSize = csd.BufferWireTransferSize;
             CacheFileMaxSize = csd.CacheFileMaxSize;
+            CacheInfoExpireSeconds = csd.CacheInfoExpireSeconds;
          }
       }
 
@@ -85,6 +86,26 @@ namespace AmalgamClientTray.ClientForms
             if (value >= 1 << 12
                 && value <= 1 << 25)
                cacheFileMaxSize = value;
+         }
+      }
+
+      
+      [DescriptionAttribute("The number of secounds the file information will be stored before it is removed.\rRange 1 <-> near 12 hours."),
+      DisplayName("Cache Info Expire Seconds")
+      , CategoryAttribute("Local")
+      ]
+      public UInt32 CacheInfoExpireSeconds
+      {
+         get
+         {
+            return cacheInfoExpireSeconds;
+         }
+         set
+         {
+            if ( (value >= 1)
+                && (value <= 12 * 60 *60)
+               )
+               cacheInfoExpireSeconds = value;
          }
       }
 
@@ -142,6 +163,7 @@ namespace AmalgamClientTray.ClientForms
       
       private UInt32 bufferWireTransferSize;
       private UInt32 cacheFileMaxSize;
+      private UInt32 cacheInfoExpireSeconds;
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
 

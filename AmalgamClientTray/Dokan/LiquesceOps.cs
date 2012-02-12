@@ -55,12 +55,24 @@ namespace AmalgamClientTray.Dokan
       // dictionary of all open files
       private readonly Dictionary<UInt64, OptimizedFTPFileReadHandler> openFiles = new Dictionary<UInt64, OptimizedFTPFileReadHandler>();
 
-      private readonly CacheHelper<string, FileSystemFTPInfo> cachedFileSystemFTPInfo = new CacheHelper<string, FileSystemFTPInfo>(32);
+      private class CachedData
+      {
+         public FileSystemFTPInfo Fsi { get; set; }
+         public OptimizedFTPFileReadHandler Ofh { get; set; }
+
+         public CachedData(FileSystemFTPInfo fsi)
+         {
+            Fsi = fsi;
+         }
+      }
+
+      private readonly CacheHelper<string, CachedData> cachedFileSystemFTPInfo;
 
       public LiquesceOps(ClientShareDetail csd, FtpClientExt ftpCmdInstance)
       {
          this.csd = csd;
          this.ftpCmdInstance = ftpCmdInstance;
+         cachedFileSystemFTPInfo = new CacheHelper<string, CachedData>(csd.CacheInfoExpireSeconds);
       }
 
       #region IDokanOperations Implementation
@@ -87,25 +99,24 @@ namespace AmalgamClientTray.Dokan
                dokanFilename, rawAccessMode, rawShare, rawCreationDisposition, rawFlagsAndAttributes, info.ProcessId);
             string path = GetPath(dokanFilename);
 
-            FileSystemFTPInfo foundFileInfo;
+            CachedData foundFileInfo;
             if (!cachedFileSystemFTPInfo.TryGetValue(path, out foundFileInfo))
             {
-               FileFTPInfo fileInfo = new FileFTPInfo(ftpCmdInstance, path);
-               if (!fileInfo.Exists)
+               foundFileInfo = new CachedData(new FileFTPInfo(ftpCmdInstance, path) );
+               if (!foundFileInfo.Fsi.Exists)
                {
-                  foundFileInfo = new DirectoryFTPInfo(ftpCmdInstance, path);
-                  if (foundFileInfo.Exists)
+                  foundFileInfo.Fsi = new DirectoryFTPInfo(ftpCmdInstance, path);
+                  if (foundFileInfo.Fsi.Exists)
                   {
                      actualErrorCode = OpenDirectory(dokanFilename, info);
                      return actualErrorCode;
                   }
                }
                // If the directory existed it would have returned
-               foundFileInfo = fileInfo;
                cachedFileSystemFTPInfo[path] = foundFileInfo;
             }
-            bool fileExists = foundFileInfo.Exists;
-            if (foundFileInfo is DirectoryFTPInfo)
+            bool fileExists = foundFileInfo.Fsi.Exists;
+            if (foundFileInfo.Fsi is DirectoryFTPInfo)
             {
                if (fileExists)
                {
@@ -140,9 +151,13 @@ namespace AmalgamClientTray.Dokan
                   break;
             }
 
-            // Increment now in case there is an exception later
-            info.refFileHandleContext = ++openFilesLastKey; // never be Zero !
-            openFiles.Add(openFilesLastKey, new OptimizedFTPFileReadHandler(csd, rawCreationDisposition, foundFileInfo as FileFTPInfo));
+            OptimizedFTPFileReadHandler Ofh = new OptimizedFTPFileReadHandler(csd, rawCreationDisposition, foundFileInfo.Fsi as FileFTPInfo, foundFileInfo.Ofh);
+            
+            if (foundFileInfo.Ofh == null)
+               foundFileInfo.Ofh = Ofh;
+            using (openFilesSync.WriteLock())
+               openFiles.Add(++openFilesLastKey, Ofh);
+            info.refFileHandleContext = openFilesLastKey;
          }
          catch (Exception ex)
          {
@@ -168,13 +183,13 @@ namespace AmalgamClientTray.Dokan
          {
             Log.Trace("OpenDirectory IN DokanProcessId[{0}]", info.ProcessId);
             string path = GetPath(dokanFilename);
-            FileSystemFTPInfo foundDirInfo;
+            CachedData foundDirInfo;
             if (!cachedFileSystemFTPInfo.TryGetValue(path, out foundDirInfo))
             {
-               foundDirInfo = new DirectoryFTPInfo(ftpCmdInstance, path);
+               foundDirInfo = new CachedData( new DirectoryFTPInfo(ftpCmdInstance, path));
                cachedFileSystemFTPInfo[path] = foundDirInfo;
             }
-            if (foundDirInfo.Exists)
+            if (foundDirInfo.Fsi.Exists)
             {
                info.IsDirectory = true;
                dokanError = DokanNet.Dokan.DOKAN_SUCCESS;
@@ -198,15 +213,15 @@ namespace AmalgamClientTray.Dokan
          {
             Log.Trace("CreateDirectory IN DokanProcessId[{0}]", info.ProcessId);
             string path = GetPath(dokanFilename);
-            FileSystemFTPInfo foundDirInfo;
+            CachedData foundDirInfo;
             if (!cachedFileSystemFTPInfo.TryGetValue(path, out foundDirInfo))
             {
-               foundDirInfo = new DirectoryFTPInfo(ftpCmdInstance, path);
+               foundDirInfo = new CachedData( new DirectoryFTPInfo(ftpCmdInstance, path));
                cachedFileSystemFTPInfo[path] = foundDirInfo;
             }
-            if (!foundDirInfo.Exists)
+            if (!foundDirInfo.Fsi.Exists)
             {
-               ((DirectoryFTPInfo)foundDirInfo).Create();
+               ((DirectoryFTPInfo)foundDirInfo.Fsi).Create();
                dokanError = DokanNet.Dokan.DOKAN_SUCCESS;
             }
             else
@@ -248,19 +263,20 @@ namespace AmalgamClientTray.Dokan
          {
             Log.Trace("Cleanup IN DokanProcessId[{0}] with dokanFilename [{1}]", info.ProcessId, dokanFilename);
             CloseAndRemove(info);
-               string path = GetPath(dokanFilename);
-               FileSystemFTPInfo foundInfo;
-               if (cachedFileSystemFTPInfo.TryGetValue(path, out foundInfo))
+            string path = GetPath(dokanFilename);
+            CachedData foundInfo;
+            if (cachedFileSystemFTPInfo.TryGetValue(path, out foundInfo))
+            {
+               if (info.DeleteOnClose)
                {
-                  if (info.DeleteOnClose)
-                  {
-                     cachedFileSystemFTPInfo.Remove(path);
-                     foundInfo.Delete();
-                  }
-                  else
-                  {
-                     cachedFileSystemFTPInfo.Lock(path, false);
-                  }
+                  cachedFileSystemFTPInfo.Remove(path);
+                  if (foundInfo.Fsi != null) 
+                     foundInfo.Fsi.Delete();
+               }
+               else
+               {
+                  cachedFileSystemFTPInfo.Lock(path, false);
+               }
             }
          }
          catch (Exception ex)
@@ -311,7 +327,7 @@ namespace AmalgamClientTray.Dokan
                   // Increment now in case there is an exception later
                   info.refFileHandleContext = ++openFilesLastKey; // never be Zero !
                   openFiles.Add(openFilesLastKey,
-                                new OptimizedFTPFileReadHandler(csd, (uint)FileMode.Open, new FileFTPInfo(ftpCmdInstance, path))
+                                new OptimizedFTPFileReadHandler(csd, (uint)FileMode.Open, new FileFTPInfo(ftpCmdInstance, path), null)
                                 );
                   closeOpenedContext = true;
                }
@@ -427,7 +443,7 @@ namespace AmalgamClientTray.Dokan
             Log.Trace("GetFileInformation IN DokanProcessId[{0}]", info.ProcessId);
             string path = GetPath(dokanFilename);
 
-            FileSystemFTPInfo fsi;
+            CachedData fsi;
             if (!cachedFileSystemFTPInfo.TryGetValue(path, out fsi))
             {
                FileFTPInfo foundFileInfo = new FileFTPInfo(ftpCmdInstance, path);
@@ -438,21 +454,22 @@ namespace AmalgamClientTray.Dokan
                   if (foundDirInfo.Exists)
                   {
                      OpenDirectory(dokanFilename, info);
-                     fsi = foundDirInfo;
+                     fsi.Fsi = foundDirInfo;
                   }
                   else
                   {
-                     cachedFileSystemFTPInfo[path] = foundFileInfo;
+                     cachedFileSystemFTPInfo[path] = new CachedData(foundFileInfo);
                   }
                }
                else
-                  fsi = foundFileInfo;
+                  fsi.Fsi = foundFileInfo;
             }
             if ((fsi != null)
-               && fsi.Exists
+               && (fsi.Fsi != null)
+               && (fsi.Fsi.Exists)
                )
             {
-               fileinfo = ConvertToDokan(fsi, info.IsDirectory);
+               fileinfo = ConvertToDokan(fsi.Fsi, info.IsDirectory);
                dokanReturn = DokanNet.Dokan.DOKAN_SUCCESS;
             }
 
@@ -784,6 +801,7 @@ namespace AmalgamClientTray.Dokan
          using (openFilesSync.WriteLock())
          {
             if (openFiles != null)
+            {
                foreach (OptimizedFTPFileReadHandler obj2 in openFiles.Values)
                {
                   try
@@ -798,7 +816,8 @@ namespace AmalgamClientTray.Dokan
                      Log.InfoException("Unmount closing files threw: ", ex);
                   }
                }
-            openFiles.Clear();
+               openFiles.Clear();
+            }
          }
          Log.Trace("Unmount out");
          return DokanNet.Dokan.DOKAN_SUCCESS;
@@ -820,15 +839,14 @@ namespace AmalgamClientTray.Dokan
       private void AddToUniqueLookup(FileSystemFTPInfo info2, List<FileInformation> files)
       {
          bool isDirectoy = (info2.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
-         cachedFileSystemFTPInfo[info2.FullName] = info2;
+         if ( cachedFileSystemFTPInfo[info2.FullName] == null )
+            cachedFileSystemFTPInfo[info2.FullName] = new CachedData(info2);
 
          FileInformation item = ConvertToDokan(info2, isDirectoy);
-         if (Log.IsTraceEnabled)
-            item.Attributes |= FileAttributes.Offline;
          files.Add(item);
       }
 
-      private FileInformation ConvertToDokan(FileSystemFTPInfo info2, bool isDirectoy)
+      private static FileInformation ConvertToDokan(FileSystemFTPInfo info2, bool isDirectoy)
       {
          // The NTFS file system records times on disk in UTC
          // see http://msdn.microsoft.com/en-us/library/ms724290%28v=vs.85%29.aspx
@@ -860,7 +878,7 @@ namespace AmalgamClientTray.Dokan
                   {
                      openFiles.Remove(info.refFileHandleContext);
                   }
-                  Log.Trace("CloseAndRemove [{0}] info.refFileHandleContext[{1}]", fileStream.Name, info.refFileHandleContext);
+                  Log.Trace("CloseAndRemove [{0}] info.refFileHandleContext[{1}]", fileStream.FullName, info.refFileHandleContext);
                   fileStream.Close();
                }
                else
