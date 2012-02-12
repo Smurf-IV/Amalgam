@@ -175,6 +175,10 @@ namespace AmalgamClientTray.ClientForms
             csd.SharesToRestore[0].BufferWireTransferSize = cpd.BufferWireTransferSize;
             csd.SharesToRestore[0].CacheFileMaxSize = cpd.CacheFileMaxSize;
             csd.SharesToRestore[0].CacheInfoExpireSeconds = cpd.CacheInfoExpireSeconds;
+            csd.SharesToRestore[0].FileNamesToIgnore = cpd.FileNamesToIgnore;
+            csd.SharesToRestore[0].DokanThreadCount = cpd.DokanThreadCount;
+            csd.SharesToRestore[0].DokanDebugMode = cpd.DokanDebugMode;
+            csd.SharesToRestore[0].ApplicationLogLevel = cpd.ApplicationLogLevel;
 
             Log.Info("Write the values to the Service config file");
             WriteOutConfigDetails(csd);

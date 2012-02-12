@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -97,6 +98,10 @@ namespace AmalgamClientTray.Dokan
             Log.Debug(
                "CreateFile IN dokanFilename [{0}], rawAccessMode[{1}], rawShare[{2}], rawCreationDisposition[{3}], rawFlagsAndAttributes[{4}], ProcessId[{5}]",
                dokanFilename, rawAccessMode, rawShare, rawCreationDisposition, rawFlagsAndAttributes, info.ProcessId);
+            if (csd.FileNamesToIgnore.Any(toIgnore => dokanFilename.EndsWith(toIgnore)))
+            {
+               return actualErrorCode = DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
+            }
             string path = GetPath(dokanFilename);
 
             CachedData foundFileInfo;
@@ -502,7 +507,7 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Debug("FindFiles IN [{0}], pattern[{1}]", dokanFilename, pattern);
-            List<FileInformation> uniqueFiles = new List<FileInformation>();
+            Dictionary<string, FileInformation> uniqueFiles = new Dictionary<string, FileInformation>();
             DirectoryFTPInfo dirInfo = new DirectoryFTPInfo(ftpCmdInstance, GetPath(dokanFilename));
             if (dirInfo.Exists)
             {
@@ -512,9 +517,14 @@ namespace AmalgamClientTray.Dokan
                   AddToUniqueLookup(info2, uniqueFiles);
                }
             }
-
-            files = new FileInformation[uniqueFiles.Count];
-            uniqueFiles.CopyTo(files, 0);
+            // If these are not found then the loop speed of a "failed remove" and "not finding" is the same !
+            uniqueFiles.Remove(@"System Volume Information");
+            uniqueFiles.Remove(@"$RECYCLE.BIN");
+            uniqueFiles.Remove(@"Recycle Bin");
+            foreach (string toIgnore in csd.FileNamesToIgnore)
+               uniqueFiles.Remove(toIgnore);
+            files = new FileInformation[uniqueFiles.Values.Count];
+            uniqueFiles.Values.CopyTo(files, 0);
          }
          catch (Exception ex)
          {
@@ -836,14 +846,14 @@ namespace AmalgamClientTray.Dokan
       #endregion
 
 
-      private void AddToUniqueLookup(FileSystemFTPInfo info2, List<FileInformation> files)
+      private void AddToUniqueLookup(FileSystemFTPInfo info2, Dictionary<string, FileInformation> files)
       {
          bool isDirectoy = (info2.Attributes & FileAttributes.Directory) == FileAttributes.Directory;
          if ( cachedFileSystemFTPInfo[info2.FullName] == null )
             cachedFileSystemFTPInfo[info2.FullName] = new CachedData(info2);
 
          FileInformation item = ConvertToDokan(info2, isDirectoy);
-         files.Add(item);
+         files.Add(item.FileName, item);
       }
 
       private static FileInformation ConvertToDokan(FileSystemFTPInfo info2, bool isDirectoy)
