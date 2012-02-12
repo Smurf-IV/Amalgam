@@ -35,23 +35,36 @@ namespace AmalgamClientTray.FTP
       private FTPTempFile ftpReadBuffer;
       private long lastRawOffset { get; set; }
 
-      public OptimizedFTPFileReadHandler(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo)
+      public OptimizedFTPFileReadHandler(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo, OptimizedFTPFileReadHandler cachedReadBuffer)
          : base(csd, rawCreationDisposition, foundFileInfo)
       {
+         if ((cachedReadBuffer != null)
+            && (cachedReadBuffer.ftpReadBuffer != null )
+            )
+         {
+            ftpReadBuffer = new FTPTempFile(true);
+            cachedReadBuffer.ftpReadBuffer.Position = 0;
+            cachedReadBuffer.ftpReadBuffer.IO.CopyTo(ftpReadBuffer.IO);
+         }
       }
 
       void CheckAndReadIntoTemp()
       {
-         if (ftpReadBuffer == null)
+         long readLength = Length;
+         if (Length > csd.CacheFileMaxSize)
+            readLength = csd.CacheFileMaxSize;
+         if ((readLength > 0)
+            &&(ftpReadBuffer == null)
+            )
          {
             // Set to true to allow windows caching to take place
             ftpReadBuffer = new FTPTempFile(true);
          }
-         long readLength = Length;
-         if (Length > csd.CacheFileMaxSize)
-            readLength = csd.CacheFileMaxSize;
+         // Now check to see if we have read enough
          if (readLength > ftpReadBuffer.IO.Length)
+         {
             FillInternalTempFile(readLength);
+         }
       }
 
       private void FillInternalTempFile(long readLength)

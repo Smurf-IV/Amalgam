@@ -58,6 +58,8 @@ namespace AmalgamClientTray.ClientForms
 
       public UInt32 CacheFileMaxSize = 8192;
 
+      public UInt32 CacheInfoExpireSeconds = 300;
+
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
    }

@@ -41,15 +41,15 @@ namespace AmalgamClientTray.Dokan
    {
       #region private fields
       private readonly bool useAPICallToRelease;
-      private readonly object cacheLock = new object();
+      private readonly ReaderWriterLockSlim cacheSync = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
       private class ValueObject<TValueObj>
       {
-         private DateTimeOffset Created;
+         private DateTimeOffset becomesInvalidAfterTimeOffset;
          public readonly TValueObj CacheValue;
 
          public ValueObject(uint expireSeconds, TValueObj value)
          {
-            Created = new DateTimeOffset(DateTime.Now).AddSeconds(expireSeconds);
+            becomesInvalidAfterTimeOffset = new DateTimeOffset(DateTime.UtcNow).AddSeconds(expireSeconds);
             CacheValue = value;
          }
 
@@ -58,14 +58,14 @@ namespace AmalgamClientTray.Dokan
             get
             {
                return (Lock
-                  || (Created > DateTime.Now)
+                  || (becomesInvalidAfterTimeOffset > DateTime.UtcNow)
                   );
             }
          }
 
          public void Touch(uint expireSeconds)
          {
-            Created = new DateTimeOffset(DateTime.Now).AddSeconds(expireSeconds);
+            becomesInvalidAfterTimeOffset = new DateTimeOffset(DateTime.UtcNow).AddSeconds(expireSeconds);
          }
 
          public bool Lock { private get; set; }
@@ -96,12 +96,12 @@ namespace AmalgamClientTray.Dokan
       /// Will not throw an exception if the object is NOT found
       /// </summary>
       /// <param name="key"></param>
-      /// <returns></returns>
+      /// <returns>return default(TValue) if not found</returns>
       public TValue this[TKey key]
       {
          get
          {
-            lock (cacheLock)
+            using (cacheSync.UpgradableReadLock())
             {
                ValueObject<TValue> value;
                if (Cache.TryGetValue(key, out value))
@@ -116,13 +116,11 @@ namespace AmalgamClientTray.Dokan
                   }
                }
             }
-            throw new KeyNotFoundException();
-
-            // return default(TValue);
+            return default(TValue);
          }
          set
          {
-            lock (cacheLock)
+            using ( cacheSync.WriteLock() )
             {
                Cache[key] = new ValueObject<TValue>(expireSeconds, value);
             }
@@ -138,7 +136,7 @@ namespace AmalgamClientTray.Dokan
       /// <param name="state">set to null</param>
       public void CheckStaleness(object state)
       {
-         lock (cacheLock)
+         using ( cacheSync.WriteLock() )
          {
             try
             {
@@ -160,7 +158,7 @@ namespace AmalgamClientTray.Dokan
       /// <returns></returns>
       public bool TryGetValue(TKey key, out TValue value)
       {
-         lock (cacheLock)
+         using (cacheSync.UpgradableReadLock())
          {
             ValueObject<TValue> valueobj;
             if (Cache.TryGetValue(key, out valueobj))
@@ -189,7 +187,7 @@ namespace AmalgamClientTray.Dokan
       /// <param name="key"></param>
       public void Remove(TKey key)
       {
-         lock (cacheLock)
+         using (cacheSync.WriteLock())
          {
             Cache.Remove(key);
          }
@@ -204,7 +202,7 @@ namespace AmalgamClientTray.Dokan
       /// <param name="state">true to lock</param>
       public void Lock(TKey key, bool state)
       {
-         lock (cacheLock)
+         using (cacheSync.ReadLock())
          {
             ValueObject<TValue> valueobj;
             if (Cache.TryGetValue(key, out valueobj))
@@ -226,7 +224,7 @@ namespace AmalgamClientTray.Dokan
       /// <param name="state">true to lock</param>
       public void Touch(TKey key)
       {
-         lock (cacheLock)
+         using (cacheSync.ReadLock())
          {
             ValueObject<TValue> valueobj;
             if (Cache.TryGetValue(key, out valueobj))
