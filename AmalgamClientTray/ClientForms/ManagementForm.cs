@@ -179,6 +179,7 @@ namespace AmalgamClientTray.ClientForms
             csd.SharesToRestore[0].DokanThreadCount = cpd.DokanThreadCount;
             csd.SharesToRestore[0].DokanDebugMode = cpd.DokanDebugMode;
             csd.SharesToRestore[0].ApplicationLogLevel = cpd.ApplicationLogLevel;
+            csd.SharesToRestore[0].TargetIsReadonly = cpd.TargetIsReadonly;
 
             Log.Info("Write the values to the Service config file");
             WriteOutConfigDetails(csd);

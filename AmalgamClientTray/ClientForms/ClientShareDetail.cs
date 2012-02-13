@@ -67,6 +67,8 @@ namespace AmalgamClientTray.ClientForms
       public ushort DokanThreadCount = 5;
       public string ApplicationLogLevel = "Warn"; // NLog's LogLevel.Debug.ToString()
 
+      public bool TargetIsReadonly = false;
+
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
    }

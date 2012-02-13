@@ -132,6 +132,9 @@ namespace AmalgamClientTray.Dokan
                   actualErrorCode = DokanNet.Dokan.ERROR_PATH_NOT_FOUND;
                return actualErrorCode;
             }
+            if (!fileExists && csd.TargetIsReadonly)
+               return actualErrorCode = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             // Stop using exceptions to throw ERROR_FILE_NOT_FOUND
             // http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
             switch (rawCreationDisposition)
@@ -217,6 +220,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("CreateDirectory IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return dokanError = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             string path = GetPath(dokanFilename);
             CachedData foundDirInfo;
             if (!cachedFileSystemFTPInfo.TryGetValue(path, out foundDirInfo))
@@ -274,6 +280,8 @@ namespace AmalgamClientTray.Dokan
             {
                if (info.DeleteOnClose)
                {
+                  if (csd.TargetIsReadonly)
+                     return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
                   cachedFileSystemFTPInfo.Remove(path);
                   if (foundInfo.Fsi != null) 
                      foundInfo.Fsi.Delete();
@@ -390,6 +398,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("WriteFile IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return errorCode = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             using (openFilesSync.ReadLock())
             {
                FileStreamFTP fileStream = openFiles[info.refFileHandleContext];
@@ -474,7 +485,7 @@ namespace AmalgamClientTray.Dokan
                && (fsi.Fsi.Exists)
                )
             {
-               fileinfo = ConvertToDokan(fsi.Fsi, info.IsDirectory);
+               fileinfo = ConvertToDokan(fsi.Fsi, info.IsDirectory, csd.TargetIsReadonly);
                dokanReturn = DokanNet.Dokan.DOKAN_SUCCESS;
             }
 
@@ -556,6 +567,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("SetFileAttributes IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             throw new NotImplementedException("SetFileAttributes");
             //string path = GetPath(dokanFilename);
             //// This uses  if (!Win32Native.SetFileAttributes(fullPathInternal, (int) fileAttributes))
@@ -582,6 +596,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("SetFileTime IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             throw new NotImplementedException("SetFileTimeNative");
             //using (openFilesSync.ReadLock())
             //{
@@ -658,6 +675,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("DeleteFile IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return dokanReturn = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             throw new NotImplementedException("DeleteFile");
             // dokanReturn = (File.Exists(GetPath(dokanFilename)) ? DokanNet.Dokan.DOKAN_SUCCESS : DokanNet.Dokan.ERROR_FILE_NOT_FOUND);
          }
@@ -679,6 +699,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("DeleteDirectory IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return dokanReturn = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             throw new NotImplementedException("DeleteDirectory");
             //string path = GetPath(dokanFilename);
             //DirectoryInfo dirInfo = new DirectoryInfo(path);
@@ -709,6 +732,9 @@ namespace AmalgamClientTray.Dokan
          try
          {
             Log.Trace("MoveFile IN DokanProcessId[{0}]", info.ProcessId);
+            if (csd.TargetIsReadonly)
+               return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
             throw new NotImplementedException("MoveFile");
             //Log.Info("MoveFile replaceIfExisting [{0}] dokanFilename: [{1}] newname: [{2}]", replaceIfExisting, dokanFilename, newname);
             //if (dokanFilename == newname)   // This is some weirdness that SyncToy tries to pull !!
@@ -763,12 +789,18 @@ namespace AmalgamClientTray.Dokan
       public int SetEndOfFile(string dokanFilename, long length, DokanFileInfo info)
       {
          Log.Trace("SetEndOfFile IN DokanProcessId[{0}]", info.ProcessId);
+         if (csd.TargetIsReadonly)
+            return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
          return DokanNet.Dokan.DOKAN_SUCCESS;
       }
 
       public int SetAllocationSize(string dokanFilename, long length, DokanFileInfo info)
       {
          Log.Trace("SetAllocationSize IN DokanProcessId[{0}]", info.ProcessId);
+         if (csd.TargetIsReadonly)
+            return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+
          return DokanNet.Dokan.DOKAN_SUCCESS;
       }
 
@@ -852,19 +884,24 @@ namespace AmalgamClientTray.Dokan
          if ( cachedFileSystemFTPInfo[info2.FullName] == null )
             cachedFileSystemFTPInfo[info2.FullName] = new CachedData(info2);
 
-         FileInformation item = ConvertToDokan(info2, isDirectoy);
+         FileInformation item = ConvertToDokan(info2, isDirectoy, csd.TargetIsReadonly);
          files.Add(item.FileName, item);
       }
 
-      private static FileInformation ConvertToDokan(FileSystemFTPInfo info2, bool isDirectoy)
+      private static FileInformation ConvertToDokan(FileSystemFTPInfo info2, bool isDirectoy, bool targetIsReadonly)
       {
          // The NTFS file system records times on disk in UTC
          // see http://msdn.microsoft.com/en-us/library/ms724290%28v=vs.85%29.aspx
+         FileAttributes attributes = info2.Attributes | FileAttributes.NotContentIndexed | ((Log.IsTraceEnabled) ? FileAttributes.Offline : 0);
+         if ( isDirectoy )
+            attributes |= FileAttributes.Directory;
+         if ( targetIsReadonly )
+            attributes |= FileAttributes.ReadOnly;
          return new FileInformation
                    {
                       // Prevent expensive time spent allowing indexing == FileAttributes.NotContentIndexed
                       // Prevent the system from timing out due to slow access through the driver == FileAttributes.Offline
-                      Attributes = info2.Attributes | FileAttributes.NotContentIndexed | ((Log.IsTraceEnabled) ? FileAttributes.Offline : 0),
+                      Attributes = attributes,
                       CreationTime = info2.CreationTimeUtc,
                       LastAccessTime = info2.LastWriteTimeUtc, // Not supported by FTP
                       LastWriteTime = info2.LastWriteTimeUtc,

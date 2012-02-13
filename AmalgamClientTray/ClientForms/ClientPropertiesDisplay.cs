@@ -57,7 +57,7 @@ namespace AmalgamClientTray.ClientForms
             DokanThreadCount = csd.DokanThreadCount;
             DokanDebugMode = csd.DokanDebugMode;
             ApplicationLogLevel = csd.ApplicationLogLevel;
-
+            TargetIsReadonly = csd.TargetIsReadonly;
          }
       }
 
@@ -178,7 +178,11 @@ namespace AmalgamClientTray.ClientForms
       ]
       public List<String> FileNamesToIgnore { get; set; }
 
-
+      [DescriptionAttribute("Enforces readonly attributes to all files and directories returned from the target.\rWill prevent writing to the target as well.")
+      , DisplayName("Target Is Readonly")
+      , CategoryAttribute("\tRemote Machine")
+      ]
+      public bool TargetIsReadonly { get; set; }
 
       [DescriptionAttribute("Turn Dokan Debug information on, to all it to be captured in an appropriate app.")
       , DisplayName("Dokan Debug Mode")
