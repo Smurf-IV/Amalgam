@@ -36,6 +36,7 @@ namespace DokanNet
       public const int ERROR_DIR_NOT_EMPTY = -145; // MessageText: The directory is not empty.
       public const int ERROR_ALREADY_EXISTS = -183;// MessageText: Cannot create a file when that file already exists.
       public const int ERROR_EXCEPTION_IN_SERVICE = -1064;//  An exception occurred in the service when handling thecontrol request.
+      public const int ERROR_FILE_READ_ONLY = 6009;      // The specified file is read only.
 
       #endregion
 

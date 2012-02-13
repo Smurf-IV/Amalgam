@@ -97,18 +97,7 @@ namespace AmalgamClientTray.Dokan
                ftpInstance.Open(csd.UserName, csd.Password);
 
                dokanOperations = new LiquesceOps(csd, ftpInstance);
-               mountedDriveLetter = csd.DriveLetter[0];
 
-
-               try
-               {
-                  Log.Info("DokanVersion:[{0}], DokanDriverVersion[{1}]", DokanNet.Dokan.DokanVersion(), DokanNet.Dokan.DokanDriverVersion());
-                  DokanNet.Dokan.DokanUnmount(mountedDriveLetter);
-               }
-               catch (Exception ex)
-               {
-                  Log.InfoException("Make sure it's unmounted threw:", ex);
-               }
                int retVal = DokanNet.Dokan.DokanMain(options, dokanOperations);
                Log.Warn("Dokan.DokanMain has exited");
                IsRunning = false;
