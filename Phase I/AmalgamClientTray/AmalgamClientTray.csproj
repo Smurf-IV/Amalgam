@@ -162,11 +162,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Starksoft.Net.Ftp\Starksoft.Net.Ftp.csproj">
+    <ProjectReference Include="..\..\Starksoft.Net.Ftp\Starksoft.Net.Ftp.csproj">
       <Project>{5F228FCD-54F1-491D-93CE-3D768655FADC}</Project>
       <Name>Starksoft.Net.Ftp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ThirdParty\DokanNet\DokanNet.csproj">
+    <ProjectReference Include="..\..\ThirdParty\DokanNet\DokanNet.csproj">
       <Project>{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}</Project>
       <Name>DokanNet</Name>
     </ProjectReference>
