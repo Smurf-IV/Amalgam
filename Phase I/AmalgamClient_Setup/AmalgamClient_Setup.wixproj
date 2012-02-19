@@ -25,13 +25,6 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Banner.bmp" />
-    <Content Include="GPLv2.rtf" />
-  </ItemGroup>
-  <ItemGroup>
     <WixExtension Include="WixUtilExtension">
       <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
       <Name>WixUtilExtension</Name>
@@ -44,6 +37,19 @@
       <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
       <Name>WixNetFxExtension</Name>
     </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ThirdParty\Shared\Banner.bmp">
+      <Link>Banner.bmp</Link>
+    </Content>
+    <Content Include="..\..\ThirdParty\Shared\GPLv2.rtf">
+      <Link>GPLv2.rtf</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\ThirdParty\Shared\Product.wxs">
+      <Link>Product.wxs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

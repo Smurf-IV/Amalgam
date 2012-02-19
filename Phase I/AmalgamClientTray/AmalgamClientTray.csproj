@@ -70,11 +70,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ThirdParty\Shared\MessageBoxExtForm.cs">
+    <Compile Include="..\..\ThirdParty\Shared\MessageBoxExtForm.cs">
       <Link>ClientForms\MessageBoxExtForm.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="..\ThirdParty\Shared\MessageBoxExtForm.designer.cs">
+    <Compile Include="..\..\ThirdParty\Shared\MessageBoxExtForm.designer.cs">
       <Link>ClientForms\MessageBoxExtForm.designer.cs</Link>
       <DependentUpon>MessageBoxExtForm.cs</DependentUpon>
     </Compile>
@@ -123,7 +123,7 @@
       <DependentUpon>NotifyIconHandler.cs</DependentUpon>
     </Compile>
     <Compile Include="ClientForms\WindowLocation.cs" />
-    <EmbeddedResource Include="..\ThirdParty\Shared\MessageBoxExtForm.resx">
+    <EmbeddedResource Include="..\..\ThirdParty\Shared\MessageBoxExtForm.resx">
       <Link>ClientForms\MessageBoxExtForm.resx</Link>
       <DependentUpon>MessageBoxExtForm.cs</DependentUpon>
     </EmbeddedResource>
