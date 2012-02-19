@@ -193,8 +193,11 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\Amalgam.ico" />
+    <Content Include="..\..\ThirdParty\Shared\Amalgam.ico">
+      <Link>Resources\Amalgam.ico</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "..\ThirdParty\D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B17502AC-3EF2-4CF1-BBCB-4AE868F8A285}"
 	ProjectSection(SolutionItems) = preProject
-		AmalgamClientTray\Resources\Amalgam.ico = AmalgamClientTray\Resources\Amalgam.ico
+		..\ThirdParty\Shared\Amalgam.ico = ..\ThirdParty\Shared\Amalgam.ico
 		..\ThirdParty\Shared\Banner.bmp = ..\ThirdParty\Shared\Banner.bmp
 		AmalgamClientTray\Dokan\CacheHelper.cs = AmalgamClientTray\Dokan\CacheHelper.cs
 		..\ThirdParty\Shared\GPLv2.rtf = ..\ThirdParty\Shared\GPLv2.rtf
@@ -36,30 +36,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B17502
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
+		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs08
 		SccProjectUniqueName0 = AmalgamClient_Setup\\AmalgamClient_Setup.wixproj
 		SccProjectName0 = AmalgamClient_Setup
-		SccAuxPath0 = https://tfs.codeplex.com/tfs/tfs08
 		SccLocalPath0 = AmalgamClient_Setup
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName1 = AmalgamClientTray\\AmalgamClientTray.csproj
 		SccProjectName1 = AmalgamClientTray
-		SccAuxPath1 = https://tfs.codeplex.com/tfs/tfs08
 		SccLocalPath1 = AmalgamClientTray
-		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName2 = ..\\Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
 		SccProjectName2 = ../Starksoft.Net.Ftp
-		SccAuxPath2 = https://tfs.codeplex.com/tfs/tfs08
 		SccLocalPath2 = ..\\Starksoft.Net.Ftp
-		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName3 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
 		SccProjectTopLevelParentUniqueName3 = Amalgam-Phase\u0020I.sln
 		SccProjectName3 = ../ThirdParty/DokanNet
-		SccAuxPath3 = https://tfs.codeplex.com/tfs/tfs08
 		SccLocalPath3 = ..\\ThirdParty\\DokanNet
-		SccProvider3 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccLocalPath4 = .
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
