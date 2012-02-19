@@ -22,10 +22,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "..\ThirdParty\D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B17502AC-3EF2-4CF1-BBCB-4AE868F8A285}"
 	ProjectSection(SolutionItems) = preProject
+		AmalgamClientTray\Resources\Amalgam.ico = AmalgamClientTray\Resources\Amalgam.ico
+		..\ThirdParty\Shared\Banner.bmp = ..\ThirdParty\Shared\Banner.bmp
 		AmalgamClientTray\Dokan\CacheHelper.cs = AmalgamClientTray\Dokan\CacheHelper.cs
+		..\ThirdParty\Shared\GPLv2.rtf = ..\ThirdParty\Shared\GPLv2.rtf
 		..\ThirdParty\Shared\MessageBoxExtForm.cs = ..\ThirdParty\Shared\MessageBoxExtForm.cs
 		..\ThirdParty\Shared\MessageBoxExtForm.Designer.cs = ..\ThirdParty\Shared\MessageBoxExtForm.Designer.cs
 		..\ThirdParty\Shared\MessageBoxExtForm.resx = ..\ThirdParty\Shared\MessageBoxExtForm.resx
+		..\ThirdParty\Shared\Product.wxs = ..\ThirdParty\Shared\Product.wxs
 		AmalgamClientTray\Dokan\RWLSExtension.cs = AmalgamClientTray\Dokan\RWLSExtension.cs
 		AmalgamClientTray\FTP\TemporaryFile.cs = AmalgamClientTray\FTP\TemporaryFile.cs
 	EndProjectSection
@@ -51,7 +55,7 @@ Global
 		SccLocalPath2 = ..\\Starksoft.Net.Ftp
 		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccProjectUniqueName3 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
-		SccProjectTopLevelParentUniqueName3 = Amalgam.sln
+		SccProjectTopLevelParentUniqueName3 = Amalgam-Phase\u0020I.sln
 		SccProjectName3 = ../ThirdParty/DokanNet
 		SccAuxPath3 = https://tfs.codeplex.com/tfs/tfs08
 		SccLocalPath3 = ..\\ThirdParty\\DokanNet
@@ -66,7 +70,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.ActiveCfg = Debug|x86
-		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.Build.0 = Debug|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|Any CPU.ActiveCfg = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.ActiveCfg = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.Build.0 = Release|x86

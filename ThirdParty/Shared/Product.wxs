@@ -5,7 +5,7 @@
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
      >
 
-   <?define TraySource=$(sys.SOURCEFILEDIR)..\AmalgamClientTray\bin\Release ?>
+   <?define TraySource=$(sys.CURRENTDIR)..\AmalgamClientTray\bin\Release ?>
 
    <!-- do not change this ever !-->
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
@@ -33,9 +33,9 @@
       <Property Id="ARPCOMMENTS" Value="http://Amalgam.codeplex.com/discussions"/>
       <Property Id="ARPCONTACT" Value="Smurf-IV" />
       <Property Id="ARPURLINFOABOUT" Value="http://Amalgam.codeplex.com/" />
-      <Icon Id="InstallerIcon" SourceFile="$(sys.SOURCEFILEDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
+      <Icon Id="InstallerIcon" SourceFile="$(sys.CURRENTDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
       <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
-      <WixVariable Id="WixUILicenseRtf" Value="GPLv2.rtf" />
+      <WixVariable Id="WixUILicenseRtf" Value="$(sys.SOURCEFILEDIR)GPLv2.rtf" />
 
       <!-- Properties to allow detection of .Net installation -->
       <PropertyRef Id="NETFRAMEWORK40FULL"/>
@@ -99,11 +99,11 @@
 
       <ComponentGroup Id="Client" >
          <Component Id="Client" Guid="5EBF3F29-9CF1-44FE-A94C-CC1B4FE09367" Directory="ClientDIR">
-            <File Id="InstallerIcon" Name="Amalgam.ico" Source="$(sys.SOURCEFILEDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
+            <File Id="InstallerIcon" Name="Amalgam.ico" Source="$(sys.CURRENTDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
             <File Id="AmalgamClientTray.exe" Name="AmalgamClientTray.exe" Source="$(var.TraySource)\AmalgamClientTray.exe" KeyPath="yes"/>
          </Component>
          <Component Id="ChangeLog" Directory="ClientDIR">
-            <File Source="$(sys.SOURCEFILEDIR)..\AmalgamClientTray\ChangeLog.rtf" KeyPath="yes" />
+            <File Source="$(sys.CURRENTDIR)..\AmalgamClientTray\ChangeLog.rtf" KeyPath="yes" />
          </Component>
          <Component Id="AmalgamClientTray.exe.config" Directory="ClientDIR">
             <File Source="$(var.TraySource)\AmalgamClientTray.exe.config" KeyPath="yes" />
@@ -146,7 +146,7 @@
 
       <!-- Get the install to skip a few steps -->
       <UIRef Id="WixUI_Common" />
-      <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+      <WixVariable Id="WixUIBannerBmp" Value="$(sys.SOURCEFILEDIR)Banner.bmp" />
       <!-- This just adds 90K on top of the UI Extension.dll -->
       <UI>
          <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
