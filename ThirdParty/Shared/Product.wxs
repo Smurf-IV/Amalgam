@@ -33,7 +33,7 @@
       <Property Id="ARPCOMMENTS" Value="http://Amalgam.codeplex.com/discussions"/>
       <Property Id="ARPCONTACT" Value="Smurf-IV" />
       <Property Id="ARPURLINFOABOUT" Value="http://Amalgam.codeplex.com/" />
-      <Icon Id="InstallerIcon" SourceFile="$(sys.CURRENTDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
+      <Icon Id="InstallerIcon" SourceFile="$(sys.SOURCEFILEDIR)Amalgam.ico" />
       <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
       <WixVariable Id="WixUILicenseRtf" Value="$(sys.SOURCEFILEDIR)GPLv2.rtf" />
 
@@ -99,7 +99,7 @@
 
       <ComponentGroup Id="Client" >
          <Component Id="Client" Guid="5EBF3F29-9CF1-44FE-A94C-CC1B4FE09367" Directory="ClientDIR">
-            <File Id="InstallerIcon" Name="Amalgam.ico" Source="$(sys.CURRENTDIR)..\AmalgamClientTray\Resources\Amalgam.ico" />
+            <File Id="InstallerIcon" Name="Amalgam.ico" Source="$(sys.SOURCEFILEDIR)Amalgam.ico" />
             <File Id="AmalgamClientTray.exe" Name="AmalgamClientTray.exe" Source="$(var.TraySource)\AmalgamClientTray.exe" KeyPath="yes"/>
          </Component>
          <Component Id="ChangeLog" Directory="ClientDIR">
