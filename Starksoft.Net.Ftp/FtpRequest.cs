@@ -304,7 +304,7 @@ namespace Starksoft.Net.Ftp
       }
 
       ///<summary>
-      /// Creates the buffer necessary to send to the Server that complies with the URF8 encoding of the Path / Filenames only.
+      /// Creates the buffer necessary to send to the Server that complies with the UTF8 encoding of the Path / Filenames only.
       ///</summary>
       ///<param name="command"></param>
       ///<param name="encoding"></param>
@@ -326,7 +326,7 @@ namespace Starksoft.Net.Ftp
             args = builder.ToString().TrimEnd();
          }
 
-         return Encoding.ASCII.GetBytes(asciiCommand).Concat(encoding.GetBytes(args)).ToArray();
+         return Encoding.ASCII.GetBytes(asciiCommand).Concat(encoding.GetBytes(args)).Concat(Encoding.ASCII.GetBytes("\r\n")).ToArray();
       }
 
       internal bool HasHappyCodes
