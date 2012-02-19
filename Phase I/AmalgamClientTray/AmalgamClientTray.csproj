@@ -150,7 +150,6 @@
       <DependentUpon>NotifyIconHandler.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
-    <None Include="ChangeLog.rtf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
