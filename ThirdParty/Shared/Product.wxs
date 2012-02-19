@@ -103,7 +103,7 @@
             <File Id="AmalgamClientTray.exe" Name="AmalgamClientTray.exe" Source="$(var.TraySource)\AmalgamClientTray.exe" KeyPath="yes"/>
          </Component>
          <Component Id="ChangeLog" Directory="ClientDIR">
-            <File Source="$(sys.CURRENTDIR)..\AmalgamClientTray\ChangeLog.rtf" KeyPath="yes" />
+            <File Source="$(sys.SOURCEFILEDIR)ChangeLog.rtf" KeyPath="yes" />
          </Component>
          <Component Id="AmalgamClientTray.exe.config" Directory="ClientDIR">
             <File Source="$(var.TraySource)\AmalgamClientTray.exe.config" KeyPath="yes" />
