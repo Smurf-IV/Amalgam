@@ -100,7 +100,7 @@
          this.MinimumSize = new System.Drawing.Size(464, 374);
          this.Name = "ManagementForm";
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-         this.Text = "Liquesce Share Enabler Client Management";
+         this.Text = "Amalgam Target Management";
          this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ManagementForm_FormClosing);
          this.Load += new System.EventHandler(this.ManagementForm_Load);
          this.Shown += new System.EventHandler(this.ManagementForm_Shown);
