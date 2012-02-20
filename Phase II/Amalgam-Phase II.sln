@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmalgamClientTray", "AmalgamClientTray\AmalgamClientTray.csproj", "{3FA50A47-545D-45BD-A7DF-E910651B550E}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AmalgamClient_Setup", "AmalgamClient_Setup\AmalgamClient_Setup.wixproj", "{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FA50A47-545D-45BD-A7DF-E910651B550E} = {3FA50A47-545D-45BD-A7DF-E910651B550E}
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}
+		{5F228FCD-54F1-491D-93CE-3D768655FADC} = {5F228FCD-54F1-491D-93CE-3D768655FADC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starksoft.Net.Ftp", "..\Starksoft.Net.Ftp\Starksoft.Net.Ftp.csproj", "{5F228FCD-54F1-491D-93CE-3D768655FADC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{5B43D7A5-04A1-4DAD-94DD-BDD0ED47D887}"
+	ProjectSection(SolutionItems) = preProject
+		..\ThirdParty\dokan.dll = ..\ThirdParty\dokan.dll
+		..\ThirdParty\NLog.dll = ..\ThirdParty\NLog.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "..\ThirdParty\DokanNet\DokanNet.csproj", "{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F90CFF42-ABB3-431A-B6CD-49C60CE30D74}"
+	ProjectSection(SolutionItems) = preProject
+		..\ThirdParty\Shared\Amalgam.ico = ..\ThirdParty\Shared\Amalgam.ico
+		..\ThirdParty\Shared\Banner.bmp = ..\ThirdParty\Shared\Banner.bmp
+		..\ThirdParty\Shared\ChangeLog.rtf = ..\ThirdParty\Shared\ChangeLog.rtf
+		..\ThirdParty\Shared\GPLv2.rtf = ..\ThirdParty\Shared\GPLv2.rtf
+		..\ThirdParty\Shared\Help.ico = ..\ThirdParty\Shared\Help.ico
+		..\ThirdParty\Shared\Product.wxs = ..\ThirdParty\Shared\Product.wxs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs08
+		SccProjectUniqueName0 = ..\\Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
+		SccProjectName0 = ../Starksoft.Net.Ftp
+		SccLocalPath0 = ..\\Starksoft.Net.Ftp
+		SccProjectUniqueName1 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
+		SccProjectTopLevelParentUniqueName1 = Amalgam-Phase\u0020II.sln
+		SccProjectName1 = ../ThirdParty/DokanNet
+		SccLocalPath1 = ..\\ThirdParty\\DokanNet
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = AmalgamClient_Setup\\AmalgamClient_Setup.wixproj
+		SccProjectName3 = AmalgamClient_Setup
+		SccLocalPath3 = AmalgamClient_Setup
+		SccProjectUniqueName4 = AmalgamClientTray\\AmalgamClientTray.csproj
+		SccProjectName4 = AmalgamClientTray
+		SccLocalPath4 = AmalgamClientTray
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Debug|x86.ActiveCfg = Debug|x86
+		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Debug|x86.Build.0 = Debug|x86
+		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.ActiveCfg = Debug|x86
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.ActiveCfg = Release|x86
+		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.Build.0 = Release|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.ActiveCfg = Debug|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Debug|x86.Build.0 = Debug|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.ActiveCfg = Release|x86
+		{5F228FCD-54F1-491D-93CE-3D768655FADC}.Release|x86.Build.0 = Release|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.ActiveCfg = Debug|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Debug|x86.Build.0 = Debug|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.ActiveCfg = Release|x86
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C} = {5B43D7A5-04A1-4DAD-94DD-BDD0ED47D887}
+	EndGlobalSection
+EndGlobal

@@ -8,11 +8,14 @@
         <XmlDataProvider x:Key="aboutProvider" XPath="ApplicationInfo" IsAsynchronous="False" IsInitialLoadEnabled="True">
             <x:XData>
                 <ApplicationInfo xmlns="">
-                    <Link Uri="http://blogs.msdn.com/pedrosilva">More Info</Link>
-                </ApplicationInfo>
+               <Link Uri="http://Amalgam.codeplex.com/">More Info</Link>
+               <Description>Synonyms: alloy, amalgamation, blend, combination, combo, fusion
+
+This will use Dokan to make (Initially) an FTP target appear as a source drive in Explorer. It will allow Media playback and file updates.</Description>
+            </ApplicationInfo>
             </x:XData>
         </XmlDataProvider>
-        <Image x:Key="aboutLogo" Source="AboutLogo.png" />
+        <Image x:Key="aboutLogo" Source="..\Images\AboutLogo.png" />
         <Style x:Key="AboutDialogStyle" TargetType="Window">
             <Setter Property="Height" Value="Auto" />
             <Setter Property="Width" Value="500" />
