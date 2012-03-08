@@ -18,6 +18,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,7 +31,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -86,7 +86,14 @@
       <HintPath>..\..\ThirdParty\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Core.Presentation" />
+    <Reference Include="System.Activities.Presentation" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -114,14 +121,73 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\..\ThirdParty\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\ClientForms\ClientConfigDetails.cs">
+      <Link>GUI\ClientConfigDetails.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\ClientForms\ClientShareDetail.cs">
+      <Link>GUI\ClientShareDetail.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\CacheHelper.cs">
+      <Link>Dokan\CacheHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\DokanManagement.cs">
+      <Link>Dokan\DokanManagement.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\HandleMappingThread.cs">
+      <Link>Dokan\HandleMappingThread.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\LiquesceOps.cs">
+      <Link>Dokan\LiquesceOps.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\RWLSExtension.cs">
+      <Link>Dokan\RWLSExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\Utils.cs">
+      <Link>Dokan\Utils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\DirectoryFTPInfo.cs">
+      <Link>FTP\DirectoryFTPInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileFTPInfo.cs">
+      <Link>FTP\FileFTPInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileStreamFTP.cs">
+      <Link>FTP\FileStreamFTP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileSystemFTPInfo.cs">
+      <Link>FTP\FileSystemFTPInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FtpClientExt.cs">
+      <Link>FTP\FtpClientExt.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FTPTempFile.cs">
+      <Link>FTP\FTPTempFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\MlstCollection.cs">
+      <Link>FTP\MlstCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\OptimizedFTPFileReadHandler.cs">
+      <Link>FTP\OptimizedFTPFileReadHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\TemporaryFile.cs">
+      <Link>FTP\TemporaryFile.cs</Link>
+    </Compile>
     <Compile Include="GUI\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\ClientPropertiesDisplay.cs" />
+    <Compile Include="GUI\Management.xaml.cs">
+      <DependentUpon>Management.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\NotificationAreaIcon.Interop.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -137,14 +203,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUI\Management.xaml.cs">
-      <DependentUpon>Management.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GUI\NotificationAreaIcon.cs" />
     <Page Include="GUI\AboutBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -201,8 +267,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Dokan\" />
-    <Folder Include="FTP\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>

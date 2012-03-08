@@ -50,6 +50,7 @@
     <Compile Include="..\..\ThirdParty\Shared\Product.wxs">
       <Link>Product.wxs</Link>
     </Compile>
+    <Compile Include="Phase I Extras.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

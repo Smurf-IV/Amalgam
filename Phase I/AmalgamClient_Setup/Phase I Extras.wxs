@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <?define TraySource=$(sys.CURRENTDIR)..\AmalgamClientTray\bin\Release ?>
+
+   <Fragment>
+      <DirectoryRef Id="ClientDIR" />
+
+      <ComponentGroup Id="Extras" >
+      </ComponentGroup>
+   </Fragment>
+</Wix>
