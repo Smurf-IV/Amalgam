@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", 
 	ProjectSection(SolutionItems) = preProject
 		..\ThirdParty\dokan.dll = ..\ThirdParty\dokan.dll
 		..\ThirdParty\NLog.dll = ..\ThirdParty\NLog.dll
+		..\ThirdParty\WPFToolkit.Extended.dll = ..\ThirdParty\WPFToolkit.Extended.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DokanNet", "..\ThirdParty\DokanNet\DokanNet.csproj", "{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}"
@@ -35,14 +36,14 @@ Global
 		SccNumberOfProjects = 5
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs08
-		SccProjectUniqueName0 = ..\\Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
-		SccProjectName0 = ../Starksoft.Net.Ftp
-		SccLocalPath0 = ..\\Starksoft.Net.Ftp
-		SccProjectUniqueName1 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
-		SccProjectTopLevelParentUniqueName1 = Amalgam-Phase\u0020II.sln
-		SccProjectName1 = ../ThirdParty/DokanNet
-		SccLocalPath1 = ..\\ThirdParty\\DokanNet
-		SccLocalPath2 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ..\\Starksoft.Net.Ftp\\Starksoft.Net.Ftp.csproj
+		SccProjectName1 = ../Starksoft.Net.Ftp
+		SccLocalPath1 = ..\\Starksoft.Net.Ftp
+		SccProjectUniqueName2 = ..\\ThirdParty\\DokanNet\\DokanNet.csproj
+		SccProjectTopLevelParentUniqueName2 = Amalgam-Phase\u0020II.sln
+		SccProjectName2 = ../ThirdParty/DokanNet
+		SccLocalPath2 = ..\\ThirdParty\\DokanNet
 		SccProjectUniqueName3 = AmalgamClient_Setup\\AmalgamClient_Setup.wixproj
 		SccProjectName3 = AmalgamClient_Setup
 		SccLocalPath3 = AmalgamClient_Setup
@@ -57,7 +58,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Debug|x86.ActiveCfg = Debug|x86
 		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Debug|x86.Build.0 = Debug|x86
-		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Release|x86.ActiveCfg = Release|Any CPU
+		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Release|x86.ActiveCfg = Release|x86
+		{3FA50A47-545D-45BD-A7DF-E910651B550E}.Release|x86.Build.0 = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Debug|x86.ActiveCfg = Debug|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.ActiveCfg = Release|x86
 		{D9A143DF-DC18-4CEA-8366-C273E4A8FEE9}.Release|x86.Build.0 = Release|x86

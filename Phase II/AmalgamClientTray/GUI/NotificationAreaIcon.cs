@@ -1,5 +1,30 @@
+#region Copyright (C)
+// ---------------------------------------------------------------------------------------------------------------
+//  <copyright file="ClientPropertiesDisplay.cs" company="Smurf-IV">
+// 
+//  Copyright (C) 2012 Smurf-IV
+// 
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 2 of the License, or
+//   any later version.
+// 
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+// 
+//  You should have received a copy of the GNU General Public License
+//  along with this program. If not, see http://www.gnu.org/licenses/.
+//  </copyright>
+//  <summary>
+//  Url: http://amalgam.codeplex.com
+//  Email: http://www.codeplex.com/site/users/view/smurfiv
+//  </summary>
+// --------------------------------------------------------------------------------------------------------------------
+#endregion
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
@@ -11,14 +36,17 @@ using Forms = System.Windows.Forms;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable RedundantThisQualifier
 namespace AmalgamClientTray
 {
    public enum BalloonTipIcon
    {
+// ReSharper disable UnusedMember.Global
       None = 0,
       Info = 1,
       Warning = 2,
       Error = 3,
+// ReSharper restore UnusedMember.Global
    }
    /// <summary>
    /// Represents a thin wrapper for <see cref="Forms.NotifyIcon"/>
@@ -27,254 +55,260 @@ namespace AmalgamClientTray
    [DefaultEvent("MouseDoubleClick")]
    public partial class NotificationAreaIcon : FrameworkElement, IAddChild, IDisposable
    {
-		public static readonly RoutedEvent MouseClickEvent = EventManager.RegisterRoutedEvent(
-			"MouseClick",
-			RoutingStrategy.Bubble,
-			typeof(MouseButtonEventHandler),
+      public static readonly RoutedEvent MouseClickEvent = EventManager.RegisterRoutedEvent(
+         "MouseClick",
+         RoutingStrategy.Bubble,
+         typeof(MouseButtonEventHandler),
          typeof(NotificationAreaIcon));
 
-		public static readonly RoutedEvent MouseDoubleClickEvent = EventManager.RegisterRoutedEvent(
-			"MouseDoubleClick",
-			RoutingStrategy.Bubble,
-			typeof(MouseButtonEventHandler),
+      public static readonly RoutedEvent MouseDoubleClickEvent = EventManager.RegisterRoutedEvent(
+         "MouseDoubleClick",
+         RoutingStrategy.Bubble,
+         typeof(MouseButtonEventHandler),
          typeof(NotificationAreaIcon));
 
-		public static readonly DependencyProperty BalloonTipIconProperty =
+      public static readonly DependencyProperty BalloonTipIconProperty =
          DependencyProperty.Register("BalloonTipIcon", typeof(BalloonTipIcon), typeof(NotificationAreaIcon));
 
-		public static readonly DependencyProperty BalloonTipTextProperty =
+      public static readonly DependencyProperty BalloonTipTextProperty =
          DependencyProperty.Register("BalloonTipText", typeof(string), typeof(NotificationAreaIcon));
 
-		public static readonly DependencyProperty BalloonTipTitleProperty =
+      public static readonly DependencyProperty BalloonTipTitleProperty =
          DependencyProperty.Register("BalloonTipTitle", typeof(string), typeof(NotificationAreaIcon));
 
-		public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
-			"Icon",
-			typeof(ImageSource),
+      public static readonly DependencyProperty IconProperty = DependencyProperty.Register(
+         "Icon",
+         typeof(ImageSource),
          typeof(NotificationAreaIcon),
-			new FrameworkPropertyMetadata(OnIconChanged));
+         new FrameworkPropertyMetadata(OnIconChanged));
 
-		public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-			"Text",
-			typeof(string),
+      public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+         "Text",
+         typeof(string),
          typeof(NotificationAreaIcon),
-			new PropertyMetadata(OnTextChanged));
+         new PropertyMetadata(OnTextChanged));
 
-		private Forms.NotifyIcon notifyIcon;
+      private Forms.NotifyIcon notifyIcon;
 
       static NotificationAreaIcon()
-		{
+      {
          VisibilityProperty.OverrideMetadata(typeof(NotificationAreaIcon), new PropertyMetadata(OnVisibilityChanged));
-		}
+      }
 
-		public event MouseButtonEventHandler MouseClick
-		{
-			add { this.AddHandler(MouseClickEvent, value); }
-			remove { this.RemoveHandler(MouseClickEvent, value); }
-		}
+      public event MouseButtonEventHandler MouseClick
+      {
+         add { this.AddHandler(MouseClickEvent, value); }
+         remove { this.RemoveHandler(MouseClickEvent, value); }
+      }
 
-		public event MouseButtonEventHandler MouseDoubleClick
-		{
-			add { this.AddHandler(MouseDoubleClickEvent, value); }
-			remove { this.RemoveHandler(MouseDoubleClickEvent, value); }
-		}
+      public event MouseButtonEventHandler MouseDoubleClick
+      {
+         add { this.AddHandler(MouseDoubleClickEvent, value); }
+         remove { this.RemoveHandler(MouseDoubleClickEvent, value); }
+      }
 
-		public BalloonTipIcon BalloonTipIcon
-		{
-			get { return (BalloonTipIcon)this.GetValue(BalloonTipIconProperty); }
-			set { this.SetValue(BalloonTipIconProperty, value); }
-		}
+      public BalloonTipIcon BalloonTipIcon
+      {
+         get { return (BalloonTipIcon)this.GetValue(BalloonTipIconProperty); }
+         set { this.SetValue(BalloonTipIconProperty, value); }
+      }
 
-		public string BalloonTipText
-		{
-			get { return (string)this.GetValue(BalloonTipTextProperty); }
-			set { this.SetValue(BalloonTipTextProperty, value); }
-		}
+      public string BalloonTipText
+      {
+         get { return (string)this.GetValue(BalloonTipTextProperty); }
+         set { this.SetValue(BalloonTipTextProperty, value); }
+      }
 
-		public string BalloonTipTitle
-		{
-			get { return (string)this.GetValue(BalloonTipTitleProperty); }
-			set { this.SetValue(BalloonTipTitleProperty, value); }
-		}
+      public string BalloonTipTitle
+      {
+         get { return (string)this.GetValue(BalloonTipTitleProperty); }
+         set { this.SetValue(BalloonTipTitleProperty, value); }
+      }
 
-		public ImageSource Icon
-		{
-			get { return (ImageSource)this.GetValue(IconProperty); }
-			set { this.SetValue(IconProperty, value); }
-		}
+      public ImageSource Icon
+      {
+         get { return (ImageSource)this.GetValue(IconProperty); }
+         set { this.SetValue(IconProperty, value); }
+      }
 
-		public string Text
-		{
-			get { return (string)this.GetValue(TextProperty); }
-			set { this.SetValue(TextProperty, value); }
-		}
+      public string Text
+      {
+         get { return (string)this.GetValue(TextProperty); }
+         set { this.SetValue(TextProperty, value); }
+      }
 
-		public override void BeginInit()
-		{
-			base.BeginInit();
-			this.InitializeNotifyIcon();
-		}
+      public override void BeginInit()
+      {
+         base.BeginInit();
+         this.InitializeNotifyIcon();
+      }
 
-		public void ShowBalloonTip(int timeout)
-		{
-			this.notifyIcon.BalloonTipTitle = this.BalloonTipTitle;
-			this.notifyIcon.BalloonTipText = this.BalloonTipText;
-			this.notifyIcon.BalloonTipIcon = (Forms.ToolTipIcon)this.BalloonTipIcon;
-			this.notifyIcon.ShowBalloonTip(timeout);
-		}
+      public void ShowBalloonTip(int timeout)
+      {
+         this.notifyIcon.BalloonTipTitle = this.BalloonTipTitle;
+         this.notifyIcon.BalloonTipText = this.BalloonTipText;
+         this.notifyIcon.BalloonTipIcon = (Forms.ToolTipIcon)this.BalloonTipIcon;
+         this.notifyIcon.ShowBalloonTip(timeout);
+      }
 
-		public void ShowBalloonTip(int timeout, string tipTitle, string tipText, BalloonTipIcon tipIcon)
-		{
-			this.notifyIcon.ShowBalloonTip(timeout, tipTitle, tipText, (Forms.ToolTipIcon)tipIcon);
-		}
+      public void ShowBalloonTip(int timeout, string tipTitle, string tipText, BalloonTipIcon tipIcon)
+      {
+         this.notifyIcon.ShowBalloonTip(timeout, tipTitle, tipText, (Forms.ToolTipIcon)tipIcon);
+      }
 
-		#region IAddChild Members
+      #region IAddChild Members
 
-		void IAddChild.AddChild(object value)
-		{
-			throw new InvalidOperationException();
-		}
+      void IAddChild.AddChild(object value)
+      {
+         throw new InvalidOperationException();
+      }
 
-		void IAddChild.AddText(string text)
-		{
-			if (text == null)
-			{
-				throw new ArgumentNullException("text");
-			}
+      void IAddChild.AddText(string text)
+      {
+         if (text == null)
+         {
+            throw new ArgumentNullException("text");
+         }
 
-			this.Text = text;
-		}
+         this.Text = text;
+      }
 
-		#endregion
+      #endregion
 
-		protected override void OnVisualParentChanged(DependencyObject oldParent)
-		{
-			base.OnVisualParentChanged(oldParent);
-			this.AttachToWindowClose();
-		}
+      protected override void OnVisualParentChanged(DependencyObject oldParent)
+      {
+         base.OnVisualParentChanged(oldParent);
+         this.AttachToWindowClose();
+      }
 
-		private static MouseButtonEventArgs CreateMouseButtonEventArgs(
-			RoutedEvent handler,
-			Forms.MouseButtons button)
-		{
-			return new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, ToMouseButton(button))
-			{
-				RoutedEvent = handler
-			};
-		}
+      private static MouseButtonEventArgs CreateMouseButtonEventArgs(
+         RoutedEvent handler,
+         Forms.MouseButtons button)
+      {
+         return new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, ToMouseButton(button))
+         {
+            RoutedEvent = handler
+         };
+      }
 
-		private static Drawing.Icon FromImageSource(ImageSource icon)
-		{
-			if (icon == null)
-			{
-				return null;
-			}
+      private static Drawing.Icon FromImageSource(ImageSource icon)
+      {
+         if (icon == null)
+         {
+            return null;
+         }
 
-			Uri iconUri = new Uri(icon.ToString());
-			return new Drawing.Icon(Application.GetResourceStream(iconUri).Stream);
-		}
+         Uri iconUri = new Uri(icon.ToString());
+         StreamResourceInfo resourceStream = Application.GetResourceStream(iconUri);
+         if (resourceStream != null)
+            return new Drawing.Icon(resourceStream.Stream);
+         return null;
+      }
 
-		private static void OnIconChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
-		{
-			if (!DesignerProperties.GetIsInDesignMode(target))
-			{
+      private static void OnIconChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+      {
+         if (!DesignerProperties.GetIsInDesignMode(target))
+         {
             NotificationAreaIcon control = (NotificationAreaIcon)target;
-				control.notifyIcon.Icon = FromImageSource(control.Icon);
-			}
-		}
+            control.notifyIcon.Icon = FromImageSource(control.Icon);
+         }
+      }
 
-		private static void OnTextChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
-		{
+      private static void OnTextChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+      {
          NotificationAreaIcon control = (NotificationAreaIcon)target;
-			control.notifyIcon.Text = control.Text;
-		}
+         control.notifyIcon.Text = control.Text;
+      }
 
-		private static void OnVisibilityChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
-		{
+      private static void OnVisibilityChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+      {
          NotificationAreaIcon control = (NotificationAreaIcon)target;
-			control.notifyIcon.Visible = control.Visibility == Visibility.Visible;
-		}
+         if ( control != null )
+            control.notifyIcon.Visible = control.Visibility == Visibility.Visible;
+      }
 
-		private static MouseButton ToMouseButton(Forms.MouseButtons button)
-		{
-			switch (button)
-			{
-				case Forms.MouseButtons.Left:
-					return MouseButton.Left;
-				case Forms.MouseButtons.Right:
-					return MouseButton.Right;
-				case Forms.MouseButtons.Middle:
-					return MouseButton.Middle;
-				case Forms.MouseButtons.XButton1:
-					return MouseButton.XButton1;
-				case Forms.MouseButtons.XButton2:
-					return MouseButton.XButton2;
-			}
+      private static MouseButton ToMouseButton(Forms.MouseButtons button)
+      {
+         switch (button)
+         {
+            case Forms.MouseButtons.Left:
+               return MouseButton.Left;
+            case Forms.MouseButtons.Right:
+               return MouseButton.Right;
+            case Forms.MouseButtons.Middle:
+               return MouseButton.Middle;
+            case Forms.MouseButtons.XButton1:
+               return MouseButton.XButton1;
+            case Forms.MouseButtons.XButton2:
+               return MouseButton.XButton2;
+         }
 
-			throw new InvalidOperationException();
-		}
+         throw new InvalidOperationException();
+      }
 
-		private void AttachToWindowClose()
-		{
-			var window = Window.GetWindow(this);
-			if (window != null)
-			{
-				window.Closed += (s, a) => this.notifyIcon.Dispose();
-			}
-		}
+      private void AttachToWindowClose()
+      {
+         var window = Window.GetWindow(this);
+         if (window != null)
+         {
+            window.Closed += (s, a) => this.notifyIcon.Dispose();
+         }
+      }
 
-		private void InitializeNotifyIcon()
-		{
-			this.notifyIcon = new Forms.NotifyIcon();
-			this.notifyIcon.Text = this.Text;
-			this.notifyIcon.Icon = FromImageSource(this.Icon);
-			this.notifyIcon.Visible = this.Visibility == Visibility.Visible;
+      private void InitializeNotifyIcon()
+      {
+         this.notifyIcon = new Forms.NotifyIcon
+                              {
+                                 Text = this.Text,
+                                 Icon = FromImageSource(this.Icon),
+                                 Visible = this.Visibility == Visibility.Visible
+                              };
 
-			this.notifyIcon.MouseDown += this.OnMouseDown;
-			this.notifyIcon.MouseUp += this.OnMouseUp;
-			this.notifyIcon.MouseClick += this.OnMouseClick;
-			this.notifyIcon.MouseDoubleClick += this.OnMouseDoubleClick;
+         this.notifyIcon.MouseDown += this.OnMouseDown;
+         this.notifyIcon.MouseUp += this.OnMouseUp;
+         this.notifyIcon.MouseClick += this.OnMouseClick;
+         this.notifyIcon.MouseDoubleClick += this.OnMouseDoubleClick;
 
-			this.InitializeNativeHooks();
-		}
+         this.InitializeNativeHooks();
+      }
 
-		private void OnMouseDown(object sender, Forms.MouseEventArgs e)
-		{
-			this.RaiseEvent(CreateMouseButtonEventArgs(MouseDownEvent, e.Button));
-		}
+      private void OnMouseDown(object sender, Forms.MouseEventArgs e)
+      {
+         this.RaiseEvent(CreateMouseButtonEventArgs(MouseDownEvent, e.Button));
+      }
 
-		private void OnMouseDoubleClick(object sender, Forms.MouseEventArgs e)
-		{
-			this.RaiseEvent(CreateMouseButtonEventArgs(MouseDoubleClickEvent, e.Button));
-		}
+      private void OnMouseDoubleClick(object sender, Forms.MouseEventArgs e)
+      {
+         this.RaiseEvent(CreateMouseButtonEventArgs(MouseDoubleClickEvent, e.Button));
+      }
 
-		private void OnMouseClick(object sender, Forms.MouseEventArgs e)
-		{
-			this.RaiseEvent(CreateMouseButtonEventArgs(MouseClickEvent, e.Button));
-		}
+      private void OnMouseClick(object sender, Forms.MouseEventArgs e)
+      {
+         this.RaiseEvent(CreateMouseButtonEventArgs(MouseClickEvent, e.Button));
+      }
 
-		private void OnMouseUp(object sender, Forms.MouseEventArgs e)
-		{
-			if (e.Button == Forms.MouseButtons.Right)
-			{
-				this.ShowContextMenu();
-			}
+      private void OnMouseUp(object sender, Forms.MouseEventArgs e)
+      {
+         if (e.Button == Forms.MouseButtons.Right)
+         {
+            this.ShowContextMenu();
+         }
 
-			this.RaiseEvent(CreateMouseButtonEventArgs(MouseUpEvent, e.Button));
-		}
+         this.RaiseEvent(CreateMouseButtonEventArgs(MouseUpEvent, e.Button));
+      }
 
-		private void ShowContextMenu()
-		{
-			if (this.ContextMenu != null)
-			{
-				this.AttachContextMenu();
-				this.ContextMenu.IsOpen = true;
-			}
-		}
+      private void ShowContextMenu()
+      {
+         if (this.ContextMenu != null)
+         {
+            this.AttachContextMenu();
+            this.ContextMenu.IsOpen = true;
+         }
+      }
 
-		partial void AttachContextMenu();
+      partial void AttachContextMenu();
 
-		partial void InitializeNativeHooks();
+      partial void InitializeNativeHooks();
 
       #region Dispose
       /// <summary>
@@ -379,5 +413,6 @@ namespace AmalgamClientTray
       #endregion
    }
 }
+// ReSharper restore RedundantThisQualifier
 // ReSharper restore EventNeverSubscribedTo.Global
 // ReSharper restore MemberCanBePrivate.Global

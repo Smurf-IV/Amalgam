@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+   <?define TraySource=$(sys.CURRENTDIR)..\AmalgamClientTray\bin\Release ?>
+
+   <Fragment>
+      <DirectoryRef Id="ClientDIR" />
+      
+      <ComponentGroup Id="Extras" >
+         <Component Id="WPFToolkit.Extended.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\WPFToolkit.Extended.dll" KeyPath="yes" />
+         </Component>
+      </ComponentGroup>
+   </Fragment>
+</Wix>
