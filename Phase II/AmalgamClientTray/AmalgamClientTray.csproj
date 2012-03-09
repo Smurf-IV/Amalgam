@@ -186,6 +186,9 @@
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ClientPropertiesDisplay.cs" />
+    <Compile Include="GUI\HiddenFormToAcceptCloseMessage.xaml.cs">
+      <DependentUpon>HiddenFormToAcceptCloseMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GUI\Management.xaml.cs">
       <DependentUpon>Management.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Page Include="GUI\HiddenFormToAcceptCloseMessage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GUI\Management.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

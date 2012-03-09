@@ -11,7 +11,7 @@
                <Link Uri="http://Amalgam.codeplex.com/">More Info</Link>
                <Description>Synonyms: alloy, amalgamation, blend, combination, combo, fusion
 
-This will use Dokan to make (Initially) an FTP target appear as a source drive in Explorer. It will allow Media playback and file updates.</Description>
+This will make an FTP target appear as a source drive within the windows OS (i.e. in Explorer or a DOS box). It will allow Media playback, file updates, backup programs etc. to function as if they are talking to networked shared drive.</Description>
             </ApplicationInfo>
             </x:XData>
         </XmlDataProvider>

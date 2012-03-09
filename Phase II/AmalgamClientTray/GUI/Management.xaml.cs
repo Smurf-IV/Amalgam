@@ -25,9 +25,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -46,19 +49,15 @@ namespace AmalgamClientTray
    /// </summary>
    public partial class Management : Window
    {
-      WindowState lastWindowState;
-      bool shouldClose;
-
-      public ClientPropertiesDisplay csdDisplay = new ClientPropertiesDisplay(new ClientShareDetail());
-
       static private readonly Logger Log = LogManager.GetCurrentClassLogger();
       private ClientPropertiesDisplay cpd;
-      internal static readonly string userAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"AmalgamClientTray");
-      internal static readonly string configFile = Path.Combine(userAppData, @"Client.Properties.config.xml");
+
+      private static readonly string userAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"AmalgamClientTray");
+      private static readonly string configFile = Path.Combine(userAppData, @"Client.Properties.config.xml");
 
       private ClientConfigDetails csd;
 
-      private ClientConfigDetails ClientConfigDetails
+      private ClientConfigDetails CurrentDetails
       {
          get { return csd; }
          set
@@ -75,27 +74,44 @@ namespace AmalgamClientTray
       public Management()
       {
          InitializeComponent();
+         version.Content = Version;
          FileInfo fi = new FileInfo(configFile);
          if (!fi.Exists)
          {
             DirectoryInfo di = fi.Directory;
-            if (!di.Exists)
+            if (di != null && !di.Exists)
                di.Create();
-            // The file will now be created when the ReadConfig is called
          }
-         ReadConfigDetails(out csd);
-         ClientConfigDetails = csd;
       }
 
-      internal static void ReadConfigDetails(out ClientConfigDetails csd)
+      /// <summary>
+      /// Gets the application's version information to show.
+      /// </summary>
+      private static string Version
       {
+         get
+         {
+            string result = string.Empty;
+            // first, try to get the version string from the assembly.
+            Version version1 = Assembly.GetExecutingAssembly().GetName().Version;
+            if (version1 != null)
+            {
+               result = version1.ToString();
+            }
+            return result;
+         }
+      }
+
+      public static bool ReadConfigDetails(out ClientConfigDetails csd)
+      {
+         bool fileExists = false;
          csd = null;
          try
          {
             // Initialise a default to allow type get !
             csd = new ClientConfigDetails();
             XmlSerializer x = new XmlSerializer(csd.GetType());
-            Log.Info("Attempting to read ClientConfigDetails from: [{0}]", configFile);
+            Log.Info("Attempting to read CurrentDetails from: [{0}]", configFile);
             using (TextReader textReader = new StreamReader(configFile))
             {
                csd = x.Deserialize(textReader) as ClientConfigDetails;
@@ -110,7 +126,7 @@ namespace AmalgamClientTray
          {
             if (csd == null)
             {
-               Log.Info("Creating new ClientConfigDetails");
+               Log.Info("Creating new CurrentDetails");
                csd = new ClientConfigDetails();
                try
                {
@@ -121,9 +137,13 @@ namespace AmalgamClientTray
                {
                   Log.WarnException("ReadConfigDetails", ex);
                }
-               WriteOutConfigDetails(csd);
+            }
+            else
+            {
+               fileExists = true;
             }
          }
+         return fileExists;
       }
 
       private static void WriteOutConfigDetails(ClientConfigDetails csd)
@@ -142,68 +162,6 @@ namespace AmalgamClientTray
                Log.ErrorException("Cannot save configDetails: ", ex);
             }
       }
-
-      protected override void OnInitialized(EventArgs e)
-      {
-         base.OnInitialized(e);
-         lastWindowState = WindowState;
-         Hide();
-      }
-
-      protected override void OnStateChanged(EventArgs e)
-      {
-         if (this.WindowState == WindowState.Minimized)
-         {
-            this.Hide();
-         }
-         else
-         {
-            this.lastWindowState = this.WindowState;
-         }
-      }
-
-      protected override void OnClosing(CancelEventArgs e)
-      {
-         if (!shouldClose)
-         {
-            e.Cancel = true;
-            Hide();
-         }
-      }
-
-      #region Menu clickers
-      private void OnNotificationAreaIconDoubleClick(object sender, MouseButtonEventArgs e)
-      {
-         if (e.ChangedButton == MouseButton.Left)
-         {
-            Open();
-         }
-      }
-
-      private void OnMenuItemOpenClick(object sender, EventArgs e)
-      {
-         Open();
-      }
-
-      private void Open()
-      {
-         Show();
-         WindowState = lastWindowState;
-      }
-
-      private void OnMenuItemExitClick(object sender, EventArgs e)
-      {
-         shouldClose = true;
-         notificationIcon.Visibility = Visibility.Hidden;
-         Close();
-         Application.Exit();
-      }
-
-      private void OnMenuItemAboutClick(object sender, EventArgs e)
-      {
-         new WPFAboutBox1(null).ShowDialog();
-      }
-      #endregion
 
 
       #region Button Actions
@@ -343,8 +301,9 @@ namespace AmalgamClientTray
       {
          try
          {
-            ReadConfigDetails(out csd);
-            ClientConfigDetails = csd;
+            ClientConfigDetails readDetails;
+            ReadConfigDetails(out readDetails);
+            CurrentDetails = readDetails;
          }
          catch (Exception ex)
          {
