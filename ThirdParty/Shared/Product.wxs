@@ -11,7 +11,7 @@
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
 
    <!-- Change this when creating new release YY-MM-DD -->
-   <?define Version = "12.2.12.122" ?>
+   <?define Version = "12.3.09.269" ?>
 
    <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
 
@@ -125,6 +125,7 @@
 
       <Feature Id="ProductFeature" Title="AmalgamClient_FTP_Setup" Level="1">
          <ComponentGroupRef Id="Client" />
+         <ComponentGroupRef Id="Extras" />
          <ComponentRef Id='ProgramMenuDir2'/>
       </Feature>
 
