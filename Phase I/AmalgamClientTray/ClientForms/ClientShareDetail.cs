@@ -50,7 +50,7 @@ namespace AmalgamClientTray.ClientForms
 
       public string TargetShareName = @"";
 
-      public string VolumeLabel = @"ClientLiquesceFTP";
+      public string VolumeLabel = @"AmalgamClientTray";
 
       // Used to send data over the wire, this is not recommended to be over int.maxvalue / 2
       // In here as different targets may have different capabilities

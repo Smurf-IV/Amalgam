@@ -11,7 +11,7 @@
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
 
    <!-- Change this when creating new release YY-MM-DD -->
-   <?define Version = "12.3.09.269" ?>
+   <?define Version = "12.3.10.276" ?>
 
    <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
 
@@ -108,8 +108,17 @@
          <Component Id="AmalgamClientTray.exe.config" Directory="ClientDIR">
             <File Source="$(var.TraySource)\AmalgamClientTray.exe.config" KeyPath="yes" />
          </Component>
-         <Component Id="C_NLog.dll" Directory="ClientDIR">
-            <File Id="C_NLog.dll" Source="$(var.TraySource)\NLog.dll" KeyPath="yes" />
+         <Component Id="DokanNet.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\DokanNet.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="NLog.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\NLog.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="Starksoft.Net.Ftp.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\Starksoft.Net.Ftp.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="Starksoft.Net.Proxy.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\Starksoft.Net.Proxy.dll" KeyPath="yes" />
          </Component>
       </ComponentGroup>
       <DirectoryRef Id="ProgramMenuDir">
