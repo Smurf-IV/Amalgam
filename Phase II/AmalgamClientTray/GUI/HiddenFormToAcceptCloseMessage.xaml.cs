@@ -51,13 +51,21 @@ namespace AmalgamClientTray.GUI
       protected override void OnInitialized(EventArgs e)
       {
          base.OnInitialized(e);
-         ClientConfigDetails csd;
-         bool allowStart = Management.ReadConfigDetails(out csd);
-         if (allowStart)
+         try
          {
-            HandleMappingThread newMapping = new HandleMappingThread();
-            Handlers.ClientMappings[csd.SharesToRestore[0].DriveLetter] = newMapping;
-            newMapping.Start(csd.SharesToRestore[0]);
+            ClientConfigDetails csd;
+            bool allowStart = Management.ReadConfigDetails(out csd);
+            if (allowStart)
+            {
+               HandleMappingThread newMapping = new HandleMappingThread();
+               Handlers.ClientMappings[csd.SharesToRestore[0].DriveLetter] = newMapping;
+               newMapping.Start(csd.SharesToRestore[0]);
+            }
+         }
+         catch (Exception ex)
+         {
+            Log.ErrorException("OnInitialized:\n", ex);
+            Application.Current.Shutdown();
          }
       }
 
