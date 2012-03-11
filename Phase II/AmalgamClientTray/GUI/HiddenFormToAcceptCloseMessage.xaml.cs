@@ -33,7 +33,6 @@ using System.Windows.Input;
 using AmalgamClientTray.ClientForms;
 using AmalgamClientTray.Dokan;
 using NLog;
-using Application = System.Windows.Forms.Application;
 
 namespace AmalgamClientTray.GUI
 {
@@ -75,9 +74,13 @@ namespace AmalgamClientTray.GUI
                   keyValuePair.Value.Stop();
                }
          }
+         catch (Exception ex)
+         {
+            Log.ErrorException("OnClosing:\n", ex);
+         }
          finally
          {
-            Application.Exit();
+            Application.Current.Shutdown();
          }
       }
 

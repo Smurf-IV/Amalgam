@@ -31,6 +31,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F90CFF
 		..\ThirdParty\Shared\Product.wxs = ..\ThirdParty\Shared\Product.wxs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WindowsRecipes.TaskbarSingleInstance", "WindowsRecipes.TaskbarSingleInstance", "{A27BDAC0-441D-4231-AFF0-CB4554B22C61}"
+	ProjectSection(SolutionItems) = preProject
+		..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\ApplicationDispatcherInvoker.cs = ..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\ApplicationDispatcherInvoker.cs
+		..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\WindowsRecipes.TaskbarSingleInstance.dll = ..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\WindowsRecipes.TaskbarSingleInstance.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 5

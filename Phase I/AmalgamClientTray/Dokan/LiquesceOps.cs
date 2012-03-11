@@ -169,7 +169,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CreateFile threw: ", ex);
+            Log.ErrorException("CreateFile threw:\n", ex);
             actualErrorCode = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -243,7 +243,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CreateDirectory threw: ", ex);
+            Log.ErrorException("CreateDirectory threw:\n", ex);
             dokanError = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -294,7 +294,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("Cleanup threw: ", ex);
+            Log.ErrorException("Cleanup threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -312,7 +312,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CloseFile threw: ", ex);
+            Log.ErrorException("CloseFile threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -377,7 +377,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("ReadFile threw: ", ex);
+            Log.ErrorException("ReadFile threw:\n", ex);
             errorCode = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -434,7 +434,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("WriteFile threw: ", ex);
+            Log.ErrorException("WriteFile threw:\n", ex);
             errorCode = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -492,7 +492,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("FlushFileBuffers threw: ", ex);
+            Log.ErrorException("FlushFileBuffers threw:\n", ex);
             dokanReturn = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -539,7 +539,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("FindFiles threw: ", ex);
+            Log.ErrorException("FindFiles threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -578,7 +578,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetFileAttributes threw: ", ex);
+            Log.ErrorException("SetFileAttributes threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -633,7 +633,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetFileTime threw: ", ex);
+            Log.ErrorException("SetFileTime threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -683,7 +683,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("DeleteFile threw: ", ex);
+            Log.ErrorException("DeleteFile threw:\n", ex);
             dokanReturn = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -715,7 +715,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("DeleteDirectory threw: ", ex);
+            Log.ErrorException("DeleteDirectory threw:\n", ex);
             dokanReturn = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -776,7 +776,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("MoveFile threw: ", ex);
+            Log.ErrorException("MoveFile threw:\n", ex);
             return Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -827,7 +827,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("UnlockFile threw: ", ex);
+            Log.ErrorException("UnlockFile threw:\n", ex);
             dokanReturn = Utils.BestAttemptToWin32(ex);
          }
          finally
@@ -855,7 +855,7 @@ namespace AmalgamClientTray.Dokan
                   }
                   catch (Exception ex)
                   {
-                     Log.InfoException("Unmount closing files threw: ", ex);
+                     Log.InfoException("Unmount closing files threw:\n", ex);
                   }
                }
                openFiles.Clear();
