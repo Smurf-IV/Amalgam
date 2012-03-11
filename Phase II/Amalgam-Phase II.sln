@@ -26,7 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F90CFF
 		..\ThirdParty\Shared\Amalgam.ico = ..\ThirdParty\Shared\Amalgam.ico
 		..\ThirdParty\Shared\Banner.bmp = ..\ThirdParty\Shared\Banner.bmp
 		..\ThirdParty\Shared\ChangeLog.rtf = ..\ThirdParty\Shared\ChangeLog.rtf
-		..\ThirdParty\Shared\GPLv2.rtf = ..\ThirdParty\Shared\GPLv2.rtf
 		..\ThirdParty\Shared\Help.ico = ..\ThirdParty\Shared\Help.ico
 		..\ThirdParty\Shared\Product.wxs = ..\ThirdParty\Shared\Product.wxs
 	EndProjectSection

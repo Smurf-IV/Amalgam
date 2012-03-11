@@ -11,7 +11,7 @@
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
 
    <!-- Change this when creating new release YY-MM-DD -->
-   <?define Version = "12.3.10.276" ?>
+   <?define Version = "12.3.11.277" ?>
 
    <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
 
@@ -110,6 +110,9 @@
          </Component>
          <Component Id="DokanNet.dll" Directory="ClientDIR">
             <File Source="$(var.TraySource)\DokanNet.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="GPLv2.rtf" Directory="ClientDIR">
+            <File Source="$(sys.SOURCEFILEDIR)GPLv2.rtf" KeyPath="yes" />
          </Component>
          <Component Id="NLog.dll" Directory="ClientDIR">
             <File Source="$(var.TraySource)\NLog.dll" KeyPath="yes" />
