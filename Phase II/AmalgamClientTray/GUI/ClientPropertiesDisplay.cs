@@ -74,7 +74,7 @@ namespace AmalgamClientTray.ClientForms
 
       [DescriptionAttribute("The number of Bytes allocated to be chunked over the Wire.\rRange 4096 <-> near 1GB.\rWarning: during long transfers some FTP servers can log you out!")
       , DisplayName("Buffer Wire Transfer Size")
-      , CategoryAttribute("\b\b\bLocal")
+      , CategoryAttribute("​\u200b​\u200b​\u200bLocal")
       ]
       public int BufferWireTransferSize
       {
@@ -89,7 +89,7 @@ namespace AmalgamClientTray.ClientForms
 
       [DescriptionAttribute("The number of Bytes allocated to each of the temporary cache files.\rRange 4096 <-> near 32MB.")
       , DisplayName("Cache File Max Size")
-      , CategoryAttribute("\b\b\bLocal")
+      , CategoryAttribute("​\u200b​\u200b​\u200bLocal")
       ]
       public int CacheFileMaxSize
       {
@@ -105,7 +105,7 @@ namespace AmalgamClientTray.ClientForms
       
       [DescriptionAttribute("The number of secounds the file information will be stored before it is removed.\rRange 1 <-> near 12 hours.")
       , DisplayName("Cache Info Expire Seconds")
-      , CategoryAttribute("\b\b\bLocal")
+      , CategoryAttribute("​\u200b​\u200b​\u200bLocal")
       ]
       public int CacheInfoExpireSeconds
       {
@@ -147,45 +147,45 @@ namespace AmalgamClientTray.ClientForms
       }
       [DescriptionAttribute("The Name to be used in explorer.")
       , DisplayName("Drive Label")
-      , CategoryAttribute("\b\b\bLocal")
+      , CategoryAttribute("​\u200b​\u200b​\u200bLocal")
       ]
       public string VolumeLabel { get; set; }
 
       [DescriptionAttribute("The drive letter used in explorer")
       , DisplayName("Drive letter")
-      , CategoryAttribute("\b\b\bLocal")
+      , CategoryAttribute("​\u200b​\u200b​\u200bLocal")
       ]
       public string DriveLetter { get; set; }
 
       [DescriptionAttribute("The name allocated to the share on the target machine.")
       , DisplayName("Target directory to be used as root")
-      , CategoryAttribute("\b\bUser Details")
+      , CategoryAttribute("​\u200b​\u200bUser Details")
       , ReadOnly(true)
       ]
       public string TargetShareName { get; set; }
 
       [DescriptionAttribute("The User to be used as the ACL Check up.")
       , DisplayName("FTP User for the connection")
-      , CategoryAttribute("\b\bUser Details")
+      , CategoryAttribute("​\u200b​\u200bUser Details")
       ]
       public string UserName { get; set; }
 
 
       [DescriptionAttribute("The Password to be used as the ACL Check up.")
       , DisplayName("Password associated with the above user.")
-      , CategoryAttribute("\b\bUser Details")
+      , CategoryAttribute("​\u200b​\u200bUser Details")
       ]
       public string Password { get; set; }
 
       [DescriptionAttribute("The machine name or IP address of the Target share.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allow communications.")
       , DisplayName("Target FTP Machine")
-      , CategoryAttribute("\bRemote Machine")
+      , CategoryAttribute("​\u200bRemote Machine")
       ]
       public string TargetMachineName { get; set; }
 
       [DescriptionAttribute("The Target port.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allowing communications.")
       , DisplayName("Target FTP Port")
-      , CategoryAttribute("\bRemote Machine")
+      , CategoryAttribute("​\u200bRemote Machine")
       ]
       public int Port 
       {
@@ -201,7 +201,7 @@ namespace AmalgamClientTray.ClientForms
 
       [DescriptionAttribute("The Target SecurityProtocol.\rPress test to ensure that it is connectable.\rNOTE: If the share is not visible then try disabling (temporarily) the firewalls between the machines to see if the applications are not allow communications.")
       , DisplayName("Target FTP SecurityProtocol")
-      , CategoryAttribute("\bRemote Machine")
+      , CategoryAttribute("​\u200bRemote Machine")
       , ReadOnly(true)
       , Browsable(true)
       ]
@@ -209,13 +209,13 @@ namespace AmalgamClientTray.ClientForms
 
       [DescriptionAttribute( "Do not attempt to retrieve details about the following filenames.\rThis will speed up Explorers discovery.\rNote: These are case sensitive, and will be applied to directories as well")
       , DisplayName("FileNames to ignore")
-      , CategoryAttribute("\bRemote Machine")
+      , CategoryAttribute("​\u200bRemote Machine")
       ]
       public List<string> FileNamesToIgnore { get; set; }
 
       [DescriptionAttribute("Enforces readonly attributes to all files and directories returned from the target.\rWill prevent writing to the target as well.")
       , DisplayName("Target Is Readonly")
-      , CategoryAttribute("\bRemote Machine")
+      , CategoryAttribute("​\u200bRemote Machine")
       ]
       public bool TargetIsReadonly { get; set; }
 

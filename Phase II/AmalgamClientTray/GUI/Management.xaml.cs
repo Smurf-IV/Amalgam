@@ -104,10 +104,10 @@ namespace AmalgamClientTray
          csd = null;
          try
          {
-            // Initialise a default to allow type get !
-            csd = new ClientConfigDetails();
             if (File.Exists(configFile))
             {
+               // Initialise a default to allow type get !
+               csd = new ClientConfigDetails();
                XmlSerializer x = new XmlSerializer(csd.GetType());
                Log.Info("Attempting to read CurrentDetails from: [{0}]", configFile);
                using (TextReader textReader = new StreamReader(configFile))
