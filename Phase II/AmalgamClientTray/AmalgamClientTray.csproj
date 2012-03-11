@@ -84,6 +84,9 @@
   <PropertyGroup>
     <ApplicationIcon>Images\Amalgam.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AmalgamClientTray.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog">
       <HintPath>..\..\ThirdParty\NLog.dll</HintPath>
@@ -125,6 +128,9 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="WindowsRecipes.TaskbarSingleInstance">
+      <HintPath>..\..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\WindowsRecipes.TaskbarSingleInstance.dll</HintPath>
+    </Reference>
     <Reference Include="WPFToolkit.Extended">
       <HintPath>..\..\ThirdParty\WPFToolkit.Extended.dll</HintPath>
     </Reference>
@@ -185,6 +191,9 @@
     <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\TemporaryFile.cs">
       <Link>FTP\TemporaryFile.cs</Link>
     </Compile>
+    <Compile Include="..\..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\ApplicationDispatcherInvoker.cs">
+      <Link>ApplicationDispatcherInvoker.cs</Link>
+    </Compile>
     <Compile Include="GUI\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
@@ -196,6 +205,7 @@
       <DependentUpon>Management.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\NotificationAreaIcon.Interop.cs" />
+    <Compile Include="program.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

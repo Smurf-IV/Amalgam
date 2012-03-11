@@ -212,7 +212,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CreateFileProxy threw:", ex);
+            Log.ErrorException("CreateFileProxy threw:\n", ex);
             return Dokan.ERROR_FILE_NOT_FOUND;
          }
 
@@ -236,7 +236,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("OpenDirectoryProxy threw:", ex);
+            Log.ErrorException("OpenDirectoryProxy threw:\n", ex);
             return -1;
          }
       }
@@ -259,7 +259,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CreateDirectoryProxy threw: ", ex);
+            Log.ErrorException("CreateDirectoryProxy threw:\n", ex);
             return -1;
          }
       }
@@ -279,7 +279,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CleanupProxy threw: ", ex);
+            Log.ErrorException("CleanupProxy threw:\n", ex);
             return -1;
          }
       }
@@ -299,7 +299,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("CloseFileProxy threw: ", ex);
+            Log.ErrorException("CloseFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -320,7 +320,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("ReadFileProxy threw: ", ex);
+            Log.ErrorException("ReadFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -341,7 +341,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("WriteFileProxy threw: ", ex);
+            Log.ErrorException("WriteFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -360,7 +360,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("FlushFileBuffersProxy threw: ", ex);
+            Log.ErrorException("FlushFileBuffersProxy threw:\n", ex);
             return -1;
          }
       }
@@ -405,7 +405,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("GetFileInformationProxy threw: ", ex);
+            Log.ErrorException("GetFileInformationProxy threw:\n", ex);
             return -1;
          }
 
@@ -462,7 +462,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("FindFilesProxy threw: ", ex);
+            Log.ErrorException("FindFilesProxy threw:\n", ex);
             return -1;
          }
 
@@ -539,7 +539,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("FindFilesProxy threw: ", ex);
+            Log.ErrorException("FindFilesProxy threw:\n", ex);
             return -1;
          }
 
@@ -589,7 +589,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetEndOfFileProxy threw: ", ex);
+            Log.ErrorException("SetEndOfFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -607,7 +607,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetAllocationSizeProxy threw: ", ex);
+            Log.ErrorException("SetAllocationSizeProxy threw:\n", ex);
             return -1;
          }
       }
@@ -628,7 +628,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetFileAttributesProxy threw: ", ex);
+            Log.ErrorException("SetFileAttributesProxy threw:\n", ex);
             return -1;
          }
       }
@@ -649,7 +649,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetFileTimeProxy threw: ", ex);
+            Log.ErrorException("SetFileTimeProxy threw:\n", ex);
             return -1;
          }
       }
@@ -668,7 +668,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("DeleteFileProxy threw: ", ex);
+            Log.ErrorException("DeleteFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -686,7 +686,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("DeleteDirectoryProxy threw: ", ex);
+            Log.ErrorException("DeleteDirectoryProxy threw:\n", ex);
             return -1;
          }
       }
@@ -706,7 +706,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("MoveFileProxy threw: ", ex);
+            Log.ErrorException("MoveFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -724,7 +724,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("LockFileProxy threw: ", ex);
+            Log.ErrorException("LockFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -742,7 +742,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("UnlockFileProxy threw: ", ex);
+            Log.ErrorException("UnlockFileProxy threw:\n", ex);
             return -1;
          }
       }
@@ -762,7 +762,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("GetDiskFreeSpaceProxy threw: ", ex);
+            Log.ErrorException("GetDiskFreeSpaceProxy threw:\n", ex);
             return -1;
          }
       }
@@ -809,7 +809,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("GetVolumeInformationProxy threw: ", ex);
+            Log.ErrorException("GetVolumeInformationProxy threw:\n", ex);
             return -1;
          }
       }
@@ -825,7 +825,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("UnmountProxy threw: ", ex);
+            Log.ErrorException("UnmountProxy threw:\n", ex);
             return -1;
          }
       }
@@ -845,7 +845,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("GetFileSecurity threw: ", ex);
+            Log.ErrorException("GetFileSecurity threw:\n", ex);
             return -1;
          }
       }
@@ -863,7 +863,7 @@ namespace DokanNet
          }
          catch (Exception ex)
          {
-            Log.ErrorException("SetFileSecurity threw: ", ex);
+            Log.ErrorException("SetFileSecurity threw:\n", ex);
             return -1;
          }
       }

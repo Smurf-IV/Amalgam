@@ -9,6 +9,9 @@
          <Component Id="WPFToolkit.Extended.dll" Directory="ClientDIR">
             <File Source="$(var.TraySource)\WPFToolkit.Extended.dll" KeyPath="yes" />
          </Component>
+         <Component Id="WindowsRecipes.TaskbarSingleInstance.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\WindowsRecipes.TaskbarSingleInstance.dll" KeyPath="yes" />
+         </Component>
       </ComponentGroup>
    </Fragment>
 </Wix>

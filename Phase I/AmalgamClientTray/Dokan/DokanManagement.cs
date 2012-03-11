@@ -75,7 +75,7 @@ namespace AmalgamClientTray.Dokan
                }
                catch (Exception ex)
                {
-                  Log.InfoException("Make sure it's unmounted threw:", ex);
+                  Log.InfoException("Make sure it's unmounted threw:\n", ex);
                }
                IsRunning = true;
 
@@ -136,7 +136,7 @@ namespace AmalgamClientTray.Dokan
          }
          catch (Exception ex)
          {
-            Log.ErrorException("Start has failed in an uncontrolled way: ", ex);
+            Log.ErrorException("Start has failed in an uncontrolled way:\n", ex);
             Environment.Exit(-1);
          }
          finally

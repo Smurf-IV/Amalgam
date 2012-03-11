@@ -51,7 +51,7 @@ namespace AmalgamClientTray
          {
             try
             {
-               Log.FatalException("Failed to attach unhandled exception handler...", ex);
+               Log.FatalException("Failed to attach unhandled exception handler...\n", ex);
             }
             catch
             {
@@ -92,7 +92,7 @@ namespace AmalgamClientTray
             Exception ex = e.ExceptionObject as Exception;
             if (ex != null)
             {
-               Log.FatalException("Exception details", ex);
+               Log.FatalException("Exception details\n", ex);
             }
             else
             {

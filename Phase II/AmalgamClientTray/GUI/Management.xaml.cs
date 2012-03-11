@@ -25,11 +25,8 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
@@ -39,7 +36,6 @@ using AmalgamClientTray.ClientForms;
 using AmalgamClientTray.Dokan;
 using NLog;
 using Starksoft.Net.Ftp;
-using Application = System.Windows.Forms.Application;
 using Cursors = System.Windows.Input.Cursors;
 
 namespace AmalgamClientTray
@@ -110,16 +106,19 @@ namespace AmalgamClientTray
          {
             // Initialise a default to allow type get !
             csd = new ClientConfigDetails();
-            XmlSerializer x = new XmlSerializer(csd.GetType());
-            Log.Info("Attempting to read CurrentDetails from: [{0}]", configFile);
-            using (TextReader textReader = new StreamReader(configFile))
+            if (File.Exists(configFile))
             {
-               csd = x.Deserialize(textReader) as ClientConfigDetails;
+               XmlSerializer x = new XmlSerializer(csd.GetType());
+               Log.Info("Attempting to read CurrentDetails from: [{0}]", configFile);
+               using (TextReader textReader = new StreamReader(configFile))
+               {
+                  csd = x.Deserialize(textReader) as ClientConfigDetails;
+               }
             }
          }
          catch (Exception ex)
          {
-            Log.ErrorException("Cannot read the configDetails: ", ex);
+            Log.ErrorException("Cannot read the configDetails:\n", ex);
             csd = null;
          }
          finally
@@ -135,7 +134,7 @@ namespace AmalgamClientTray
                }
                catch (Exception ex)
                {
-                  Log.WarnException("ReadConfigDetails", ex);
+                  Log.WarnException("ReadConfigDetails\n", ex);
                }
             }
             else
@@ -159,7 +158,7 @@ namespace AmalgamClientTray
             }
             catch (Exception ex)
             {
-               Log.ErrorException("Cannot save configDetails: ", ex);
+               Log.ErrorException("Cannot save configDetails:\n", ex);
             }
       }
 
@@ -187,7 +186,7 @@ namespace AmalgamClientTray
          }
          catch (Exception ex)
          {
-            Log.ErrorException("btnConnect_Click", ex);
+            Log.ErrorException("btnConnect_Click:\n", ex);
             Microsoft.Windows.Controls.MessageBox.Show(this, ex.Message, "Failed to contact Target", MessageBoxButton.OK, MessageBoxImage.Error);
          }
          finally
@@ -246,7 +245,7 @@ namespace AmalgamClientTray
                }
                catch (Exception ex)
                {
-                  Log.ErrorException("btnSend_Click", ex);
+                  Log.ErrorException("btnSend_Click:\n", ex);
                   Microsoft.Windows.Controls.MessageBox.Show(this, ex.Message, "Failed, Check the logs", MessageBoxButton.OK, MessageBoxImage.Error);
                }
             }
@@ -289,7 +288,7 @@ namespace AmalgamClientTray
          }
          catch (Exception ex)
          {
-            Log.ErrorException("OpenFile has an exception: ", ex);
+            Log.ErrorException("OpenFile has an exception:\n", ex);
             Microsoft.Windows.Controls.MessageBox.Show(this, ex.Message, "Failed to open the client log view", MessageBoxButton.OK, MessageBoxImage.Error);
          }
       }
@@ -307,7 +306,7 @@ namespace AmalgamClientTray
          }
          catch (Exception ex)
          {
-            Log.ErrorException("Unable to ReadConfigDetails", ex);
+            Log.ErrorException("Unable to ReadConfigDetails:\n", ex);
          }
       }
 
