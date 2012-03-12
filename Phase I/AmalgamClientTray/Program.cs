@@ -25,7 +25,9 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using AmalgamClientTray.TrayHandlers;
 using NLog;
@@ -61,10 +63,14 @@ namespace AmalgamClientTray
          {
             Log.Error("=====================================================================");
             Log.Error("File Re-opened: Ver :" + Assembly.GetExecutingAssembly().GetName().Version);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            nih = new NotifyIconHandler();
-            Application.Run(new HiddenFormToAcceptCloseMessage());
+            Mutex AppUserMutex;
+            if (CheckAndRunSingleApp(out AppUserMutex))
+            {
+               Application.EnableVisualStyles();
+               Application.SetCompatibleTextRenderingDefault(false);
+               nih = new NotifyIconHandler();
+               Application.Run(new HiddenFormToAcceptCloseMessage());
+            }
          }
          catch (Exception ex)
          {
@@ -84,6 +90,21 @@ namespace AmalgamClientTray
             Log.Error("=====================================================================");
          }
       }
+
+      private static bool CheckAndRunSingleApp(out Mutex AppUserMutex )
+      {
+         string appName = Assembly.GetExecutingAssembly().ManifestModule.ScopeName;
+         bool GrantedOwnership;
+         AppUserMutex = new Mutex(true, appName, out GrantedOwnership);
+         if (!GrantedOwnership)
+         {
+            MessageBox.Show(string.Format("{0} [{1}] is already running", appName, Environment.UserName), appName,
+               MessageBoxButtons.OK, MessageBoxIcon.Stop);
+         }
+         return GrantedOwnership;
+      }
+
+
       private static void logUnhandledException(object sender, UnhandledExceptionEventArgs e)
       {
          try

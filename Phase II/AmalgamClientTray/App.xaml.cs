@@ -37,29 +37,5 @@ namespace AmalgamClientTray
    /// </summary>
    public partial class App : Application
    {
-      static private readonly Logger Log = LogManager.GetCurrentClassLogger();
-
-      private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-      {
-         Exception CurrentException = e.Exception;
-         Log.FatalException("Application_DispatcherUnhandledException:\n", CurrentException);
-         while (CurrentException != null)
-         {
-            MessageBox.Show(CurrentException.Message, "Report the logfile to http://amalgam.codeplex.com");
-            CurrentException = CurrentException.InnerException;
-         }
-      }
-
-      private void Application_Startup(object sender, StartupEventArgs e)
-      {
-         Log.Error("=====================================================================");
-         Log.Error("File Re-opened: Ver :" + Assembly.GetExecutingAssembly().GetName().Version);
-      }
-
-      private void Application_Exit(object sender, ExitEventArgs e)
-      {
-         Log.Error("File Closing");
-         Log.Error("=====================================================================");
-      }
    }
 }

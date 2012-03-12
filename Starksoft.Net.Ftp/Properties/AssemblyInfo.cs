@@ -9,8 +9,8 @@ using System.Reflection;
 [assembly: AssemblyCopyright("Copyright 2009,2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("12.3.12.29")]
-[assembly: AssemblyFileVersion("12.3.12.29")]
+[assembly: AssemblyVersion("12.3.12.36")]
+[assembly: AssemblyFileVersion("12.3.12.36")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
 
