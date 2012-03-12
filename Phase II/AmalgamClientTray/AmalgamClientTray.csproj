@@ -92,30 +92,15 @@
       <HintPath>..\..\ThirdParty\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Activities" />
-    <Reference Include="System.Activities.Core.Presentation" />
     <Reference Include="System.Activities.Presentation" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Design" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Microsoft.CSharp">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase">
@@ -126,10 +111,6 @@
     </Reference>
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="WindowsRecipes.TaskbarSingleInstance">
-      <HintPath>..\..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\WindowsRecipes.TaskbarSingleInstance.dll</HintPath>
     </Reference>
     <Reference Include="WPFToolkit.Extended">
       <HintPath>..\..\ThirdParty\WPFToolkit.Extended.dll</HintPath>
@@ -190,9 +171,6 @@
     </Compile>
     <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\TemporaryFile.cs">
       <Link>FTP\TemporaryFile.cs</Link>
-    </Compile>
-    <Compile Include="..\..\ThirdParty\WindowsRecipes.TaskbarSingleInstance\ApplicationDispatcherInvoker.cs">
-      <Link>ApplicationDispatcherInvoker.cs</Link>
     </Compile>
     <Compile Include="GUI\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>

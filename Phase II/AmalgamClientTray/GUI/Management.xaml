@@ -29,7 +29,6 @@
               VerticalAlignment="Bottom" Width="102" IsEnabled="False" Click="btnSave_Click"
               x:FieldModifier="private" />
       <extToolkit:PropertyGrid  HorizontalAlignment="Stretch" Margin="12,12,12,52" x:Name="PropertyGrid1" 
-                                VerticalAlignment="Stretch" ShowSearchBox="False" ShowAdvancedOptions="True"
-                                x:FieldModifier="private" />
+                                VerticalAlignment="Stretch" ShowSearchBox="False" x:FieldModifier="private" NameColumnWidth="200" />
    </Grid>
 </Window>
