@@ -24,11 +24,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows;
-using System.Windows.Threading;
 using AmalgamClientTray.ClientForms;
 
 namespace AmalgamClientTray.Dokan
@@ -72,8 +69,8 @@ namespace AmalgamClientTray.Dokan
                )
             {
                Thread.Sleep(250);
-               Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
-                                          new Action(delegate { }));
+               //Application.Current.Dispatcher.Invoke(DispatcherPriority.Background,
+               //                           new Action(delegate { }));
             }
             runningState = mapManager.IsRunning;
          }

@@ -69,6 +69,10 @@ namespace AmalgamClientTray.ClientForms
 
       public bool TargetIsReadonly = false;
 
+      public bool IgnoreSetTimeStampFailure = false;
+
+      public bool TargetRequiresSplitDirs = false;
+      
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
    }

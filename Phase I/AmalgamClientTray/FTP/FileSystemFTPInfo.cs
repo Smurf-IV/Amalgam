@@ -85,7 +85,14 @@ namespace AmalgamClientTray.FTP
             // TODO: call the MFMT
             return new DateTime();
          }
-         set { lastWriteTimeUtc = value; }
+         set 
+         {
+            if (lastWriteTimeUtc != value)
+            {
+               lastWriteTimeUtc = value;
+               FtpCmdInstance.SetModifiedDateTime(path, lastWriteTimeUtc);
+            }
+         }
       }
 
       internal DateTime creationTimeUtc;
@@ -97,7 +104,14 @@ namespace AmalgamClientTray.FTP
             // TODO: call the MFCT
             return new DateTime();
          }
-         set { creationTimeUtc = value; }
+         set
+         {
+            if (creationTimeUtc != value)
+            {
+               creationTimeUtc = value;
+               FtpCmdInstance.SetCreatedDateTime(path, creationTimeUtc);
+            }
+         }
       }
 
       /// <summary>

@@ -58,6 +58,8 @@ namespace AmalgamClientTray.ClientForms
             DokanDebugMode = csd.DokanDebugMode;
             ApplicationLogLevel = csd.ApplicationLogLevel;
             TargetIsReadonly = csd.TargetIsReadonly;
+            IgnoreSetTimeStampFailure = csd.IgnoreSetTimeStampFailure;
+            TargetRequiresSplitDirs = csd.TargetRequiresSplitDirs;
          }
       }
 
@@ -183,6 +185,19 @@ namespace AmalgamClientTray.ClientForms
       , CategoryAttribute("\tRemote Machine")
       ]
       public bool TargetIsReadonly { get; set; }
+
+      [DescriptionAttribute("Some FTP Servers do not implement the API's necessary to set time stamps.\rThis prevents these failures being reported back to the calling application.")
+      , DisplayName("Ignore SetTimeStamp Failure")
+      , CategoryAttribute("​\u200bRemote Machine")
+      ]
+      public bool IgnoreSetTimeStampFailure { get; set; }
+
+      [DescriptionAttribute("Some FTP Servers do not accept full paths when traveresing through their filesystems.\rThis can only be found via trail and error.\rIf you cannot get file details by going stright to an \"N-depth\" child, then set this.\rNote: There may be a performnce penalty.")
+      , DisplayName("Target Requires Split Dirs")
+      , CategoryAttribute("​\u200bRemote Machine")
+      ]
+      public bool TargetRequiresSplitDirs { get; set; }
+
 
       [DescriptionAttribute("Turn Dokan Debug information on, to all it to be captured in an appropriate app.")
       , DisplayName("Dokan Debug Mode")
