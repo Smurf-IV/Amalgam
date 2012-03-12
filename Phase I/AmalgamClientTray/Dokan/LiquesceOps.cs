@@ -598,58 +598,50 @@ namespace AmalgamClientTray.Dokan
             Log.Trace("SetFileTime IN DokanProcessId[{0}]", info.ProcessId);
             if (csd.TargetIsReadonly)
                return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
+            if (csd.IgnoreSetTimeStampFailure)
+               return DokanNet.Dokan.DOKAN_SUCCESS;
 
-            throw new NotImplementedException("SetFileTimeNative");
-            //using (openFilesSync.ReadLock())
-            //{
-            //   if (info.refFileHandleContext != 0)
-            //   {
-            //      Log.Trace("info.refFileHandleContext [{0}]", info.refFileHandleContext);
-            //      safeFileHandle = openFiles[info.refFileHandleContext].SafeFileHandle;
-            //   }
-            //   else
-            //   {
-            //      // Workaround the dir set
-            //      // ERROR LiquesceSvc.LiquesceOps: SetFileTime threw:  System.UnauthorizedAccessException: Access to the path 'G:\_backup\Kylie Minogue\Dir1' is denied.
-            //      // To create a handle to a directory, you have to use FILE_FLAG_BACK_SEMANTICS.
-            //      string path = GetPath(dokanFilename);
-            //      const uint rawAccessMode = Proxy.GENERIC_READ | Proxy.GENERIC_WRITE;
-            //      const uint rawShare = Proxy.FILE_SHARE_READ | Proxy.FILE_SHARE_WRITE;
-            //      const uint rawCreationDisposition = Proxy.OPEN_EXISTING;
-            //      uint rawFlagsAndAttributes = Directory.Exists(path) ? Proxy.FILE_FLAG_BACKUP_SEMANTICS : 0;
-            //      safeFileHandle = CreateFile(path, rawAccessMode, rawShare, IntPtr.Zero, rawCreationDisposition, rawFlagsAndAttributes, IntPtr.Zero);
-            //      needToClose = true;
-            //   }
-            //   if ((safeFileHandle != null)
-            //      && !safeFileHandle.IsInvalid
-            //      )
-            //   {
-            //      if (!SetFileTime(safeFileHandle, ref rawCreationTime, ref rawLastAccessTime, ref rawLastWriteTime))
-            //      {
-            //         Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error(), new IntPtr(-1));
-            //      }
-            //   }
-            //}
+            string path = GetPath(dokanFilename);
+            if (info.refFileHandleContext == 0)
+            {
+               // Some applications (like Notepad) come in "under the wire" and not via the CreateFile to perform a read
+               using (openFilesSync.WriteLock())
+               {
+                  // Increment now in case there is an exception later
+                  info.refFileHandleContext = ++openFilesLastKey; // never be Zero !
+                  openFiles.Add(openFilesLastKey,
+                                new OptimizedFTPFileReadHandler(csd, (uint)FileMode.Open, new FileFTPInfo(ftpCmdInstance, path), null)
+                                );
+                  needToClose = true;
+               }
+            }
+
+            using (openFilesSync.ReadLock())
+            {
+               long time = ((long)rawCreationTime.dwHighDateTime << 32) + (uint)rawCreationTime.dwLowDateTime;
+               DateTime ctime = (time <= 0)?DateTime.MinValue:DateTime.FromFileTime(time);
+
+               time = ((long)rawLastAccessTime.dwHighDateTime << 32) + (uint)rawLastAccessTime.dwLowDateTime;
+               DateTime atime = (time <= 0) ? DateTime.MinValue : DateTime.FromFileTime(time);
+
+               time = ((long)rawLastWriteTime.dwHighDateTime << 32) + (uint)rawLastWriteTime.dwLowDateTime;
+               DateTime mtime = (time == -1)?DateTime.MinValue: DateTime.FromFileTime(time);
+
+               FileStreamFTP fileStream = openFiles[info.refFileHandleContext];
+               fileStream.SetFileTime(ctime, atime, mtime);
+            }
          }
          catch (Exception ex)
          {
             Log.ErrorException("SetFileTime threw:\n", ex);
-            return Utils.BestAttemptToWin32(ex);
+            if (!csd.IgnoreSetTimeStampFailure)
+               return Utils.BestAttemptToWin32(ex);
          }
          finally
          {
-            try
+            if (needToClose)
             {
-               if (needToClose
-                   && (safeFileHandle != null)
-                   && !safeFileHandle.IsInvalid
-                  )
-               {
-                  safeFileHandle.Close();
-               }
-            }
-            catch
-            {
+               CloseAndRemove(info);
             }
             Log.Trace("SetFileTime OUT");
          }

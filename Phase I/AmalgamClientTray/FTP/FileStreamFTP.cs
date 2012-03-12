@@ -126,5 +126,14 @@ namespace AmalgamClientTray.FTP
          }
          return true;
       }
+
+      public void SetFileTime(DateTime ctime, DateTime atime, DateTime mtime)
+      {
+         if (ctime != DateTime.MinValue)
+            fsi.CreationTimeUtc = ctime;
+
+         if (mtime != DateTime.MinValue)
+            fsi.LastWriteTimeUtc = mtime;
+      }
    }
 }

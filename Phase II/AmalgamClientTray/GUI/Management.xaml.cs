@@ -225,6 +225,8 @@ namespace AmalgamClientTray
             csd.SharesToRestore[0].DokanDebugMode = cpd.DokanDebugMode;
             csd.SharesToRestore[0].ApplicationLogLevel = cpd.ApplicationLogLevel;
             csd.SharesToRestore[0].TargetIsReadonly = cpd.TargetIsReadonly;
+            csd.SharesToRestore[0].IgnoreSetTimeStampFailure = cpd.IgnoreSetTimeStampFailure;
+            csd.SharesToRestore[0].TargetRequiresSplitDirs = cpd.TargetRequiresSplitDirs;
 
             Log.Info("Write the values to the Service config file");
             WriteOutConfigDetails(csd);

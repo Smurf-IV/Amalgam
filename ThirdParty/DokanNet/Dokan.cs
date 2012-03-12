@@ -25,12 +25,13 @@ namespace DokanNet
       // ReSharper disable InconsistentNaming
 #pragma warning disable 169
       #region File Operation Errors
-      // From WinError.h -> http://msdn.microsoft.com/en-us/library/ms819773.aspx
+      // From WinError.h -> http://msdn.microsoft.com/en-us/library/windows/desktop/ms681382%28v=vs.85%29.aspx
       public const int ERROR_FILE_NOT_FOUND = -2;  // MessageText: The system cannot find the file specified.
       public const int ERROR_PATH_NOT_FOUND = -3;  // MessageText: The system cannot find the path specified.
       public const int ERROR_ACCESS_DENIED = -5;   // MessageText: Access is denied.
       public const int ERROR_SHARING_VIOLATION = -32;
       public const int ERROR_FILE_EXISTS = -80;
+      public const int ERROR_CALL_NOT_IMPLEMENTED = -120;
       public const int ERROR_DISK_FULL = -112;     // There is not enough space on the disk.
       public const int ERROR_INVALID_NAME = -123;
       public const int ERROR_DIR_NOT_EMPTY = -145; // MessageText: The directory is not empty.

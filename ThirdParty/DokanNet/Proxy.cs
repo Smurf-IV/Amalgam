@@ -477,65 +477,8 @@ namespace DokanNet
       {
          try
          {
-            string file = GetFileName(rawFileName);
-            string pattern = GetFileName(rawSearchPattern);
-            int ret;
-            FileInformation[] files = null;
-            char[] matchDOS = ("\"<>?").ToCharArray();
-            if (-1 != pattern.IndexOfAny(matchDOS))  // See http://liquesce.codeplex.com/workitem/7556
-            {
-               Log.Info("An Application is using DOS_STAR style pattern matching[{0}], Will switch to compatible mode matching", pattern);
-               // PureSync (And maybe others) use the following to get this and / or the subdir contents
-               // DirName<"*
-               // But there is an issue with the code inside dokan see http://code.google.com/p/dokan/issues/detail?id=192 
-               FileInformation[] nonPatternFiles;
-               ret = operations.FindFiles(file, out nonPatternFiles, ConvertFileInfo(ref rawFileInfo));
-               if (ret == Dokan.DOKAN_SUCCESS)
-               {
-                  List<FileInformation> matchedFiles = new List<FileInformation>();
-                  matchedFiles.AddRange(nonPatternFiles.Where(patternFile => DokanDll.DokanIsNameInExpression(pattern, patternFile.FileName, false)));
-                  files = matchedFiles.ToArray();
-               }
-               // * (asterisk) Matches zero or more characters.
-               // ? (question mark) Matches a single character.
-               // #define DOS_DOT (L'"') -  Matches either a period or zero characters beyond the name string.
-               // #define DOS_QM (L'>') - Matches any single character or, upon encountering a period or end of name string, 
-               // advances the expression to the end of the set of contiguous DOS_QMs.
-               // #define DOS_STAR (L'<') - Matches zero or more characters until encountering and matching the final . in the name. 
-               Log.Debug("DOS_STAR style pattern OUT [found {0}]", (files != null) ? files.Length : 0);
-               if (Log.IsTraceEnabled)
-               {
-                  if (files != null)
-                  {
-                     StringBuilder sb = new StringBuilder();
-                     sb.AppendLine();
-                     for (int index = 0; index < files.Length; index++)
-                     {
-                        FileInformation fileInformation = files[index];
-                        sb.AppendLine(fileInformation.FileName);
-                     }
-                     Log.Trace(sb.ToString());
-                  }
-               }
-            }
-            else
-               ret = operations.FindFilesWithPattern(file, pattern, out files, ConvertFileInfo(ref rawFileInfo));
-
-            FILL_FIND_DATA fill = (FILL_FIND_DATA)Marshal.GetDelegateForFunctionPointer(rawFillFindData, typeof(FILL_FIND_DATA));
-
-            if ((ret == 0)
-               && (files != null)
-               )
-            {
-               // ReSharper disable ForCanBeConvertedToForeach
-               // Used a single entry call to speed up the "enumeration" of the list
-               for (int index = 0; index < files.Length; index++)
-               // ReSharper restore ForCanBeConvertedToForeach
-               {
-                  Addto(fill, ref rawFileInfo, files[index]);
-               }
-            }
-            return ret;
+            //throw new NotImplementedException("FindFilesWithPatternProxy");
+            return Dokan.ERROR_CALL_NOT_IMPLEMENTED;
          }
          catch (Exception ex)
          {

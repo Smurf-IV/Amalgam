@@ -93,7 +93,7 @@ namespace AmalgamClientTray.Dokan
                   VolumeLabel = csd.VolumeLabel
                };
 
-               ftpInstance = new FtpClientExt( new FtpClient(csd.TargetMachineName, csd.Port, csd.SecurityProtocol) );
+               ftpInstance = new FtpClientExt( new FtpClient(csd.TargetMachineName, csd.Port, csd.SecurityProtocol), csd.TargetRequiresSplitDirs );
                ftpInstance.Open(csd.UserName, csd.Password);
 
                dokanOperations = new LiquesceOps(csd, ftpInstance);

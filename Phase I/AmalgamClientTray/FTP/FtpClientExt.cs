@@ -55,6 +55,7 @@ namespace AmalgamClientTray.FTP
    public class FtpClientExt
    {
       private readonly FtpClient ftpInstance;
+      private readonly bool stepEachDirChange;
       private readonly object commandLock = new object();
       private bool featuresFound;
       private Features supportedFeatures = Features.LIST | Features.CWD;
@@ -71,9 +72,10 @@ namespace AmalgamClientTray.FTP
 
 
 
-      public FtpClientExt(FtpClient ftpInstance)
+      public FtpClientExt(FtpClient ftpInstance, bool stepEachDirChange)
       {
          this.ftpInstance = ftpInstance;
+         this.stepEachDirChange = stepEachDirChange;
       }
 
       public FtpClientExt(FtpClient ftpInstance, uint tcpBufferSize)
@@ -234,9 +236,29 @@ designed to display the last-write time.
          }
       }
 
-      private static string NormaliseForFTP(string path)
+      /// <summary>
+      /// The path in should always be from the root
+      /// </summary>
+      /// <param name="path"></param>
+      /// <returns>the new offset path from the CurrentDirectory</returns>
+      private string NormaliseForFTP(string path)
       {
-         return path.Replace("\\", "/"); // .TrimStart('/');
+         path = path.Replace("\\", "/"); // .TrimStart('/');
+         if (stepEachDirChange)
+         {
+            ftpInstance.ChangeDirectoryMultiPath("/");
+            if ( path != "/" )
+            {
+               int iLast = path.LastIndexOf("/", StringComparison.Ordinal);
+               if ( iLast == path.Length )
+                  iLast = path.TrimEnd('/').LastIndexOf("/", StringComparison.Ordinal);
+               string relativeOffset = path.Substring(0, iLast );
+               path = path.Substring(iLast);
+               if ( relativeOffset.Length > 0 )
+                  ftpInstance.ChangeDirectoryMultiPath(relativeOffset);
+            }
+         }
+         return path;
       }
 
       /// <summary>
@@ -324,6 +346,7 @@ designed to display the last-write time.
 
       public void DeleteDirectory(string path)
       {
+         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
@@ -333,6 +356,7 @@ designed to display the last-write time.
 
       public void DeleteFile(string path)
       {
+         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
@@ -411,5 +435,24 @@ designed to display the last-write time.
             ftpInstance.Reopen();
       }
 
+      public void SetModifiedDateTime(string path, DateTime lastWriteTimeUtc)
+      {
+         path = NormaliseForFTP(path);
+         lock (commandLock)
+         {
+            CheckConnected();
+            ftpInstance.SetModifiedDateTime(path, lastWriteTimeUtc);
+         }
+      }
+
+      public void SetCreatedDateTime(string path, DateTime creationTimeUtc)
+      {
+         path = NormaliseForFTP(path);
+         lock (commandLock)
+         {
+            CheckConnected();
+            ftpInstance.SetCreatedDateTime(path, creationTimeUtc);
+         }
+      }
    }
 }
