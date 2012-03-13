@@ -104,11 +104,11 @@ namespace AmalgamClientTray.FTP
       public void SetAttributes(string path, FileAttributes value)
       {
          // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
-            ftpInstance.ChangeMode(path, (int) value);
+            path = NormaliseForFTP(path);
+            ftpInstance.ChangeMode(path, (int)value);
             /*
 There is no command in the FTP protocol to do this.
 
@@ -127,22 +127,22 @@ designed to display the last-write time.
 
       public void MakeDirectory(string path)
       {
-         // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
+            // replace the windows style directory delimiter with a unix style delimiter
+            path = NormaliseForFTP(path);
             ftpInstance.MakeDirectory(path);
          }
       }
 
       public long GetFileSize(string path)
       {
-         // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP( path );
          lock (commandLock)
          {
             CheckConnected();
+            // replace the windows style directory delimiter with a unix style delimiter
+            path = NormaliseForFTP(path);
             return ftpInstance.GetFileSize(path);
          }
       }
@@ -211,14 +211,14 @@ designed to display the last-write time.
 
       public void GetFile(string path, MemoryStream memStream)
       {
-         // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             FtpResponseCollection response = null;
             try
             {
                CheckConnected();
+               // replace the windows style directory delimiter with a unix style delimiter
+               path = NormaliseForFTP(path);
                FtpRequest request = new FtpRequest(FtpRequest.BuildCommandText("RETR", ftpInstance.CharacterEncoding, new string[] { path }));
                ftpInstance.TransferData(TransferDirection.ToClient, request, memStream);
                response = ftpInstance.LastResponseList;
@@ -308,10 +308,10 @@ designed to display the last-write time.
       public List<FileSystemFTPInfo> GetDirList(string path)
       {
          List<FileSystemFTPInfo> foundValues;
-         // replace the windows style directory delimiter with a unix style delimiter
-         path = NormaliseForFTP( path );
          lock (commandLock)
          {
+            // replace the windows style directory delimiter with a unix style delimiter
+            path = NormaliseForFTP(path);
             Features featureToUse = ((SupportedFeatures & Features.MLSD) == Features.MLSD)
                                        ? Features.MLSD
                                        : Features.LIST;
@@ -346,20 +346,20 @@ designed to display the last-write time.
 
       public void DeleteDirectory(string path)
       {
-         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
+            path = NormaliseForFTP(path);
             ftpInstance.DeleteDirectory(path);
          }
       }
 
       public void DeleteFile(string path)
       {
-         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
+            path = NormaliseForFTP(path);
             ftpInstance.DeleteFile(path);
          }
       }
@@ -371,11 +371,11 @@ designed to display the last-write time.
       /// <returns>May return null if nothing found</returns>
       public FileSystemFTPInfo GetFileDetails(string target)
       {
-         // replace the windows style directory delimiter with a unix style delimiter
-         target = NormaliseForFTP( target );
          List<FileSystemFTPInfo> foundValues;
          lock (commandLock)
          {
+            // replace the windows style directory delimiter with a unix style delimiter
+            target = NormaliseForFTP(target);
             Features featureToUse = ((SupportedFeatures & Features.MLST) == Features.MLST)
                                        ? Features.MLST
                                        : Features.LIST;
@@ -437,21 +437,40 @@ designed to display the last-write time.
 
       public void SetModifiedDateTime(string path, DateTime lastWriteTimeUtc)
       {
-         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
+            path = NormaliseForFTP(path);
             ftpInstance.SetModifiedDateTime(path, lastWriteTimeUtc);
          }
       }
 
       public void SetCreatedDateTime(string path, DateTime creationTimeUtc)
       {
-         path = NormaliseForFTP(path);
          lock (commandLock)
          {
             CheckConnected();
+            path = NormaliseForFTP(path);
             ftpInstance.SetCreatedDateTime(path, creationTimeUtc);
+         }
+      }
+
+      public void SetFileAttributes(string path, FileAttributes attr)
+      {
+         lock (commandLock)
+         {
+            CheckConnected();
+            path = NormaliseForFTP(path);
+            // Common CHMOD values used on web servers.
+            //       Value 	User 	Group 	Other
+            //         755 	rwx 	r-x 	r-x
+            //         744 	rwx 	r--	r--
+            //         766 	rwx 	rw- 	rw-
+            //         777 	rwx 	rwx 	rwx
+            int octalValue = (attr & FileAttributes.ReadOnly) == FileAttributes.ReadOnly? 5: 7;
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+               octalValue -= 1;
+            ftpInstance.ChangeMode(path, octalValue*111);   // Set the same value to them all
          }
       }
    }

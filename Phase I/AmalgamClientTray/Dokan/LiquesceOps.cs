@@ -570,6 +570,16 @@ namespace AmalgamClientTray.Dokan
             if (csd.TargetIsReadonly)
                return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
 
+            if (info.refFileHandleContext != 0)
+            {
+               using (openFilesSync.ReadLock())
+               {
+                  FileStreamFTP fileStream = openFiles[info.refFileHandleContext];
+                  fileStream.SetFileAttributes(attr);
+               }
+            }
+            else
+               return DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
             throw new NotImplementedException("SetFileAttributes");
             //string path = GetPath(dokanFilename);
             //// This uses  if (!Win32Native.SetFileAttributes(fullPathInternal, (int) fileAttributes))
