@@ -669,9 +669,16 @@ namespace AmalgamClientTray.Dokan
             Log.Trace("DeleteFile IN DokanProcessId[{0}]", info.ProcessId);
             if (csd.TargetIsReadonly)
                return dokanReturn = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
-
-            throw new NotImplementedException("DeleteFile");
-            // dokanReturn = (File.Exists(GetPath(dokanFilename)) ? DokanNet.Dokan.DOKAN_SUCCESS : DokanNet.Dokan.ERROR_FILE_NOT_FOUND);
+            string path = GetPath(dokanFilename);
+            CachedData foundInfo;
+            if (cachedFileSystemFTPInfo.TryGetValue(path, out foundInfo)
+               && foundInfo.Fsi.Exists
+               )
+            {
+               dokanReturn = DokanNet.Dokan.DOKAN_SUCCESS;
+            }
+            else
+               dokanReturn = DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
          }
          catch (Exception ex)
          {
@@ -694,16 +701,16 @@ namespace AmalgamClientTray.Dokan
             if (csd.TargetIsReadonly)
                return dokanReturn = DokanNet.Dokan.ERROR_FILE_READ_ONLY;
 
-            throw new NotImplementedException("DeleteDirectory");
-            //string path = GetPath(dokanFilename);
-            //DirectoryInfo dirInfo = new DirectoryInfo(path);
-            //if (dirInfo.Exists)
-            //{
-            //   FileSystemInfo[] fileInfos = dirInfo.GetFileSystemInfos();
-            //   dokanReturn = (fileInfos.Length > 0) ? DokanNet.Dokan.ERROR_DIR_NOT_EMPTY : DokanNet.Dokan.DOKAN_SUCCESS;
-            //}
-            //else
-            //   dokanReturn = DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
+            string path = GetPath(dokanFilename);
+            CachedData foundDirInfo;
+            if (cachedFileSystemFTPInfo.TryGetValue(path, out foundDirInfo)
+               && foundDirInfo.Fsi.Exists
+               )
+            {
+               dokanReturn = DokanNet.Dokan.DOKAN_SUCCESS;
+            }
+            else
+               dokanReturn = DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
          }
          catch (Exception ex)
          {
