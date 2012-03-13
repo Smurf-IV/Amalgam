@@ -135,5 +135,11 @@ namespace AmalgamClientTray.FTP
          if (mtime != DateTime.MinValue)
             fsi.LastWriteTimeUtc = mtime;
       }
+
+      public void SetFileAttributes(FileAttributes attr)
+      {
+         CheckOpened();
+         ftpFileClient.SetFileAttributes(fsi.FullName, attr);
+      }
    }
 }
