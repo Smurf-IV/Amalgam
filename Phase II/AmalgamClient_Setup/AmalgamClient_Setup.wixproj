@@ -23,6 +23,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <SuppressSpecificWarnings>1076</SuppressSpecificWarnings>
+    <SuppressAllWarnings>False</SuppressAllWarnings>
+    <Pedantic>True</Pedantic>
   </PropertyGroup>
   <ItemGroup>
     <WixExtension Include="WixUtilExtension">
@@ -51,6 +54,16 @@
       <Link>Product.wxs</Link>
     </Compile>
     <Compile Include="Phase II Extras.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CBFSWixCA\CBFSWixCA.vcxproj">
+      <Name>CBFSWixCA</Name>
+      <Project>{2bf998a5-8bed-4975-91c5-7893dd138320}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLLOCATION</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

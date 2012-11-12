@@ -43,11 +43,10 @@ using System.Windows;
 //
 //      Major Version
 //      Minor Version 
-//      Build Number
 //      Revision
+//      Build Number
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("12.3.13.296")]
-[assembly: AssemblyFileVersion("12.3.13.296")]
+[assembly: AssemblyVersion("12.11.17.8")]
+[assembly: AssemblyFileVersion("12.11.17.8")]
