@@ -1,13 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
    <?define TraySource=$(sys.CURRENTDIR)..\AmalgamClientTray\bin\Release ?>
+   <?define CBFSSource=$(sys.CURRENTDIR)..\ThirdParty\CBFS ?>
 
    <Fragment>
       <DirectoryRef Id="ClientDIR" />
-      
+
       <ComponentGroup Id="Extras" >
          <Component Id="WPFToolkit.Extended.dll" Directory="ClientDIR">
             <File Source="$(var.TraySource)\WPFToolkit.Extended.dll" KeyPath="yes" />
+         </Component>
+         <ComponentGroupRef Id="x64" />
+         <ComponentGroupRef Id="x86" />
+      </ComponentGroup>
+
+      <!-- Name to be used for the registration key of the CBFS application -->
+      <Property Id="PRODUCTNAME" Value="AmalgamClientTray" />
+      <!--Values of ModulesToInstall
+      [Pascal] [C++ (VCL)] [C++ (Lib)] [C++ (.NET)] [C#] [VB.NET] [Java] Value Meaning
+      CBFS_MODULE_DRIVER 1 The driver (.sys file)
+      CBFS_MODULE_NET_REDIRECTOR_DLL 65536 (0x00010000) Network redirector DLL (CbFsNetRdr3.dll)
+      CBFS_MODULE_MOUNT_NOTIFIER_DLL 131072 (0x00020000) Mount Notifier DLL (CbFsMntNtf3.dll)
+      http://www.eldos.com/documentation/cbfs/ref_gen_helper_dlls.html
+      //CBFSModule( 1UL + 0x00010000 + 0x00020000);
+      -->
+      <Property Id="CBFSMODULESTOINSTALL" Value="196609" />
+
+      <Binary Id="CBFSWixCA.dll" SourceFile="$(var.CBFSWixCA.TargetDir)$(var.CBFSWixCA.TargetName).dll" />
+      <CustomAction Id="SetCBFS_CA_Values" Return="check" Property="InstallCBFS_CA" Value="[PRODUCTNAME];[CBFSMODULESTOINSTALL]" />
+      <CustomAction Id="InstallCBFS_CA" BinaryKey="CBFSWixCA.dll" DllEntry="InstallCBFS_CA" Execute="deferred" Impersonate="no" Return="check" />
+      <CustomAction Id="SetUnCBFS_CA_Value" Return="check" Property="UninstallCBFS_CA" Value="[PRODUCTNAME]" />
+      <CustomAction Id="UninstallCBFS_CA" BinaryKey="CBFSWixCA.dll" DllEntry="UninstallCBFS_CA" Execute="deferred" Impersonate="no" Return="check" />
+
+      <UI>
+         <ProgressText Action="InstallCBFS_CA">Installing CBFS</ProgressText>
+         <ProgressText Action="UninstallCBFS_CA">Uninstalling CBFS</ProgressText>
+      </UI>
+
+      <InstallExecuteSequence>
+         <Custom Action="SetCBFS_CA_Values" Before="InstallCBFS_CA">NOT Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+         <Custom Action="InstallCBFS_CA" Before="InstallServices" >NOT Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+
+         <Custom Action="SetUnCBFS_CA_Value" After="MsiUnpublishAssemblies" >Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+         <Custom Action="UninstallCBFS_CA" After="SetUnCBFS_CA_Value" >Installed AND NOT UPGRADINGPRODUCTCODE</Custom>
+      </InstallExecuteSequence>
+
+
+      <ComponentGroup Id="x64" >
+         <Component Id="CBFSNet.dll.x64" Directory="ClientDIR" Guid="{EE56A400-507F-415B-BE42-E976E2DC6D0E}">
+            <File Id="CBFSNet.dll.x64"  Source="$(var.CBFSSource)\x64\CBFSNet.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR VersionNT64]]>
+            </Condition>
+         </Component>
+         <Component Id="msvcp100.dll.x64" Directory="ClientDIR" Guid="{EE56A400-507F-415B-BE42-E976E2DC6D7E}">
+            <File Id="msvcp100.dll.x64"  Source="$(var.CBFSSource)\x64\msvcp100.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR VersionNT64]]>
+            </Condition>
+         </Component>
+         <Component Id="msvcr100.dll.x64" Directory="ClientDIR" Guid="{EE56A400-507F-415B-BE42-E976E2DC6D7F}">
+            <File Id="msvcr100.dll.x64"  Source="$(var.CBFSSource)\x64\msvcr100.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR VersionNT64]]>
+            </Condition>
+         </Component>
+      </ComponentGroup>
+      <ComponentGroup Id="x86" >
+         <Component Id="CBFSNet.dll.x86" Directory="ClientDIR" Guid="{EE56A400-507F-415B-BE42-E976E2DC6D0F}">
+            <File Id="CBFSNet.dll.x86"  Source="$(var.CBFSSource)\x86\CBFSNet.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR NOT VersionNT64]]>
+            </Condition>
+         </Component>
+         <Component Id="msvcp100.dll.x86" Directory="ClientDIR" >
+            <File Id="msvcp100.dll.x86"  Source="$(var.CBFSSource)\x86\msvcp100.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR NOT VersionNT64]]>
+            </Condition>
+         </Component>
+         <Component Id="msvcr100.dll.x86" Directory="ClientDIR">
+            <File Id="msvcr100.dll.x86"  Source="$(var.CBFSSource)\x86\msvcr100.dll" KeyPath="yes" />
+            <Condition >
+               <![CDATA[Installed OR  NOT VersionNT64]]>
+            </Condition>
          </Component>
       </ComponentGroup>
    </Fragment>

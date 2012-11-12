@@ -88,6 +88,9 @@
     <StartupObject>AmalgamClientTray.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CBFSNet, Version=3.2.106.0, Culture=neutral, PublicKeyToken=0f194b348c109bec, processorArchitecture=x86">
+      <HintPath>..\AmalgamClient_Setup\ThirdParty\CBFS\CBFSNet.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\ThirdParty\NLog.dll</HintPath>
     </Reference>
@@ -127,24 +130,6 @@
     <Compile Include="..\..\Phase I\AmalgamClientTray\ClientForms\ClientShareDetail.cs">
       <Link>GUI\ClientShareDetail.cs</Link>
     </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\CacheHelper.cs">
-      <Link>Dokan\CacheHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\DokanManagement.cs">
-      <Link>Dokan\DokanManagement.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\HandleMappingThread.cs">
-      <Link>Dokan\HandleMappingThread.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\LiquesceOps.cs">
-      <Link>Dokan\LiquesceOps.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\RWLSExtension.cs">
-      <Link>Dokan\RWLSExtension.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\Dokan\Utils.cs">
-      <Link>Dokan\Utils.cs</Link>
-    </Compile>
     <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\DirectoryFTPInfo.cs">
       <Link>FTP\DirectoryFTPInfo.cs</Link>
     </Compile>
@@ -172,10 +157,12 @@
     <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\TemporaryFile.cs">
       <Link>FTP\TemporaryFile.cs</Link>
     </Compile>
+    <Compile Include="CBFS\Handlers.cs" />
     <Compile Include="GUI\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\ClientPropertiesDisplay.cs" />
+    <Compile Include="CBFS\HandleMappingThread.cs" />
     <Compile Include="GUI\HiddenFormToAcceptCloseMessage.xaml.cs">
       <DependentUpon>HiddenFormToAcceptCloseMessage.xaml</DependentUpon>
     </Compile>
@@ -258,10 +245,6 @@
     <ProjectReference Include="..\..\Starksoft.Net.Ftp\Starksoft.Net.Ftp.csproj">
       <Project>{5F228FCD-54F1-491D-93CE-3D768655FADC}</Project>
       <Name>Starksoft.Net.Ftp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ThirdParty\DokanNet\DokanNet.csproj">
-      <Project>{A09B408A-26A0-4FF8-83D5-6E1B1DA5F63C}</Project>
-      <Name>DokanNet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

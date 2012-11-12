@@ -30,8 +30,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using AmalgamClientTray.CBFS;
 using AmalgamClientTray.ClientForms;
-using AmalgamClientTray.Dokan;
 using NLog;
 
 namespace AmalgamClientTray.GUI
