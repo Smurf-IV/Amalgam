@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 //  <copyright file="FileStreamFTP.cs" company="Smurf-IV">
 // 
-//  Copyright (C) 2011-2012 Smurf-IV
+//  Copyright (C) 2011-2012 Simon Coghlan (aka Smurf-IV)
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -140,6 +140,12 @@ namespace AmalgamClientTray.FTP
       {
          CheckOpened();
          ftpFileClient.SetFileAttributes(fsi.FullName, attr);
+      }
+
+      public void MoveFile(string newname)
+      {
+         CheckOpened();
+         ftpFileClient.RenameTo(fsi.FullName, newname);
       }
    }
 }

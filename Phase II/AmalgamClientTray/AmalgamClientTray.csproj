@@ -124,45 +124,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\ClientForms\ClientConfigDetails.cs">
-      <Link>GUI\ClientConfigDetails.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\ClientForms\ClientShareDetail.cs">
-      <Link>GUI\ClientShareDetail.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\DirectoryFTPInfo.cs">
-      <Link>FTP\DirectoryFTPInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileFTPInfo.cs">
-      <Link>FTP\FileFTPInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileStreamFTP.cs">
-      <Link>FTP\FileStreamFTP.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FileSystemFTPInfo.cs">
-      <Link>FTP\FileSystemFTPInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FtpClientExt.cs">
-      <Link>FTP\FtpClientExt.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\FTPTempFile.cs">
-      <Link>FTP\FTPTempFile.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\MlstCollection.cs">
-      <Link>FTP\MlstCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\OptimizedFTPFileReadHandler.cs">
-      <Link>FTP\OptimizedFTPFileReadHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Phase I\AmalgamClientTray\FTP\TemporaryFile.cs">
-      <Link>FTP\TemporaryFile.cs</Link>
+    <Compile Include="..\..\..\EncryptString\Salt.cs">
+      <Link>Salt.cs</Link>
     </Compile>
     <Compile Include="CBFS\Handlers.cs" />
+    <Compile Include="CBFS\ICBFSFuncs.cs" />
+    <Compile Include="FTP\DirectoryFTPInfo.cs" />
+    <Compile Include="FTP\FileFTPInfo.cs" />
+    <Compile Include="FTP\FileStreamFTP.cs" />
+    <Compile Include="FTP\FileSystemFTPInfo.cs" />
+    <Compile Include="FTP\FtpClientExt.cs" />
+    <Compile Include="FTP\FTPTempFile.cs" />
+    <Compile Include="FTP\MlstCollection.cs" />
+    <Compile Include="FTP\OptimizedFTPFileReadHandler.cs" />
+    <Compile Include="FTP\TemporaryFile.cs" />
     <Compile Include="GUI\AboutBox.xaml.cs">
       <DependentUpon>AboutBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ClientConfigDetails.cs" />
     <Compile Include="GUI\ClientPropertiesDisplay.cs" />
     <Compile Include="CBFS\HandleMappingThread.cs" />
+    <Compile Include="GUI\ClientShareDetail.cs" />
     <Compile Include="GUI\HiddenFormToAcceptCloseMessage.xaml.cs">
       <DependentUpon>HiddenFormToAcceptCloseMessage.xaml</DependentUpon>
     </Compile>

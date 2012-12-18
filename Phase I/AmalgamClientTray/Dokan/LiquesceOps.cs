@@ -580,11 +580,6 @@ namespace AmalgamClientTray.Dokan
             }
             else
                return DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
-            throw new NotImplementedException("SetFileAttributes");
-            //string path = GetPath(dokanFilename);
-            //// This uses  if (!Win32Native.SetFileAttributes(fullPathInternal, (int) fileAttributes))
-            //// And can throw PathTOOLong
-            //File.SetAttributes(path, attr);
          }
          catch (Exception ex)
          {
@@ -601,7 +596,6 @@ namespace AmalgamClientTray.Dokan
       public int SetFileTimeNative(string dokanFilename, ref FILETIME rawCreationTime, ref FILETIME rawLastAccessTime,
           ref FILETIME rawLastWriteTime, DokanFileInfo info)
       {
-         SafeFileHandle safeFileHandle = null;
          bool needToClose = false;
          try
          {
@@ -740,48 +734,32 @@ namespace AmalgamClientTray.Dokan
       {
          try
          {
+            Log.Info("MoveFile replaceIfExisting [{0}] dokanFilename: [{1}] newname: [{2}]", replaceIfExisting, dokanFilename, newname);
             Log.Trace("MoveFile IN DokanProcessId[{0}]", info.ProcessId);
             if (csd.TargetIsReadonly)
                return DokanNet.Dokan.ERROR_FILE_READ_ONLY;
 
-            throw new NotImplementedException("MoveFile");
-            //Log.Info("MoveFile replaceIfExisting [{0}] dokanFilename: [{1}] newname: [{2}]", replaceIfExisting, dokanFilename, newname);
-            //if (dokanFilename == newname)   // This is some weirdness that SyncToy tries to pull !!
-            //   return DokanNet.Dokan.DOKAN_SUCCESS;
-
-            //string pathTarget = GetPath(newname, true);
-
-            //if (!info.IsDirectory)
-            //{
-            //   if (info.refFileHandleContext != 0)
-            //   {
-            //      Log.Trace("info.refFileHandleContext [{0}]", info.refFileHandleContext);
-            //      FileStreamName fileHandle = openFiles[info.refFileHandleContext];
-            //      if (fileHandle != null)
-            //         fileHandle.Close();
-            //   }
-            //   string pathSource = GetPath(dokanFilename);
-            //   Log.Info("MoveFile pathSource: [{0}] pathTarget: [{1}]", pathSource, pathTarget);
-            //   XMoveFile(pathSource, pathTarget, replaceIfExisting);
-            //   roots.RemoveTargetFromLookup(pathSource);
-            //}
-            //else
-            //{
-
-            //   // getting all paths of the source location
-            //   List<string> allDirSources = roots.GetAllPaths(dokanFilename);
-            //   if (allDirSources.Count == 0)
-            //   {
-            //      Log.Error("MoveFile: Could not find directory [{0}]", dokanFilename);
-            //      return DokanNet.Dokan.DOKAN_ERROR;
-            //   }
-            //   // rename every 
-            //   foreach (string dirSource in allDirSources)
-            //   {
-            //      string dirTarget = Roots.GetRoot(dirSource) + newname;
-            //      filemanager.XMoveDirectory(dirSource, dirTarget, replaceIfExisting);
-            //   }
-            //}
+            if (info.refFileHandleContext != 0)
+            {
+               string path = GetPath(newname);
+               CachedData foundInfo;
+               if (cachedFileSystemFTPInfo.TryGetValue(path, out foundInfo)
+                  && foundInfo.Fsi.Exists
+                  )
+               {
+                  if (replaceIfExisting)
+                     foundInfo.Fsi.Delete();
+                  else
+                     return DokanNet.Dokan.ERROR_FILE_EXISTS;
+               }
+               using (openFilesSync.ReadLock())
+               {
+                  FileStreamFTP fileStream = openFiles[info.refFileHandleContext];
+                  fileStream.MoveFile(newname);
+               }
+            }
+            else
+               return DokanNet.Dokan.ERROR_FILE_NOT_FOUND;
          }
          catch (Exception ex)
          {
