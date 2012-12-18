@@ -1,8 +1,8 @@
 #region Copyright (C)
 // ---------------------------------------------------------------------------------------------------------------
-//  <copyright file="ClientPropertiesDisplay.cs" company="Smurf-IV">
+//  <copyright file="NotificationAreaIcon.cs" company="Smurf-IV">
 // 
-//  Copyright (C) 2012 Smurf-IV
+//  Copyright (C) 2012 Simon Coghlan (aka Smurf-IV)
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by

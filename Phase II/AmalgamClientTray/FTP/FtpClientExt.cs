@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 //  <copyright file="FtpClientExt.cs" company="Smurf-IV">
 // 
-//  Copyright (C) 2011-2012 Smurf-IV
+//  Copyright (C) 2011-2012 Simon Coghlan (aka Smurf-IV)
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -246,16 +246,21 @@ designed to display the last-write time.
          path = path.Replace("\\", "/"); // .TrimStart('/');
          if (stepEachDirChange)
          {
-            ftpInstance.ChangeDirectoryMultiPath("/");
-            if ( path != "/" )
+            Uri uriCur = new Uri( "Hostname" + ftpInstance.CurrentDirectory , UriKind.Absolute );
+            Uri uriDestination = new Uri( "Hostname" + path , UriKind.Absolute );
+            Uri targetUriRelative = uriCur.MakeRelativeUri( uriDestination );
+            ftpInstance.ChangeDirectoryMultiPath(targetUriRelative.OriginalString);
+            
+            //ftpInstance.ChangeDirectoryMultiPath("/");
+            if (path != "/")
             {
                int iLast = path.LastIndexOf("/", StringComparison.Ordinal);
-               if ( iLast == path.Length )
+               if (iLast == path.Length)
                   iLast = path.TrimEnd('/').LastIndexOf("/", StringComparison.Ordinal);
-               string relativeOffset = path.Substring(0, iLast );
+               // string relativeOffset = path.Substring(0, iLast);
                path = path.Substring(iLast);
-               if ( relativeOffset.Length > 0 )
-                  ftpInstance.ChangeDirectoryMultiPath(relativeOffset);
+               //if (relativeOffset.Length > 0)
+               //   ftpInstance.ChangeDirectoryMultiPath(relativeOffset);
             }
          }
          return path;
@@ -471,6 +476,20 @@ designed to display the last-write time.
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                octalValue -= 1;
             ftpInstance.ChangeMode(path, octalValue*111);   // Set the same value to them all
+         }
+      }
+
+      public void RenameTo(string fullName, string newname)
+      {
+         lock (commandLock)
+         {
+            CheckConnected();
+            Uri uriCur = new Uri("Hostname" + fullName, UriKind.Absolute);
+            Uri uriDestination = new Uri("Hostname" + newname, UriKind.Absolute);
+            Uri targetUriRelative = uriCur.MakeRelativeUri(uriDestination);
+
+            fullName = NormaliseForFTP(fullName);
+            ftpInstance.Rename(fullName, targetUriRelative.OriginalString);
          }
       }
    }

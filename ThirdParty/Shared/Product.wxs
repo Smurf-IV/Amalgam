@@ -10,8 +10,7 @@
    <!-- do not change this ever !-->
    <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
 
-   <!-- Change this when creating new release YY-MM-DD -->
-   <?define Version = "12.3.11.277" ?>
+   <?define Version = "!(bind.FileVersion.AmalgamClientTray.exe)" ?>
 
    <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
 
@@ -41,36 +40,6 @@
       <PropertyRef Id="NETFRAMEWORK40FULL"/>
       <PropertyRef Id="NETFRAMEWORK40FULLINSTALLROOTDIR" />
 
-      <Property Id="DOKANINSTALLED" >
-         <RegistrySearch Id="IsDokanServiceInstalled" Root="HKLM" Key="SYSTEM\CurrentControlSet\services\Dokan" Name="DisplayName" Type="raw" />
-      </Property>
-
-      <Property Id="DOKANVERCHECK32">
-         <DirectorySearch Id="Dokan.sys.version" Path="[SystemFolder]\Drivers">
-            <!--Make sure that the min / max _straddle_ the actual version..  Check for 0.6.0 x32 Size -->
-            <!-- It appears that there is yet another version for Windows 7 x32  (95744?)!! -->
-            <!-- Win2k3 R2 (x32) size = 96,256 Bytes -->
-            <!-- WinXP SP3 (x32) size = 91,904 Bytes -->
-            <FileSearch Name="Dokan.sys" MinSize="91903" MaxSize="96257" />
-         </DirectorySearch>
-      </Property>
-      <Property Id="DOKANVERCHECK64">
-         <DirectorySearch Id="Dokan.sys64.version" Path="[System64Folder]\Drivers">
-            <!--Make sure that the min / max _straddle_ the actual version.. Check for 0.6.0 x64 Size -->
-            <!-- Win 7 x64 = 120,408 Bytes -->
-            <!-- Win2k8 R2 = 120,408 Bytes -->
-            <FileSearch Name="Dokan.sys" MinSize="120407" MaxSize="120409" />
-         </DirectorySearch>
-      </Property>
-
-      <Condition Message="This application requires Dokan Ver 0.6.0.">
-         <![CDATA[Installed OR (DOKANVERCHECK64 AND VersionNT64) OR (DOKANVERCHECK32 AND NOT VersionNT64)]]>
-      </Condition>
-
-      <!--Some test conditions to allow the installer to run-->
-      <Condition Message="Dokan.sys Driver Is Not Installed in the SYSTEM\CurrentControlSet\services registry correctly!">
-         <![CDATA[Installed OR DOKANINSTALLED]]>
-      </Condition>
       <Condition Message="[ProductName] Requires .NET Framework 4.0 Main profile to be installed">
          <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
       </Condition>
@@ -78,13 +47,7 @@
          Privileged
       </Condition>
 
-      <!--<Condition Message="A later version of [ProductName] is already installed. Setup will now exit.">
-         <![CDATA[NOT NEWERVERSIONDETECTED OR Installed]]>
-      </Condition>-->
-
-      <!--Allow 7z / zip compression to squeeze this tighter -->
-      <Media Id="1" Cabinet="Setup.cab" EmbedCab="yes" CompressionLevel="high" />
-
+      <Media Id="1" Cabinet="Setup.cab" EmbedCab="yes" CompressionLevel="high"/>
       <Directory Id="TARGETDIR" Name="SourceDir">
          <Directory Id="ProgramFilesFolder">
             <Directory Id="INSTALLDIR" Name="AmalgamClientFTP">
@@ -107,9 +70,6 @@
          </Component>
          <Component Id="AmalgamClientTray.exe.config" Directory="ClientDIR">
             <File Source="$(var.TraySource)\AmalgamClientTray.exe.config" KeyPath="yes" />
-         </Component>
-         <Component Id="DokanNet.dll" Directory="ClientDIR">
-            <File Source="$(var.TraySource)\DokanNet.dll" KeyPath="yes" />
          </Component>
          <Component Id="GPLv2.rtf" Directory="ClientDIR">
             <File Source="$(sys.SOURCEFILEDIR)GPLv2.rtf" KeyPath="yes" />

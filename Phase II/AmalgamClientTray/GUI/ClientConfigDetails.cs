@@ -1,8 +1,8 @@
-#region Copyright (C)
+﻿#region Copyright (C)
 // ---------------------------------------------------------------------------------------------------------------
-//  <copyright file="HandleMappingThread.cs" company="Smurf-IV">
+//  <copyright file="ClientConfigDetails.cs" company="Smurf-IV">
 // 
-//  Copyright (C) 2012 Simon Coghlan (aka Smurf-IV)
+//  Copyright (C) 2011-2012 Smurf-IV
 // 
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,20 +24,19 @@
 // --------------------------------------------------------------------------------------------------------------------
 #endregion
 
-using AmalgamClientTray.ClientForms;
+using System;
+using System.Collections.Generic;
 
-namespace AmalgamClientTray.CBFS
+namespace AmalgamClientTray.ClientForms
 {
-   public class HandleMappingThread
+   [Serializable]
+   public class ClientConfigDetails
    {
-      public bool Start(ClientShareDetail clientShareDetail)
-      {
-         return true;
-      }
+      // ReSharper disable UnusedAutoPropertyAccessor.Global
+      // ReSharper disable MemberCanBePrivate.Global
 
-      public bool Stop()
-      {
-         return true;
-      }
+      public readonly List<ClientShareDetail> SharesToRestore = new List<ClientShareDetail>();
+      // ReSharper restore MemberCanBePrivate.Global
+      // ReSharper restore UnusedAutoPropertyAccessor.Global
    }
 }
