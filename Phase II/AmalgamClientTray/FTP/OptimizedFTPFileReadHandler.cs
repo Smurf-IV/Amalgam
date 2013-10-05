@@ -35,8 +35,8 @@ namespace AmalgamClientTray.FTP
       private FTPTempFile ftpReadBuffer;
       private long lastRawOffset { get; set; }
 
-      public OptimizedFTPFileReadHandler(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo, OptimizedFTPFileReadHandler cachedReadBuffer)
-         : base(csd, rawCreationDisposition, foundFileInfo)
+      public OptimizedFTPFileReadHandler(ClientShareDetail csd, FileMode fileMode, FileFTPInfo foundFileInfo, OptimizedFTPFileReadHandler cachedReadBuffer)
+         : base(csd, fileMode, foundFileInfo)
       {
          if ((cachedReadBuffer != null)
             && (cachedReadBuffer.ftpReadBuffer != null )

@@ -1,47 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.IO;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Text;
 using CallbackFS;
 
 namespace CBFS
 {
    internal static class CBFSWinError
    {
-      public static int HiWord(int number)
+      private static int HiWord(int number)
       {
          return ((number & 0x80000000) == 0x80000000) ? number >> 16 : (number >> 16) & 0xffff;
       }
 
-      public static int LoWord(int number)
+      private static int LoWord(int number)
       {
          return number & 0xffff;
       }
 
-      public static int BestAttemptToWin32(Exception ex)
+      public static uint BestAttemptToWin32(Exception ex)
       {
          Win32Exception win32Exception = ex as Win32Exception;
          if (win32Exception != null)
          {
-            return win32Exception.NativeErrorCode;
+            return (uint) win32Exception.NativeErrorCode;
          }
          SocketException socketException = ex.InnerException as SocketException;
          if (socketException != null)
          {
-            return socketException.ErrorCode;
+            return (uint) socketException.ErrorCode;
          }
          int HrForException = Marshal.GetHRForException(ex);
          // Check http://msdn.microsoft.com/en-us/library/ms819772.aspx (WinError.h) for error codes
-         return (HiWord(HrForException) == -32761/*0x8007*/) ? -LoWord(HrForException) : ERROR_EXCEPTION_IN_SERVICE;
+         return (uint) ((HiWord(HrForException) == -32761/*0x8007*/) ? -LoWord(HrForException) : ERROR_EXCEPTION_IN_SERVICE);
          // #define ERROR_DISK_OPERATION_FAILED 1127L //  While accessing the hard disk, a disk operation failed even after retries.
          // The above might be a better error code ??
       }
 
       // ReSharper disable InconsistentNaming
       // ReSharper disable MemberCanBePrivate.Global
+      // ReSharper disable UnusedMember.Global
 #pragma warning disable 169
 
       #region File Operation Errors
@@ -119,78 +118,103 @@ namespace CBFS
       #endregion
 
 #pragma warning restore 169
+      // ReSharper restore UnusedMember.Global
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore InconsistentNaming
    }
 
-   interface ICBFSFuncs
+   public interface ICBFSFuncs
    {
-      void Mount();
-      void Unmount();
+      void Mounted();
+      void Unmounted();
       void GetVolumeSize(ref long TotalNumberOfSectors, ref long NumberOfFreeSectors);
-      void GetVolumeLabel(ref string VolumeLabel);
-      void SetVolumeLabel(string VolumeLabel);
-      void GetVolumeId(ref uint VolumeID);
       void OpenVolume();
       void CloseVolume();
-      void CreateFile(string FileName, uint DesiredAccess, uint FileAttributes, uint ShareMode, ref IntPtr FileHandleContext);
-      void OpenFile(string FileName, uint DesiredAccess, uint ShareMode, ref IntPtr FileHandleContext);
-      void CloseFile(CbFsFileInfo FileInfo, IntPtr FileHandleContext);
-      void GetFileInfo(string FileName, ref bool FileExists, ref DateTime CreationTime, ref DateTime LastAccessTime, ref DateTime LastWriteTime, ref long EndOfFile, ref long AllocationSize, ref CBFS_LARGE_INTEGER FileId, ref uint FileAttributes, ref string LongFileName, ref ushort LongFileNameLength);
-      void EnumerateDirectory(CbFsFileInfo DirectoryInfo, ref IntPtr EnumerationContext, string Mask, int Index, [MarshalAs(UnmanagedType.U1)] bool Restart, ref bool FileFound, ref string FileName, ref ushort FileNameLength, ref string ShortFileName, ref byte ShortFileNameLength, ref DateTime CreationTime, ref DateTime LastAccessTime, ref DateTime LastWriteTime, ref long EndOfFile, ref long AllocationSize, ref CBFS_LARGE_INTEGER FileId, ref uint FileAttributes);
-      void SetAllocationSize(CbFsFileInfo FileInfo, IntPtr FileHandleContext, long AllocationSize);
-      void SetEndOfFile(CbFsFileInfo FileInfo, IntPtr FileHandleContext, long EndOfFile);
-      void SetFileAttributes(CbFsFileInfo FileInfo, IntPtr FileHandleContext, DateTime CreationTime, DateTime LastAccessTime, DateTime LastWriteTime, uint FileAttributes);
-      void CanFileBeDeleted(CbFsFileInfo FileInfo, ref bool CanBeDeleted);
-      void DeleteFile(CbFsFileInfo FileInfo);
-      void RenameOrMoveFile(CbFsFileInfo FileInfo, string NewFileName);
-      void ReadFile(CbFsFileInfo FileInfo, IntPtr FileHandleContext, long Position, byte[] Buffer, int BytesToRead, ref int BytesRead);
-      void WriteFile(CbFsFileInfo FileInfo, IntPtr FileHandleContext, long Position, byte[] Buffer, int BytesToWrite, ref int BytesWritten);
-      void CloseEnumeration(CbFsFileInfo DirectoryInfo, IntPtr EnumerationContext);
-      void IsDirectoryEmpty(string FileInfo, ref bool IsEmpty);
-      void EnumerateNamedStreams(CbFsFileInfo FileInfo, ref IntPtr NamedStreamContext, ref string StreamName, ref int StreamNameLength, ref long StreamSize, ref long StreamAllocationSize, ref bool NamedStreamFound);
-      void SetFileSecurity(CbFsFileInfo FileInfo, IntPtr FileHandleContext, uint SecurityInformation, IntPtr SecurityDescriptor, uint Length);
-      void GetFileSecurity(CbFsFileInfo FileInfo, IntPtr FileHandleContext, uint SecurityInformation, IntPtr SecurityDescriptor, uint Length, ref uint LengthNeeded);
-      void GetFileNameByFileId(long FileId, ref string FilePath, ref ushort FilePathLength);
-      void FlushFile(CbFsFileInfo FileInfo);
+      // return the fileHandleContext
+      UInt64 CreateFile(string fileName, FileMode desiredAccess, FileAttributes fileAttributes, uint extFlagsAndAttributes, FileShare ShareMode);
+      // return the fileHandleContext
+      UInt64 OpenFile(string fileName, FileMode desiredAccess, FileShare ShareMode);
+      void CloseFile(string fileName, UInt64 fileHandle);
+      void GetFileInfo(string fileName, ref bool FileExists, ref DateTime CreationTime, ref DateTime LastAccessTime, ref DateTime LastWriteTime, ref long EndOfFile, ref long AllocationSize, ref long FileId, ref uint FileAttributes, ref string LongFileName);
+      void EnumerateDirectory(string DirectoryName, ref IntPtr EnumerationContext, string Mask, int Index, bool Restart, ref bool FileFound, ref string fileName, ref string ShortFileName, ref DateTime CreationTime, ref DateTime LastAccessTime, ref DateTime LastWriteTime, ref long EndOfFile, ref long AllocationSize, ref long FileId, ref uint FileAttributes);
+      void SetAllocationSize(string fileName, UInt64 fileHandle, long AllocationSize);
+      void SetEndOfFile(string fileName, UInt64 fileHandle, long EndOfFile);
+      void SetFileAttributes(string fileName, UInt64 fileHandle, DateTime CreationTime, DateTime LastAccessTime, DateTime LastWriteTime, FileAttributes fileAttributes, uint extFlagsAndAttributes);
+      bool CanFileBeDeleted(string fileName, UInt64 fileHandle);
+      void DeleteFile(string fileName, UInt64 fileHandle);
+      void RenameOrMoveFile(string fileName, string NewFileName);
+      // return BytesRead
+      int ReadFile(string fileName, UInt64 fileHandle, long Position, byte[] Buffer, int BytesToRead);
+      // return BytesWritten
+      int WriteFile(string fileName, UInt64 fileHandle, long Position, byte[] Buffer, int BytesToWrite);
+      void CloseEnumeration(string DirectoryName, IntPtr EnumerationContext);
+      bool IsDirectoryEmpty(string FileInfo);
+      void EnumerateNamedStreams(string fileName, UInt64 fileHandle, ref IntPtr NamedStreamContext, ref string StreamName, ref long StreamSize, ref long StreamAllocationSize, ref bool NamedStreamFound);
+      void SetFileSecurity(string fileName, UInt64 fileHandle, uint SecurityInformation, IntPtr SecurityDescriptor, uint Length);
+      void GetFileSecurity(string fileName, UInt64 fileHandle, uint SecurityInformation, IntPtr SecurityDescriptor, uint Length, ref uint LengthNeeded);
+      // return FilePath, assuming FileID is the QuadPart
+      string GetFileNameByFileId(long FileId);
+      void FlushFile(string fileName, UInt64 fileHandle);
       void StorageEjected();
+      string VolumeLabel { get; set; }
+      uint VolumeID { get; }
+
    }
 
    // ReSharper disable RedundantAssignment
-   public abstract class CBFSHandlers : ICBFSFuncs
+   /// <summary>
+   /// If some exception occurs when the callback is executed, the application must catch this exception 
+   /// and throw an instance of ECBFSError instead. If you don't catch some exception in your code, this 
+   /// class will catch it for you, and attempt to convert it into a Win32 Error code; If it cannot, CBFS
+   /// will report "Internal error" error to the OS, and this doesn't look good for the OS and for the user. 
+   /// </summary>
+   public class CBFSHandlers
    {
-      private CallbackFileSystem CbFs;
-      protected abstract string VolumeLabel { get; set; }
+      private readonly CallbackFileSystem CbFs;
+      private readonly ICBFSFuncs Handlers;
 
-      protected abstract uint VolumeID { get; }
-
-      public void CBFSHandlers()
+      // ReSharper disable RedundantThisQualifier
+      /// <summary>
+      /// Constructor
+      /// </summary>
+      /// <param name="handlers">The event redirects for your FS</param>
+      /// <param name="handlesStreams">Does this FS handle FileStreams?</param>
+      public CBFSHandlers(ICBFSFuncs handlers, bool handlesStreams)
       {
+         if (handlers == null) 
+            throw new ArgumentNullException("handlers");
+
+         Handlers = handlers;
          CbFs = new CallbackFileSystem
             {
-               OnMount = Mount,
-               OnUnmount = Unmount,
-               OnGetVolumeSize = GetVolumeSize,
-               OnGetVolumeLabel = GetVolumeLabel,
-               OnSetVolumeLabel = SetVolumeLabel,
-               OnGetVolumeId = GetVolumeId,
-               OnOpenVolume = OpenVolume,
-               OnCloseVolume = CloseVolume,
-               OnCreateFile = CreateFile,
-               OnOpenFile = OpenFile,
-               OnCloseFile = CloseFile,
-               OnGetFileInfo = GetFileInfo,
-               OnEnumerateDirectory = EnumerateDirectory,
-               OnCloseEnumeration = CloseEnumeration,
-               OnSetAllocationSize = SetAllocationSize,
-               OnSetEndOfFile = SetEndOfFile,
-               OnSetFileAttributes = SetFileAttributes,
-               OnCanFileBeDeleted = CanFileBeDeleted,
-               OnDeleteFile = DeleteFile,
-               OnRenameOrMoveFile = RenameOrMoveFile,
-               OnReadFile = ReadFile,
-               OnWriteFile = WriteFile,
-               OnIsDirectoryEmpty = IsDirectoryEmpty,
+               OnMount = this.OnMount,
+               OnUnmount = this.OnUnmount,
+               OnGetVolumeSize = this.OnGetVolumeSize,
+               OnGetVolumeLabel = this.OnGetVolumeLabel,
+               OnSetVolumeLabel = this.OnSetVolumeLabel,
+               OnGetVolumeId = this.OnGetVolumeId,
+               OnOpenVolume = this.OnOpenVolume,
+               OnCloseVolume = this.OnCloseVolume,
+               OnCreateFile = this.OnCreateFile,
+               OnOpenFile = this.OnOpenFile,
+               OnCloseFile = this.OnCloseFile,
+               OnGetFileInfo = this.OnGetFileInfo,
+               OnEnumerateDirectory = this.OnEnumerateDirectory,
+               OnCloseEnumeration = this.OnCloseEnumeration,
+               OnSetAllocationSize = this.OnSetAllocationSize,
+               OnSetEndOfFile = this.OnSetEndOfFile,
+               OnSetFileAttributes = this.OnSetFileAttributes,
+               OnCanFileBeDeleted = this.OnCanFileBeDeleted,
+               OnDeleteFile = this.OnDeleteFile,
+               OnRenameOrMoveFile = this.OnRenameOrMoveFile,
+               OnReadFile = this.OnReadFile,
+               OnWriteFile = this.OnWriteFile,
+               OnIsDirectoryEmpty = this.OnIsDirectoryEmpty,
+               OnSetFileSecurity = this.OnSetFileSecurity,
+               OnGetFileSecurity = this.OnGetFileSecurity,
+               OnGetFileNameByFileId = this.OnGetFileNameByFileId,
+               OnFlushFile = this.OnFlushFile,
+               OnStorageEjected = this.OnStorageEjected,
                CallAllOpenCloseCallbacks = true
             };
          /*
@@ -200,88 +224,481 @@ namespace CBFS
           * described behaviour and have OnOpenFile callback be called every time, 
           * set CallAllOpenCloseCallbacks property to true. 
           * To make use of the security checks you must first set CallAllOpenCloseCallbacks property to true. 
+          * 
+          * If the file name contains semicolon (":"), this means that the request is made to create a named 
+          * stream in a file. The part before the semicolon is the name of the file itself and the name after
+          * the semicolon is the name of the named stream. If you don't want to deal with named streams, 
+          * don't implement the handler for OnEnumerateNamedStreams event. In this case CBFS API will tell 
+          * the OS that the named streams are not supported by the file system. 
           * */
+         if (handlesStreams)
+            CbFs.OnEnumerateNamedStreams = this.OnEnumerateNamedStreams;
+
+         CbFs.CreateStorage();
+
       }
+      // ReSharper restore RedundantThisQualifier
 
-      public abstract void Mount(CallbackFileSystem Sender);
-      public abstract void Unmount(CallbackFileSystem Sender);
-      public abstract void GetVolumeSize(CallbackFileSystem Sender, ref long TotalNumberOfSectors, ref long NumberOfFreeSectors);
-
-      public void GetVolumeLabel(CallbackFileSystem Sender, ref string volumeLabel)
+      private void CheckValidReference(CallbackFileSystem sender)
       {
-         volumeLabel = VolumeLabel;
-         throw new ECBFSError(CallbackFileSystem.); 
+         // TODO: Check VCB or Tag ??
+         if (sender != CbFs)
+            throw new ECBFSError("Incorrect driver reference", CBFSWinError.ERROR_IO_DEVICE);
       }
 
-      public void SetVolumeLabel(CallbackFileSystem Sender, string volumeLabel)
+      private void OnMount(CallbackFileSystem sender)
       {
-         VolumeLabel = volumeLabel;
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.Mounted();
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
       }
 
-      public void GetVolumeId(CallbackFileSystem Sender, ref uint volumeID)
+      private void OnUnmount(CallbackFileSystem sender)
       {
-         volumeID = VolumeID;
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.Unmounted();
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
       }
 
-      public abstract void OpenVolume(CallbackFileSystem Sender);
-      public abstract void CloseVolume(CallbackFileSystem Sender);
+      private void OnGetVolumeSize(CallbackFileSystem sender, ref long TotalNumberOfSectors, ref long NumberOfFreeSectors)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.GetVolumeSize(ref TotalNumberOfSectors, ref NumberOfFreeSectors);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void CreateFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess,
-                                      uint FileAttributes, uint ShareMode,
-                                      ref IntPtr FileHandleContext);
-      //{
-      //   long l = Marshal.ReadInt64(FileHandleContext);
-      //}
 
-      public abstract void OpenFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess, uint ShareMode,
-                                    ref IntPtr FileHandleContext);
+      private void OnGetVolumeLabel(CallbackFileSystem sender, ref string volumeLabel)
+      {
+         CheckValidReference(sender);
+         volumeLabel = Handlers.VolumeLabel;
+      }
 
-      public abstract void CloseFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext);
+      private void OnSetVolumeLabel(CallbackFileSystem sender, string volumeLabel)
+      {
+         CheckValidReference(sender);
+         Handlers.VolumeLabel = volumeLabel;
+      }
 
-      public abstract void GetFileInfo(CallbackFileSystem Sender, string FileName, ref bool FileExists, ref DateTime CreationTime,
+      private void OnGetVolumeId(CallbackFileSystem sender, ref uint volumeID)
+      {
+         CheckValidReference(sender);
+         volumeID = Handlers.VolumeID;
+      }
+
+      private void OnOpenVolume(CallbackFileSystem sender)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.OpenVolume();
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnCloseVolume(CallbackFileSystem sender)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.CloseVolume();
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+
+      private void OnCreateFile(CallbackFileSystem sender, string fileName, uint DesiredAccess,
+                                      uint fileAttributes, uint ShareMode,
+                                      ref IntPtr fileHandleContext)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            UInt64 fileHandle = Handlers.CreateFile(fileName, (FileMode)DesiredAccess, (FileAttributes)(fileAttributes & 0x0001FFFF), (fileAttributes & 0xFFFE0000), (FileShare)ShareMode);
+            Marshal.WriteInt64(fileHandleContext, (long) fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnOpenFile(CallbackFileSystem sender, string fileName, uint DesiredAccess, uint ShareMode,
+                                    ref IntPtr fileHandleContext)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            UInt64 fileHandle = Handlers.OpenFile(fileName, (FileMode)DesiredAccess, (FileShare) ShareMode);
+            Marshal.WriteInt64(fileHandleContext, (long) fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+
+      private void OnCloseFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.CloseFile(fileInfo.FileName, fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+
+      private void OnGetFileInfo(CallbackFileSystem sender, string fileName, ref bool FileExists, ref DateTime CreationTime,
                                        ref DateTime LastAccessTime, ref DateTime LastWriteTime, ref long EndOfFile, ref long AllocationSize,
                                        ref CBFS_LARGE_INTEGER FileId, ref uint FileAttributes, ref string LongFileName,
-                                       ref ushort LongFileNameLength);
+                                       ref ushort LongFileNameLength)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            long quadPart = 0;
+            Handlers.GetFileInfo(fileName, ref FileExists, ref CreationTime,
+                                       ref LastAccessTime, ref LastWriteTime, ref EndOfFile, ref AllocationSize,
+                                       ref quadPart, ref FileAttributes, ref LongFileName);
+            FileId.QuadPart = quadPart;
+            FileId.LowPart = (uint) (quadPart & 0xffffffff);
+            FileId.HighPart = (int)(quadPart >> 32);
+            LongFileNameLength = (ushort) LongFileName.Length;
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void EnumerateDirectory(CallbackFileSystem Sender, CbFsFileInfo DirectoryInfo, ref IntPtr EnumerationContext,
-                                              string Mask, int Index, bool Restart, ref bool FileFound, ref string FileName,
+
+      private void OnEnumerateDirectory(CallbackFileSystem sender, CbFsFileInfo directoryInfo, ref IntPtr EnumerationContext,
+                                              string Mask, int Index, bool Restart, ref bool FileFound, ref string fileName,
                                               ref ushort FileNameLength, ref string ShortFileName, ref byte ShortFileNameLength,
                                               ref DateTime CreationTime, ref DateTime LastAccessTime, ref DateTime LastWriteTime,
                                               ref long EndOfFile, ref long AllocationSize, ref CBFS_LARGE_INTEGER FileId,
-                                              ref uint FileAttributes);
+                                              ref uint FileAttributes)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(directoryInfo.Volume);
+            long quadPart = 0;
+            Handlers.EnumerateDirectory(directoryInfo.FileName, ref EnumerationContext, Mask, Index, Restart,
+                                        ref FileFound, ref fileName, ref ShortFileName,
+                                        ref CreationTime, ref LastAccessTime, ref LastWriteTime,
+                                        ref EndOfFile, ref AllocationSize, ref quadPart, ref FileAttributes);
+            FileNameLength = (ushort)fileName.Length;
+            ShortFileNameLength = (byte) ShortFileName.Length;
+            FileId.QuadPart = quadPart;
+            FileId.LowPart = (uint) (quadPart & 0xffffffff);
+            FileId.HighPart = (int)(quadPart >> 32);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void SetAllocationSize(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext, long AllocationSize);
-      public abstract void SetEndOfFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext, long EndOfFile);
+      private void OnSetAllocationSize(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext, long AllocationSize)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.SetAllocationSize(fileInfo.FileName, fileHandle, AllocationSize);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void SetFileAttributes(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext, DateTime CreationTime,
-                                             DateTime LastAccessTime, DateTime LastWriteTime, uint FileAttributes);
+      private void OnSetEndOfFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext, long EndOfFile)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.SetEndOfFile(fileInfo.FileName, fileHandle, EndOfFile);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void CanFileBeDeleted(CallbackFileSystem Sender, CbFsFileInfo FileInfo, ref bool CanBeDeleted);
-      public abstract void DeleteFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo);
-      public abstract void RenameOrMoveFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo, string NewFileName);
+      private void OnSetFileAttributes(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext, DateTime CreationTime,
+                                             DateTime LastAccessTime, DateTime LastWriteTime, uint fileAttributes)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.SetFileAttributes(fileInfo.FileName, fileHandle, CreationTime, LastAccessTime, LastWriteTime, (FileAttributes)(fileAttributes & 0x0001FFFF), (fileAttributes & 0xFFFE0000));
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void ReadFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext, long Position, byte[] Buffer,
-                                    int BytesToRead, ref int BytesRead);
 
-      public abstract void WriteFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext, long Position, byte[] Buffer,
-                                     int BytesToWrite, ref int BytesWritten);
+      private void OnCanFileBeDeleted(CallbackFileSystem sender, CbFsFileInfo fileInfo, ref bool canBeDeleted)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            canBeDeleted = Handlers.CanFileBeDeleted(fileInfo.FileName, fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void CloseEnumeration(CallbackFileSystem Sender, CbFsFileInfo DirectoryInfo, IntPtr EnumerationContext);
-      public abstract void IsDirectoryEmpty(CallbackFileSystem Sender, string FileInfo, ref bool IsEmpty);
+      private void OnDeleteFile(CallbackFileSystem sender, CbFsFileInfo fileInfo)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.DeleteFile(fileInfo.FileName, fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void EnumerateNamedStreams(CallbackFileSystem Sender, CbFsFileInfo FileInfo, ref IntPtr NamedStreamContext,
+      private void OnRenameOrMoveFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, string NewFileName)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.RenameOrMoveFile(fileInfo.FileName, NewFileName);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnReadFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext, long Position, byte[] Buffer,
+                                    int BytesToRead, ref int BytesRead)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            BytesRead = Handlers.ReadFile(fileInfo.FileName, fileHandle, Position, Buffer, BytesToRead);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnWriteFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext, long Position, byte[] Buffer,
+                                     int BytesToWrite, ref int BytesWritten)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            BytesWritten = Handlers.WriteFile(fileInfo.FileName, fileHandle, Position, Buffer, BytesToWrite);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnCloseEnumeration(CallbackFileSystem sender, CbFsFileInfo directoryInfo, IntPtr EnumerationContext)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(directoryInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(directoryInfo.HandleContext);
+            Handlers.CloseEnumeration(directoryInfo.FileName, EnumerationContext);
+            throw new ECBFSError("Not implemented", CBFSWinError.ERROR_CALL_NOT_IMPLEMENTED);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnIsDirectoryEmpty(CallbackFileSystem sender, string FileInfo, ref bool IsEmpty)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            IsEmpty = Handlers.IsDirectoryEmpty(FileInfo);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnEnumerateNamedStreams(CallbackFileSystem sender, CbFsFileInfo fileInfo, ref IntPtr NamedStreamContext,
                                                  ref string StreamName, ref int StreamNameLength, ref long StreamSize,
-                                                 ref long StreamAllocationSize, ref bool NamedStreamFound);
+                                                 ref long StreamAllocationSize, ref bool NamedStreamFound)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.EnumerateNamedStreams(fileInfo.FileName, fileHandle, ref NamedStreamContext,
+                                           ref StreamName, ref StreamSize, ref StreamAllocationSize, ref NamedStreamFound);
+            StreamNameLength = StreamName.Length;
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void SetFileSecurity(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext,
-                                           uint SecurityInformation, IntPtr SecurityDescriptor, uint Length);
+      private void OnSetFileSecurity(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext,
+                                           uint SecurityInformation, IntPtr SecurityDescriptor, uint Length)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.SetFileSecurity(fileInfo.FileName, fileHandle, SecurityInformation, SecurityDescriptor, Length);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void GetFileSecurity(CallbackFileSystem Sender, CbFsFileInfo FileInfo, IntPtr FileHandleContext,
-                                           uint SecurityInformation, IntPtr SecurityDescriptor, uint Length, ref uint LengthNeeded);
+      private void OnGetFileSecurity(CallbackFileSystem sender, CbFsFileInfo fileInfo, IntPtr fileHandleContext,
+                                           uint SecurityInformation, IntPtr SecurityDescriptor, uint Length, ref uint LengthNeeded)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.GetFileSecurity(fileInfo.FileName, fileHandle, SecurityInformation, SecurityDescriptor,
+                                     Length, ref LengthNeeded);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
 
-      public abstract void GetFileNameByFileId(CallbackFileSystem Sender, long FileId, ref string FilePath, ref ushort FilePathLength);
-      public abstract void FlushFile(CallbackFileSystem Sender, CbFsFileInfo FileInfo);
-      public abstract void StorageEjected(CallbackFileSystem Sender);
+      // Assuming FileID is the QuadPart
+      private void OnGetFileNameByFileId(CallbackFileSystem sender, long FileId, ref string FilePath, ref ushort FilePathLength)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            FilePath = Handlers.GetFileNameByFileId(FileId);
+            FilePathLength = (ushort) FilePath.Length;
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnFlushFile(CallbackFileSystem sender, CbFsFileInfo fileInfo)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            CheckValidReference(fileInfo.Volume);
+            UInt64 fileHandle = (ulong) Marshal.ReadInt64(fileInfo.HandleContext);
+            Handlers.FlushFile(fileInfo.FileName, fileHandle);
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+      private void OnStorageEjected(CallbackFileSystem sender)
+      {
+         CheckValidReference(sender);
+         try
+         {
+            Handlers.StorageEjected();
+         }
+         catch (Exception ex)
+         {
+            throw new ECBFSError(CBFSWinError.BestAttemptToWin32(ex));
+         }
+      }
+
+
+      public void MountMedia(ushort apiTimeoutms)
+      {
+         CbFs.MountMedia(apiTimeoutms);
+      }
+
+      public void AddMountingPoint(string driveLetter)
+      {
+         CbFs.AddMountingPoint(driveLetter);
+      }
+
+      public void UnmountMedia()
+      {
+         CbFs.UnmountMedia();
+      }
+
+      public void DeleteStorage(bool ForceUnmount)
+      {
+         CbFs.DeleteStorage(ForceUnmount);
+      }
    }
    // ReSharper restore RedundantAssignment
 }

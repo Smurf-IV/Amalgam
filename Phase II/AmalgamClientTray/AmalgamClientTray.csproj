@@ -158,6 +158,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Shared\CacheHelper.cs" />
+    <Compile Include="Shared\RWLSExtension.cs" />
     <Page Include="GUI\HiddenFormToAcceptCloseMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

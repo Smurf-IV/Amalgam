@@ -35,32 +35,25 @@ namespace AmalgamClientTray.FTP
    public class FileStreamFTP
    {
       protected readonly ClientShareDetail csd;
-      private readonly uint rawCreationDisposition; // http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
+      private readonly FileMode fileMode;
       private FileFTPInfo fsi { get; set; }
       private bool completedOpen;
       protected FtpClientExt ftpFileClient;
 
-      protected FileStreamFTP(ClientShareDetail csd, uint rawCreationDisposition, FileFTPInfo foundFileInfo)
+      protected FileStreamFTP(ClientShareDetail csd, FileMode fileMode, FileFTPInfo foundFileInfo)
       {
          this.csd = csd;
-         this.rawCreationDisposition = rawCreationDisposition;
+         this.fileMode = fileMode;
          fsi = foundFileInfo;
       }
 
 
       private void ConnectFTP()
       {
-         try
-         {
-            ftpFileClient = new FtpClientExt(new FtpClient(csd.TargetMachineName, csd.Port, csd.SecurityProtocol), csd.BufferWireTransferSize);
-            ftpFileClient.Open(csd.UserName, csd.Password);
-            fsi.Open((FileMode)rawCreationDisposition);
-            completedOpen = true;
-         }
-         catch (Exception ex)
-         {
-            throw;
-         }
+         ftpFileClient = new FtpClientExt(new FtpClient(csd.TargetMachineName, csd.Port, csd.SecurityProtocol), csd.BufferWireTransferSize);
+         ftpFileClient.Open(csd.UserName, csd.Password);
+         fsi.Open(fileMode);
+         completedOpen = true;
       }
 
       public long Length
