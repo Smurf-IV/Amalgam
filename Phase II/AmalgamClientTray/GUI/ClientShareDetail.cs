@@ -72,7 +72,9 @@ namespace AmalgamClientTray.ClientForms
       public bool IgnoreSetTimeStampFailure = false;
 
       public bool TargetRequiresSplitDirs = false;
-      
+
+      public ushort APITimeoutms = ushort.MaxValue;
+
       // ReSharper restore MemberCanBePrivate.Global
       // ReSharper restore UnusedAutoPropertyAccessor.Global
    }

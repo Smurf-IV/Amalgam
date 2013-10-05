@@ -1278,7 +1278,7 @@ namespace Starksoft.Net.Ftp
          path = path.Replace("\\", "/");
 
          string[] dirs = path.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-         string filename = dirs.Length < 2 ? path : dirs[dirs.Length - 1];
+         string fileName = dirs.Length < 2 ? path : dirs[dirs.Length - 1];
 
          try
          {
@@ -1301,7 +1301,7 @@ namespace Starksoft.Net.Ftp
          try
          {
             if (!errorChgDir)
-               found = GetDirList().ContainsName(filename);
+               found = GetDirList().ContainsName(fileName);
          }
          catch (FtpException)
          { }

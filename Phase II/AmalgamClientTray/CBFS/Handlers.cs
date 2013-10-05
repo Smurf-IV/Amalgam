@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using CallbackFS;
+using CBFS;
 using NLog;
 using StringBuffers;
 
@@ -41,9 +42,6 @@ namespace AmalgamClientTray.CBFS
       {
          CheckStatus();
          CallbackFileSystem.SetRegistrationKey(Properties.Settings.Default.Salt.FromBuffer());
-
-         //CallbackFileSystem.GetModuleStatus( String ProductName, int Module, ref bool Installed, ref int FileVersionHigh, ref int FileVersionLow, ref SERVICE_STATUS ServiceStatus); 
-         //CallbackFileSystem.Install(
       }
 
       private static bool CheckStatus()

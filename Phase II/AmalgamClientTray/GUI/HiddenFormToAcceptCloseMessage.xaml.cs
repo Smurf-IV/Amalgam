@@ -57,9 +57,15 @@ namespace AmalgamClientTray.GUI
             bool allowStart = Management.ReadConfigDetails(out csd);
             if (allowStart)
             {
-               HandleMappingThread newMapping = new HandleMappingThread();
-               Handlers.ClientMappings[csd.SharesToRestore[0].DriveLetter] = newMapping;
-               newMapping.Start(csd.SharesToRestore[0]);
+               if (csd == null)
+                  throw new ExecutionEngineException("ClientConfigDetails failed to be created");
+               if ( csd.SharesToRestore != null )
+                  foreach (ClientShareDetail shareDetail in csd.SharesToRestore)
+                  {
+                     HandleMappingThread newMapping = new HandleMappingThread(shareDetail);
+                     Handlers.ClientMappings[shareDetail.DriveLetter] = newMapping;
+                     newMapping.Start();
+                  }
             }
          }
          catch (Exception ex)

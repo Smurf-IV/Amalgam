@@ -205,8 +205,8 @@ namespace DokanNet
 
             int ret = operations.CreateFile(file, rawAccessMode, rawShare, rawCreationDisposition, rawFlagsAndAttributes, info);
 
-            rawFileInfo.Context = info.refFileHandleContext;
-            rawFileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
+            rawfileInfo.Context = info.refFileHandleContext;
+            rawfileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
 
             return ret;
          }
@@ -230,8 +230,8 @@ namespace DokanNet
 
             DokanFileInfo info = ConvertFileInfo(ref rawFileInfo);
             int ret = operations.OpenDirectory(file, info);
-            rawFileInfo.Context = info.refFileHandleContext;
-            rawFileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
+            rawfileInfo.Context = info.refFileHandleContext;
+            rawfileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
             return ret;
          }
          catch (Exception ex)
@@ -253,8 +253,8 @@ namespace DokanNet
 
             DokanFileInfo info = ConvertFileInfo(ref rawFileInfo);
             int ret = operations.CreateDirectory(file, info);
-            rawFileInfo.Context = info.refFileHandleContext;
-            rawFileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
+            rawfileInfo.Context = info.refFileHandleContext;
+            rawfileInfo.IsDirectory = Convert.ToByte(info.IsDirectory);
             return ret;
          }
          catch (Exception ex)
@@ -274,7 +274,7 @@ namespace DokanNet
          {
             string file = GetFileName(rawFileName);
             int ret = operations.Cleanup(file, ConvertFileInfo(ref rawFileInfo));
-            rawFileInfo.Context = 0;
+            rawfileInfo.Context = 0;
             return ret;
          }
          catch (Exception ex)
@@ -294,7 +294,7 @@ namespace DokanNet
          {
             string file = GetFileName(rawFileName);
             int ret = operations.CloseFile(file, ConvertFileInfo(ref rawFileInfo));
-            rawFileInfo.Context = 0;
+            rawfileInfo.Context = 0;
             return ret;
          }
          catch (Exception ex)

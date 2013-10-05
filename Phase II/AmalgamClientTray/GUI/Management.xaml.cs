@@ -241,9 +241,9 @@ namespace AmalgamClientTray
                      if (Handlers.ClientMappings[oldDriveLetter].Stop())
                         Handlers.ClientMappings.Remove(oldDriveLetter);
                   }
-                  HandleMappingThread newMapping = new HandleMappingThread();
+                  HandleMappingThread newMapping = new HandleMappingThread(csd.SharesToRestore[0]);
                   Handlers.ClientMappings[csd.SharesToRestore[0].DriveLetter] = newMapping;
-                  newMapping.Start(csd.SharesToRestore[0]);
+                  newMapping.Start();
                }
                catch (Exception ex)
                {
