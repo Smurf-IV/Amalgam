@@ -31,6 +31,7 @@ using StringBuffers;
 
 namespace CBFS
 {
+   // ReSharper disable UnusedMemberInSuper.Global
    internal interface ICBFSFuncs
    {
       #region Basic CBFS functions
@@ -67,7 +68,7 @@ namespace CBFS
       /// This event is fired when Callback File System wants to obtain the volume Id.
       /// The volume Id is unique user defined value (within Callback File System volumes). 
       /// </summary>
-      uint VolumeId { set; }
+      uint VolumeId { get; set; }
 
       /// <summary>
       /// This event is fired when the OS wants to create a file or directory with given name and attributes.
@@ -103,6 +104,16 @@ namespace CBFS
       /// <param name="fileInfo"></param>
       /// <param name="userContextInfo"></param>
       void CloseFile(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
+
+      /// <summary>
+      /// This event is fired when the OS needs to close the previously created or opened handle to the file. 
+      /// This event is different from OnCloseFile in that OnCleanupFile happens immediately when the last handle is 
+      /// closed by the application, while OnCloseFile can be called much later when the OS itself decides that the 
+      /// file can be closed. Use FileInfo and HandleInfo to identify the file that needs to be closed. 
+      /// </summary>
+      /// <param name="fileInfo"></param>
+      /// <param name="userContextInfo"></param>
+      void CleanupFile(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
       /// <summary>
       /// The event is fired when the OS needs to get information about the file or directory.
@@ -222,13 +233,14 @@ namespace CBFS
       /// <param name="Position"></param>
       /// <param name="Buffer">In .NET you should not try to replace the Buffer. Instead you need to copy the data to the provided buffer.</param>
       /// <param name="BytesToRead"></param>
+      /// <param name="bytesRead"></param>
       /// <returns>
       /// Actual number of read bytes to BytesRead.
       /// Note, that unless you create the virtual disk for some specific application, your callback handler should 
       /// be able to provide exactly BytesToRead bytes of data. Reading less data than expected is an unexpected 
       /// situation for many applications, and they will fail if you provide less bytes than requested. 
       /// </returns>
-      int ReadFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, int BytesToRead);
+      void ReadFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, uint BytesToRead, out uint bytesRead);
 
       /// <summary>
       /// This event is fired when the OS needs to write the data to the open file or volume
@@ -237,8 +249,9 @@ namespace CBFS
       /// <param name="Position"></param>
       /// <param name="Buffer"></param>
       /// <param name="BytesToWrite">Writing less data than expected is an unexpected situation for many applications, and they will fail if you write less bytes than requested.</param>
+      /// <param name="bytesWritten"></param>
       /// <returns>BytesWritten</returns>
-      int WriteFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, int BytesToWrite);
+      void WriteFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, uint BytesToWrite, out uint bytesWritten);
 
       /// <summary>
       /// This event is fired when the OS wants to check whether the directory is empty or contains some files. 
@@ -250,6 +263,7 @@ namespace CBFS
 
       #endregion
    }
+   // ReSharper restore UnusedMemberInSuper.Global
 
    // ReSharper disable RedundantAssignment
    /// <summary>
@@ -333,6 +347,7 @@ namespace CBFS
                OnSetVolumeLabel = SetVolumeLabel,
                OnGetVolumeId = GetVolumeId,
                OnCreateFile = CreateFile,
+               OnCleanupFile = CleanupFile,
                OnOpenFile = OpenFile,
                OnCloseFile = CloseFile,
                OnGetFileInfo = GetFileInfo,
@@ -394,7 +409,7 @@ namespace CBFS
       }
       public abstract void GetVolumeSize(out long TotalNumberOfSectors, out long NumberOfFreeSectors);
 
-      public void GetVolumeLabel(CallbackFileSystem Sender, ref string volumeLabel)
+      private void GetVolumeLabel(CallbackFileSystem Sender, ref string volumeLabel)
       {
          Log.Trace("GetVolumeLabel IN");
          try
@@ -410,7 +425,8 @@ namespace CBFS
             Log.Trace("GetVolumeLabel OUT");
          }
       }
-      public void SetVolumeLabel(CallbackFileSystem Sender, string volumeLabel)
+
+      private void SetVolumeLabel(CallbackFileSystem Sender, string volumeLabel)
       {
          Log.Trace("SetVolumeLabel IN");
          try
@@ -427,7 +443,7 @@ namespace CBFS
          }
       }
 
-      public void GetVolumeId(CallbackFileSystem Sender, ref uint volumeID)
+      private void GetVolumeId(CallbackFileSystem Sender, ref uint volumeID)
       {
          Log.Trace("GetVolumeId IN");
          try
@@ -447,8 +463,7 @@ namespace CBFS
       private void CreateFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode,
          CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
-         CBFSWinUtil.Invoke("CreateFile", () =>
-                                              CreateFile(FileName, DesiredAccess, fileAttributes, ShareMode, fileInfo,
+         CBFSWinUtil.Invoke("CreateFile", () => CreateFile(FileName, DesiredAccess, fileAttributes, ShareMode, fileInfo,
                                                  userContextInfo));
       }
       public abstract void CreateFile(string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode,
@@ -457,16 +472,20 @@ namespace CBFS
       private void OpenFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess, uint FileAttributes, uint ShareMode,
          CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
-         CBFSWinUtil.Invoke("OpenFile", () =>
-                                              OpenFile(FileName, DesiredAccess, ShareMode, fileInfo, userContextInfo));
+         CBFSWinUtil.Invoke("OpenFile", () => OpenFile(FileName, DesiredAccess, ShareMode, fileInfo, userContextInfo));
       }
       public abstract void OpenFile(string FileName, uint DesiredAccess, uint ShareMode, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
 
+      private void CleanupFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
+      {
+         CBFSWinUtil.Invoke("CloseFile", () => CleanupFile(fileInfo, userContextInfo));
+      }
+      public abstract void CleanupFile(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
+
       private void CloseFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
-         CBFSWinUtil.Invoke("CloseFile", () =>
-                                              CloseFile(fileInfo, userContextInfo));
+         CBFSWinUtil.Invoke("CloseFile", () => CloseFile(fileInfo, userContextInfo));
       }
       public abstract void CloseFile(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
@@ -573,7 +592,7 @@ namespace CBFS
       private void SetFileAttributes(CallbackFileSystem Sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo, DateTime CreationTime,
                                        DateTime LastAccessTime, DateTime LastWriteTime, uint FileAttributes)
       {
-         CBFSWinUtil.Invoke("SetFileAttributes", () => 
+         CBFSWinUtil.Invoke("SetFileAttributes", () =>
             SetFileAttributes(fileInfo, userContextInfo, CreationTime, LastAccessTime, LastWriteTime, FileAttributes));
       }
       public abstract void SetFileAttributes(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo, DateTime creationTime,
@@ -582,23 +601,47 @@ namespace CBFS
 
 
       private void ReadFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, long Position, byte[] Buffer,
-         int BytesToRead, ref int BytesRead)
+         int BytesToRead, ref int bytesRead)
       {
-         int bytesRead = 0;
-         CBFSWinUtil.Invoke("ReadFile", () => bytesRead = ReadFile(fileInfo, Position, Buffer, BytesToRead));
-         BytesRead = bytesRead;
+         Log.Trace("ReadFile IN");
+         uint read = 0;
+         try
+         {
+            ReadFile(fileInfo, Position, Buffer, (uint)BytesToRead, out read);
+         }
+         catch (Exception ex)
+         {
+            CBFSWinUtil.BestAttemptToECBFSError(ex);
+         }
+         finally
+         {
+            bytesRead = (int) read;
+            Log.Trace("ReadFile OUT");
+         }
       }
-      public abstract int ReadFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, int BytesToRead);
+      public abstract void ReadFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, uint BytesToRead, out uint bytesRead);
 
 
       private void WriteFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, long Position, byte[] Buffer,
-         int BytesToWrite, ref int BytesWritten)
+         int BytesToWrite, ref int bytesWritten)
       {
-         int bytesWritten = 0;
-         CBFSWinUtil.Invoke("WriteFile", () => bytesWritten = WriteFile(fileInfo, Position, Buffer, BytesToWrite));
-         BytesWritten = bytesWritten;
+         Log.Trace("WriteFile IN");
+         uint written = 0;
+         try
+         {
+            WriteFile(fileInfo, Position, Buffer, (uint) BytesToWrite, out written);
+         }
+         catch (Exception ex)
+         {
+            CBFSWinUtil.BestAttemptToECBFSError(ex);
+         }
+         finally
+         {
+            bytesWritten = (int) written;
+            Log.Trace("WriteFile OUT");
+         }
       }
-      public abstract int WriteFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, int BytesToWrite);
+      public abstract void WriteFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, uint BytesToWrite, out uint bytesWritten);
 
 
       private void IsDirectoryEmpty(CallbackFileSystem Sender, CbFsFileInfo directoryInfo, string DirectoryName,
@@ -643,11 +686,11 @@ namespace CBFS
       /// possibility is documented by Microsoft. 
       /// </remarks>
       /// <returns></returns>
-      public int GetProcessId()
+      protected int GetProcessId()
       {
          uint processId = 0;
          CbFs.GetOriginatorProcessId(ref processId);
-         return (int) processId;
+         return (int)processId;
       }
 
       /// <summary>
@@ -655,7 +698,7 @@ namespace CBFS
       /// </summary>
       public void MountMedia(int apiTimeout)
       {
-         CBFSWinUtil.Invoke("MountMedia", () =>  CbFs.MountMedia(apiTimeout));
+         CBFSWinUtil.Invoke("MountMedia", () => CbFs.MountMedia(apiTimeout));
       }
 
       /// <summary>
@@ -675,13 +718,20 @@ namespace CBFS
             CbFs.NonexistentFilesCacheEnabled = true;// https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
             CbFs.MetaDataCacheEnabled = true;      // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
             CbFs.FileCacheEnabled = true;          // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
-            CbFs.ShortFileNameSupport = false;
+            CbFs.ShortFileNameSupport = true;
             CbFs.ClusterSize = 0;// The value must be a multiple of sector size. Default value of 0 tells the driver to have cluster size equal to sector size. 
             CbFs.SectorSize = 4096;
+            // Make this a local style disk
             CbFs.StorageCharacteristics = 0;          // https://www.eldos.com/forum/read.php?FID=13&TID=3681
+            // the CallAllOpenCloseCallbacks is going to be forced to be true in the next version, so emnsure stuff work here with it.
+            CbFs.CallAllOpenCloseCallbacks = true;    // https://www.eldos.com/forum/read.php?FID=13&TID=479
+            // Pass the creation around, This can then be used to determine which of the already opened flags can be decremented to finally release the handle.
+            CbFs.UseFileCreationFlags = true;        // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_usefilecreationflags.html
+
+            // Go create stuff
             CbFs.CreateStorage();
             CbFs.NotifyDirectoryChange("\"", CbFsNotifyFileAction.fanAdded, false);
-            CbFs.SetFileSystemName("NTFS");
+            CbFs.SetFileSystemName("BOB");
          }
          catch (Exception ex)
          {
