@@ -698,7 +698,11 @@ namespace CBFS
       /// </summary>
       public void MountMedia(int apiTimeout)
       {
-         CBFSWinUtil.Invoke("MountMedia", () => CbFs.MountMedia(apiTimeout));
+         CBFSWinUtil.Invoke("MountMedia", () =>
+         {
+            CbFs.MountMedia(apiTimeout);
+            CbFs.SetFileSystemName("NTFS");
+         });
       }
 
       /// <summary>
@@ -715,10 +719,10 @@ namespace CBFS
             CbFs.StorageType = storageType;
             // Must set ThreadPoolSize before mounting !!
             CbFs.ThreadPoolSize = threadPoolSize;
-            CbFs.NonexistentFilesCacheEnabled = true;// https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
-            CbFs.MetaDataCacheEnabled = true;      // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
-            CbFs.FileCacheEnabled = true;          // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
-            CbFs.ShortFileNameSupport = true;
+            CbFs.NonexistentFilesCacheEnabled = true; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
+            CbFs.MetaDataCacheEnabled = true;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
+            CbFs.FileCacheEnabled = true;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
+            CbFs.ShortFileNameSupport = false;
             CbFs.ClusterSize = 0;// The value must be a multiple of sector size. Default value of 0 tells the driver to have cluster size equal to sector size. 
             CbFs.SectorSize = 4096;
             // Make this a local style disk
@@ -726,12 +730,14 @@ namespace CBFS
             // the CallAllOpenCloseCallbacks is going to be forced to be true in the next version, so emnsure stuff work here with it.
             CbFs.CallAllOpenCloseCallbacks = true;    // https://www.eldos.com/forum/read.php?FID=13&TID=479
             // Pass the creation around, This can then be used to determine which of the already opened flags can be decremented to finally release the handle.
-            CbFs.UseFileCreationFlags = true;        // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_usefilecreationflags.html
+            CbFs.UseFileCreationFlags = true;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_usefilecreationflags.html
+
+            CbFs.SerializeCallbacks = true;          // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_serializecallbacks.html
+            CbFs.ParallelProcessingAllowed = false;    // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_parallelprocessingallowed.html
 
             // Go create stuff
             CbFs.CreateStorage();
             CbFs.NotifyDirectoryChange("\"", CbFsNotifyFileAction.fanAdded, false);
-            CbFs.SetFileSystemName("BOB");
          }
          catch (Exception ex)
          {
