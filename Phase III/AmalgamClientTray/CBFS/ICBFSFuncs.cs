@@ -24,6 +24,7 @@
 #endregion
 
 using System;
+using System.Resources;
 using System.Runtime.InteropServices;
 using CallbackFS;
 using NLog;
@@ -287,7 +288,7 @@ namespace CBFS
 
          CallbackFileSystem.GetModuleStatus(productNameCBFS, CallbackFileSystem.CBFS_MODULE_DRIVER, ref isInstalled, ref VersionHigh, ref VersionLow, ref status);
 
-         Log.Info("Driver (ver {0}.{1}.{2}.{3}) installed[{4}] for [{5}]",
+         Log.Fatal("Driver (ver {0}.{1}.{2}.{3}) installed[{4}] for [{5}]",
             VersionHigh >> 16, VersionHigh & 0xFFFF, VersionLow >> 16, VersionLow & 0xFFFF, isInstalled, productNameCBFS);
          if (isInstalled)
          {
@@ -320,7 +321,7 @@ namespace CBFS
                   state = string.Format("in undefined state [{0}]", status.currentState);
                   break;
             }
-            Log.Info("Service state: {0}", state);
+            Log.Fatal("Service state: {0}", state);
          }
          else
          {
@@ -710,7 +711,7 @@ namespace CBFS
       /// </summary>
       /// <param name="storageType">https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_storagetype.html</param>
       /// <param name="threadPoolSize"></param>
-      public void CreateStorage(CbFsStorageType storageType, uint threadPoolSize)
+      public void CreateStorage(CbFsStorageType storageType, uint threadPoolSize, string iconRef=null)
       {
          Log.Trace("CreateStorage IN");
          try
@@ -727,7 +728,7 @@ namespace CBFS
             CbFs.SectorSize = 4096;
             // Make this a local style disk
             CbFs.StorageCharacteristics = 0;          // https://www.eldos.com/forum/read.php?FID=13&TID=3681
-            // the CallAllOpenCloseCallbacks is going to be forced to be true in the next version, so emnsure stuff work here with it.
+            // the CallAllOpenCloseCallbacks is going to be forced to be true in the next version, so ensure stuff work here with it.
             CbFs.CallAllOpenCloseCallbacks = true;    // https://www.eldos.com/forum/read.php?FID=13&TID=479
             // Pass the creation around, This can then be used to determine which of the already opened flags can be decremented to finally release the handle.
             CbFs.UseFileCreationFlags = true;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_usefilecreationflags.html
@@ -737,6 +738,14 @@ namespace CBFS
 
             // Go create stuff
             CbFs.CreateStorage();
+            if (!string.IsNullOrWhiteSpace(iconRef))
+            {
+               if (!CbFs.IconInstalled(iconRef))
+               {
+                  throw new MissingSatelliteAssemblyException("Requested Icon ref is not installed: " + iconRef);
+               }
+               CbFs.SetIcon(iconRef);
+            }
             CbFs.NotifyDirectoryChange("\"", CbFsNotifyFileAction.fanAdded, false);
          }
          catch (Exception ex)
