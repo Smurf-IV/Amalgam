@@ -29,6 +29,7 @@ using System;
 using System.Resources;
 using System.Runtime.InteropServices;
 using CallbackFS;
+using LiquesceSvc;
 using NLog;
 using StringBuffers;
 
@@ -707,6 +708,7 @@ namespace CBFS
       {
          uint processId = 0;
          CbFs.GetOriginatorProcessId(ref processId);
+         processId = ProcessIdentity.CheckForNTAuthority(processId);
          return (int)processId;
       }
 
@@ -757,9 +759,12 @@ namespace CBFS
             {
                if (!CbFs.IconInstalled(iconRef))
                {
-                  throw new MissingSatelliteAssemblyException("Requested Icon ref is not installed: " + iconRef);
+                  Log.ErrorException("!IconInstalled", new MissingSatelliteAssemblyException("Requested Icon ref is not installed: " + iconRef));
                }
-               CbFs.SetIcon(iconRef);
+               else
+               {
+                  CbFs.SetIcon(iconRef);
+               }
             }
             CbFs.NotifyDirectoryChange("\"", CbFsNotifyFileAction.fanAdded, false);
          }
