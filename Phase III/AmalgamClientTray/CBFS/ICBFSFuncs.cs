@@ -739,6 +739,11 @@ namespace CBFS
             CbFs.NonexistentFilesCacheEnabled = true; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
             CbFs.MetaDataCacheEnabled = true;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
             CbFs.FileCacheEnabled = true;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
+
+            CbFs.NonexistentFilesCacheEnabled = false; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
+            CbFs.MetaDataCacheEnabled = false;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
+            CbFs.FileCacheEnabled = false;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
+
             CbFs.ShortFileNameSupport = false;
             CbFs.ClusterSize = 0;// The value must be a multiple of sector size. Default value of 0 tells the driver to have cluster size equal to sector size.
             CbFs.SectorSize = 4096;
