@@ -342,11 +342,11 @@ namespace CBFS
          return isInstalled;
       }
 
-      public void RegisterAndInit(string salt, string productNameCbfs, uint threadPoolSize, CbFsStorageType storageType)
+      public void RegisterAndInit(string salt, string productNameCbfs, uint threadPoolSize, CbFsStorageType storageType, bool useInternalCaches)
       {
          CallbackFileSystem.SetRegistrationKey(salt.FromBuffer());
          CallbackFileSystem.Initialize(productNameCbfs);
-         CreateStorage(storageType, threadPoolSize);
+         CreateStorage(storageType, threadPoolSize, useInternalCaches);
       }
 
       protected CBFSHandlers()
@@ -725,8 +725,9 @@ namespace CBFS
       /// </summary>
       /// <param name="storageType">https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_storagetype.html</param>
       /// <param name="threadPoolSize"></param>
+      /// <param name="useInternalCaches"></param>
       /// <param name="iconRef"></param>
-      public void CreateStorage(CbFsStorageType storageType, uint threadPoolSize, string iconRef = null)
+      public void CreateStorage(CbFsStorageType storageType, uint threadPoolSize, bool useInternalCaches, string iconRef = null)
       {
          Log.Trace("CreateStorage IN");
          try
@@ -736,13 +737,9 @@ namespace CBFS
             // Must set ThreadPoolSize before mounting !!
             CbFs.MinWorkerThreadCount = 1;
             CbFs.MaxWorkerThreadCount = threadPoolSize;
-            CbFs.NonexistentFilesCacheEnabled = true; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
-            CbFs.MetaDataCacheEnabled = true;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
-            CbFs.FileCacheEnabled = true;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
-
-            CbFs.NonexistentFilesCacheEnabled = false; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
-            CbFs.MetaDataCacheEnabled = false;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
-            CbFs.FileCacheEnabled = false;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
+            CbFs.NonexistentFilesCacheEnabled = useInternalCaches; // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_nonexistentfilescacheenabled.html
+            CbFs.MetaDataCacheEnabled = useInternalCaches;         // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_metadatacacheenabled.html
+            CbFs.FileCacheEnabled = useInternalCaches;             // https://www.eldos.com/documentation/cbfs/ref_cl_cbfs_prp_filecacheenabled.html
 
             CbFs.ShortFileNameSupport = false;
             CbFs.ClusterSize = 0;// The value must be a multiple of sector size. Default value of 0 tells the driver to have cluster size equal to sector size.
