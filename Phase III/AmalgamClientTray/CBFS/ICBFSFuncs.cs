@@ -26,8 +26,10 @@
 #endregion Copyright (C)
 
 using System;
+using System.Diagnostics;
 using System.Resources;
 using System.Runtime.InteropServices;
+
 using CallbackFS;
 using LiquesceSvc;
 using NLog;
@@ -391,6 +393,7 @@ namespace CBFS
          // parameter of CreateFile() WinAPI function is propagated to OnCreateFile/OnCloseFile callbacks.
       }
 
+      [DebuggerHidden]
       private void Mount(CallbackFileSystem Sender)
       {
          CBFSWinUtil.Invoke("Mount", Mount);
@@ -398,6 +401,7 @@ namespace CBFS
 
       public abstract void Mount();
 
+      [DebuggerHidden]
       private void UnMount(CallbackFileSystem Sender)
       {
          CBFSWinUtil.Invoke("UnMount", UnMount);
@@ -475,6 +479,7 @@ namespace CBFS
          }
       }
 
+      [DebuggerHidden]
       private void CreateFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode,
          CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
@@ -485,6 +490,7 @@ namespace CBFS
       public abstract void CreateFile(string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode,
          CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
+      [DebuggerHidden]
       private void OpenFile(CallbackFileSystem Sender, string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode,
          CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
@@ -493,6 +499,7 @@ namespace CBFS
 
       public abstract void OpenFile(string FileName, uint DesiredAccess, uint fileAttributes, uint ShareMode, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
+      [DebuggerHidden]
       private void CleanupFile(CallbackFileSystem sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
          CBFSWinUtil.Invoke("CloseFile", () => CleanupFile(fileInfo, userContextInfo));
@@ -500,6 +507,7 @@ namespace CBFS
 
       public abstract void CleanupFile(CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo);
 
+      [DebuggerHidden]
       private void CloseFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo)
       {
          CBFSWinUtil.Invoke("CloseFile", () => CloseFile(fileInfo, userContextInfo));
@@ -571,6 +579,7 @@ namespace CBFS
       /// Contains information about the file. Can be null.
       /// If FileInfo is empty, your code should attempt to flush everything, related to the disk.
       /// </param>
+      [DebuggerHidden]
       private void FlushFile(CallbackFileSystem sender, CbFsFileInfo fileInfo)
       {
          CBFSWinUtil.Invoke("FlushFile", () => FlushFile(fileInfo));
@@ -578,6 +587,7 @@ namespace CBFS
 
       public abstract void FlushFile(CbFsFileInfo FileInfo);
 
+      [DebuggerHidden]
       private void SetAllocationSize(CallbackFileSystem Sender, CbFsFileInfo fileInfo, long AllocationSize)
       {
          CBFSWinUtil.Invoke("SetAllocationSize", () => SetAllocationSize(fileInfo, AllocationSize));
@@ -585,6 +595,7 @@ namespace CBFS
 
       public abstract void SetAllocationSize(CbFsFileInfo fileInfo, long AllocationSize);
 
+      [DebuggerHidden]
       private void SetEndOfFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, long EndOfFile)
       {
          CBFSWinUtil.Invoke("SetEndOfFile", () => SetEndOfFile(fileInfo, EndOfFile));
@@ -592,6 +603,7 @@ namespace CBFS
 
       public abstract void SetEndOfFile(CbFsFileInfo fileInfo, long EndOfFile);
 
+      [DebuggerHidden]
       private void CanFileBeDeleted(CallbackFileSystem Sender, CbFsFileInfo fileInfo, CbFsHandleInfo HandleInfo, ref bool CanBeDeleted)
       {
          bool canBeDeleted = false;
@@ -601,6 +613,7 @@ namespace CBFS
 
       public abstract bool CanFileBeDeleted(CbFsFileInfo fileInfo, CbFsHandleInfo HandleInfo);
 
+      [DebuggerHidden]
       private void CloseDirectoryEnumeration(CallbackFileSystem Sender, CbFsFileInfo directoryInfo, CbFsDirectoryEnumerationInfo directoryEnumerationInfo)
       {
          CBFSWinUtil.Invoke("CloseDirectoryEnumeration", () => CloseDirectoryEnumeration(directoryInfo, directoryEnumerationInfo));
@@ -608,6 +621,7 @@ namespace CBFS
 
       public abstract void CloseDirectoryEnumeration(CbFsFileInfo directoryInfo, CbFsDirectoryEnumerationInfo directoryEnumerationInfo);
 
+      [DebuggerHidden]
       private void SetFileAttributes(CallbackFileSystem Sender, CbFsFileInfo fileInfo, CbFsHandleInfo userContextInfo, DateTime CreationTime,
                                        DateTime LastAccessTime, DateTime LastWriteTime, uint FileAttributes)
       {
@@ -662,6 +676,7 @@ namespace CBFS
 
       public abstract void WriteFile(CbFsFileInfo fileInfo, long Position, byte[] Buffer, uint BytesToWrite, out uint bytesWritten);
 
+      [DebuggerHidden]
       private void IsDirectoryEmpty(CallbackFileSystem Sender, CbFsFileInfo directoryInfo, string DirectoryName,
          ref bool IsEmpty)
       {
@@ -672,6 +687,7 @@ namespace CBFS
 
       public abstract bool IsDirectoryEmpty(CbFsFileInfo directoryInfo, string DirectoryName);
 
+      [DebuggerHidden]
       private void DeleteFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo)
       {
          CBFSWinUtil.Invoke("DeleteFile", () => DeleteFile(fileInfo));
@@ -679,6 +695,7 @@ namespace CBFS
 
       public abstract void DeleteFile(CbFsFileInfo fileInfo);
 
+      [DebuggerHidden]
       private void RenameOrMoveFile(CallbackFileSystem Sender, CbFsFileInfo fileInfo, string NewFileName)
       {
          CBFSWinUtil.Invoke("RenameOrMoveFile", () => RenameOrMoveFile(fileInfo, NewFileName));
@@ -715,6 +732,7 @@ namespace CBFS
       /// <summary>
       /// Redirect accessor
       /// </summary>
+      [DebuggerHidden]
       public void MountMedia(int apiTimeout)
       {
          CBFSWinUtil.Invoke("MountMedia", () => CbFs.MountMedia(apiTimeout));
@@ -790,6 +808,7 @@ namespace CBFS
       /// <param name="mountingType">Basic mounting point creation. see cref</param>
       /// <param name="networkSymLinkFlags">Additional flags for network mounting points. see cref</param>
       /// <see cref="http://www.eldos.com/documentation/cbfs/ref_cl_cbfs_mtd_addmountingpoint.html"/>
+      [DebuggerHidden]
       public void AddMountingPoint(string driveLetter, uint mountingType, CbFsNetworkSymLinkFlags networkSymLinkFlags)
       {
          flags = mountingType + (uint)networkSymLinkFlags;
@@ -804,6 +823,7 @@ namespace CBFS
       /// <summary>
       /// Redirect accessor
       /// </summary>
+      [DebuggerHidden]
       public void DeleteMountingPoint()
       {
          CBFSWinUtil.Invoke("DeleteMountingPoint", () => CbFs.DeleteMountingPoint(mountingPoint, flags, null));
@@ -812,6 +832,7 @@ namespace CBFS
       /// <summary>
       /// Redirect accessor
       /// </summary>
+      [DebuggerHidden]
       public void UnmountMedia()
       {
          CBFSWinUtil.Invoke("UnmountMedia", () => CbFs.UnmountMedia());
@@ -820,6 +841,7 @@ namespace CBFS
       /// <summary>
       /// Redirect accessor
       /// </summary>
+      [DebuggerHidden]
       public void DeleteStorage(bool forceUnmount)
       {
          CBFSWinUtil.Invoke("DeleteStorage", () => CbFs.DeleteStorage(forceUnmount));
