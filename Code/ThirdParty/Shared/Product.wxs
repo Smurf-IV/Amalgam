@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+     xmlns:fire="http://schemas.microsoft.com/wix/FirewallExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     >
+
+   <?define TraySource=$(sys.CURRENTDIR)..\AmalgamClientTray\bin\Release ?>
+
+   <!-- do not change this ever !-->
+   <?define UpgradeCode = "F7F94F17-A05F-4824-8DD9-9F5E8267D785" ?>
+
+   <?define Version = "!(bind.FileVersion.AmalgamClientTray.exe)" ?>
+
+   <?define ProductName = "AmalgamClient FTP Drive Mapper"?>
+
+   <Product Version="$(var.Version)" Id="*" UpgradeCode="$(var.UpgradeCode)"
+          Name="$(var.ProductName)" Language="1033" Manufacturer="http://Amalgam.codeplex.com/" >
+
+      <Package Id="*" Keywords='Installer'
+               InstallScope='perMachine'
+               Description="$(var.ProductName)"
+               Comments="AmalgamClient FTP" InstallerVersion="301" Compressed="yes"
+               AdminImage='no'
+               Platform='x86'
+               />
+
+      <MajorUpgrade DowngradeErrorMessage="Downgrades are not allowed - Use add/remove from the control panel" />
+
+      <!-- Support Information shown in Add/Remove programs (this is optional) -->
+      <Property Id="ARPHELPLINK" Value="http://Amalgam.codeplex.com/documentation" />
+      <Property Id="ARPCOMMENTS" Value="http://Amalgam.codeplex.com/discussions"/>
+      <Property Id="ARPCONTACT" Value="Smurf-IV" />
+      <Property Id="ARPURLINFOABOUT" Value="http://Amalgam.codeplex.com/" />
+      <Icon Id="InstallerIcon" SourceFile="$(sys.SOURCEFILEDIR)Amalgam.ico" />
+      <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
+      <WixVariable Id="WixUILicenseRtf" Value="$(sys.SOURCEFILEDIR)GPLv2.rtf" />
+
+      <!-- Properties to allow detection of .Net installation -->
+      <PropertyRef Id="NETFRAMEWORK40FULL"/>
+      <PropertyRef Id="NETFRAMEWORK40FULLINSTALLROOTDIR" />
+
+      <Condition Message="[ProductName] Requires .NET Framework 4.0 Main profile to be installed">
+         <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+      </Condition>
+      <Condition Message="You need to be an administrator to install this product.">
+         Privileged
+      </Condition>
+
+      <Media Id="1" Cabinet="Setup.cab" EmbedCab="yes" CompressionLevel="high"/>
+      <Directory Id="TARGETDIR" Name="SourceDir">
+         <Directory Id="ProgramFilesFolder">
+            <Directory Id="INSTALLDIR" Name="AmalgamClientFTP">
+               <Directory Id="ClientDIR" Name="AmalgamClient FTP Client" />
+            </Directory>
+         </Directory>
+         <Directory Id="ProgramMenuFolder">
+            <Directory Id="ProgramMenuDir" Name="AmalgamClient FTP"/>
+            <Directory Id="StartupFolder" Name="Startup" />
+         </Directory>
+      </Directory>
+
+      <ComponentGroup Id="Client" >
+         <Component Id="Client" Guid="5EBF3F29-9CF1-44FE-A94C-CC1B4FE09367" Directory="ClientDIR">
+            <File Id="InstallerIcon" Name="Amalgam.ico" Source="$(sys.SOURCEFILEDIR)Amalgam.ico" />
+            <File Id="AmalgamClientTray.exe" Name="AmalgamClientTray.exe" Source="$(var.TraySource)\AmalgamClientTray.exe" KeyPath="yes"/>
+         </Component>
+         <Component Id="ChangeLog" Directory="ClientDIR">
+            <File Source="$(sys.SOURCEFILEDIR)ChangeLog.rtf" KeyPath="yes" />
+         </Component>
+         <Component Id="AmalgamClientTray.exe.config" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\AmalgamClientTray.exe.config" KeyPath="yes" />
+         </Component>
+         <Component Id="GPLv2.rtf" Directory="ClientDIR">
+            <File Source="$(sys.SOURCEFILEDIR)GPLv2.rtf" KeyPath="yes" />
+         </Component>
+         <Component Id="NLog.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\NLog.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="Starksoft.Net.Ftp.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\Starksoft.Net.Ftp.dll" KeyPath="yes" />
+         </Component>
+         <Component Id="Starksoft.Net.Proxy.dll" Directory="ClientDIR">
+            <File Source="$(var.TraySource)\Starksoft.Net.Proxy.dll" KeyPath="yes" />
+         </Component>
+      </ComponentGroup>
+      <DirectoryRef Id="ProgramMenuDir">
+         <Component Id="ProgramMenuDir2" Guid="11234567-7E98-44CE-B049-C477CC0A2B01">
+            <Shortcut Id="AmalgamClientTray_Shortcut" Name="AmalgamClient FTP Tray" Description="AmalgamClient FTP Tray Application" Target="[ClientDIR]AmalgamClientTray.exe" WorkingDirectory="ClientDIR" Icon="InstallerIcon" IconIndex="0" />
+            <Shortcut Id="AmalgamClientTray_Start" Name="AmalgamClient FTP Tray" Directory="StartupFolder" Description="AmalgamClient FTP Tray Application" Target="[ClientDIR]AmalgamClientTray.exe" WorkingDirectory="ClientDIR" Icon="InstallerIcon" IconIndex="0" />
+            <util:InternetShortcut Type="url" Id="Home" Name="AmalgamClient Forum" Target="[ARPHELPLINK]" />
+            <util:InternetShortcut Type="link" Id="Change" Name="Change Log" Target="[ClientDIR]ChangeLog.rtf"/>
+            <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\AmalgamClient\AmalgamClientTray" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+         </Component>
+      </DirectoryRef>
+
+      <Feature Id="ProductFeature" Title="AmalgamClient_FTP_Setup" Level="1">
+         <ComponentGroupRef Id="Client" />
+         <ComponentGroupRef Id="Extras" />
+         <ComponentRef Id='ProgramMenuDir2'/>
+      </Feature>
+
+
+      <!--Custom Actions to start stop Application tray-->
+      <CustomAction Id="StartTrayApp" FileKey="AmalgamClientTray.exe" ExeCommand="" Return="asyncNoWait" />
+      <util:CloseApplication CloseMessage="yes" Id="CloseFTPTray" Target="AmalgamClientTray.exe" RebootPrompt="no"/>
+
+      <InstallUISequence>
+         <Custom Action="WixCloseApplications" Before="LaunchConditions" />
+      </InstallUISequence>
+
+      <!-- Now to sequence these Custom Actions in the execute sequence -->
+      <InstallExecuteSequence>
+         <Custom Action="WixCloseApplications" Before="LaunchConditions" />
+
+         <Custom Action="StartTrayApp" After="InstallFinalize">Not Installed</Custom>
+      </InstallExecuteSequence>
+
+      <!-- Get the install to skip a few steps -->
+      <UIRef Id="WixUI_Common" />
+      <UIRef Id="WixUI_ErrorProgressText" />
+      <WixVariable Id="WixUIBannerBmp" Value="$(sys.SOURCEFILEDIR)Banner.bmp" />
+      <Binary Id="WhiteBox" SourceFile="$(sys.SOURCEFILEDIR)WhiteBox.bmp" />
+
+      <Property Id="WIXUI_EXITDIALOGOPTIONALTEXT" Value="Tray Application will be launched and added to the start up group, at the end of the installation." />
+
+      <!-- This just adds 90K on top of the UI Extension.dll -->
+      <UI>
+         <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+         <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+         <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+         <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+         <Property Id="ARPNOMODIFY" Value="1" />
+
+         <DialogRef Id="BrowseDlg" />
+         <DialogRef Id="DiskCostDlg" />
+         <DialogRef Id="ErrorDlg" />
+         <DialogRef Id="FatalError" />
+         <DialogRef Id="FilesInUse" />
+         <DialogRef Id="MsiRMFilesInUse" />
+         <DialogRef Id="PrepareDlg" />
+         <DialogRef Id="ProgressDlg" />
+         <DialogRef Id="ResumeDlg" />
+         <DialogRef Id="UserExit" />
+
+         <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+         <Publish Dialog="WelcomeEulaDlg" Control="Install" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+         <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeEulaDlg" Order="1">NOT Installed</Publish>
+         <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+
+         <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+         <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+         <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+         <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+         <!-- Stolen and then modified from the following http://stackoverflow.com/questions/3422717/how-do-i-customise-the-wix-progress-dialog -->
+         <Dialog Id="CustomProgressDlg" Width="370" Height="270" Title="!(loc.ProgressDlg_Title)" Modeless="yes">
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.ProgressDlgBannerBitmap)" />
+            <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+            <Control Text="WhiteBox" Type="Bitmap" Id="WhiteBox" Width="370" Height="190" X="0" Y="44" TabSkip="no" />
+            <Control Id="StatusLabel" Type="Text" X="35" Y="100" Width="35" Height="10" Text="!(loc.ProgressDlgStatusLabel)" Transparent="yes" />
+            <Control Id="ActionText" Type="Text" X="70" Y="100" Width="265" Height="10" Transparent="yes">
+               <Subscribe Event="ActionText" Attribute="Text" />
+            </Control>
+            <Control Id="ProgressBar" Type="ProgressBar" X="35" Y="115" Width="300" Height="10" ProgressBlocks="yes" Text="!(loc.ProgressDlgProgressBar)">
+               <Subscribe Event="SetProgress" Attribute="Progress" />
+            </Control>
+            <Control Id="TimeRemaingLabel" Type="Text" X="35" Y="140" Width="40" Height="10" Text="Estimated" Transparent="yes" />
+            <Control Id="TimeRemaining" Type="Text" X="75" Y="140" Width="265" Height="10" Transparent="yes">
+               <Subscribe Event="TimeRemaining" Attribute="TimeRemaining" />
+               <Subscribe Event="ScriptInProgress" Attribute="ScriptInProgress" />
+            </Control>
+            <Control Type="Text" Id="Information" Width="300" Height="30" X="35" Y="160" Transparent="yes" Hidden="yes" NoPrefix="yes"  >
+               <Text>{\WixUI_Font_Bigger}[WIXUI_EXITDIALOGOPTIONALTEXT]</Text>
+               <Condition Action="show">NOT Installed AND ALLUSERS</Condition>
+            </Control>
+            <Control Type="Text" Id="Version" Width="52" Height="10" X="310" Y="220" Text="[ProductVersion]" RightAligned="yes" NoWrap="yes" Transparent="yes" />
+            <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+            <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUIBack)" />
+            <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Disabled="yes" Text="!(loc.WixUINext)" />
+            <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Disabled="yes" Cancel="yes" Text="!(loc.WixUICancel)" />
+            <!-- mutually exclusive title and description strings overlap  -->
+            <Control Id="TextInstalling" Type="Text" X="35" Y="65" Width="300" Height="30" Hidden="yes" Text="!(loc.ProgressDlgTextInstalling)" Transparent="yes">
+               <Condition Action="show">NOT (REMOVE = "ALL")</Condition>
+            </Control>
+            <Control Id="TitleInstalling" Type="Text" X="20" Y="12" Width="300" Height="30" Transparent="yes" NoPrefix="yes" Hidden="yes" Text="!(loc.ProgressDlgTitleInstalling)" >
+               <Condition Action="show">NOT (REMOVE = "ALL")</Condition>
+            </Control>
+            <Control Id="TextRemoving" Type="Text" X="35" Y="65" Width="300" Height="30" Hidden="yes" Text="!(loc.ProgressDlgTextRemoving)" Transparent="yes">
+               <Condition Action="show">REMOVE = "ALL"</Condition>
+            </Control>
+            <Control Id="TitleRemoving" Type="Text" X="20" Y="12" Width="300" Height="30" Transparent="yes" NoPrefix="yes" Hidden="yes" Text="!(loc.ProgressDlgTitleRemoving)">
+               <Condition Action="show">REMOVE = "ALL"</Condition>
+            </Control>
+         </Dialog>
+
+         <InstallUISequence>
+            <Show Dialog="CustomProgressDlg" After="ProgressDlg" />
+         </InstallUISequence>
+         <Dialog Id="CustomMaintenanceTypeDlg" Width="370" Height="270" Title="!(loc.MaintenanceTypeDlg_Title)">
+            <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.ProgressDlgBannerBitmap)" />
+            <Control Id="TitleRemoving" Type="Text" X="20" Y="12" Width="300" Height="30" Transparent="yes" NoPrefix="yes" Text="!(loc.ProgressDlgTitleRemoving)" />
+            <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+            <Control Text="WhiteBox" Type="Bitmap" Id="WhiteBox" Width="370" Height="190" X="0" Y="44" TabSkip="no" />
+
+            <Control Id="RemoveText" Type="Text" X="60" Y="90" Width="280" Height="20" Text="!(loc.MaintenanceTypeDlgRemoveText)" Transparent="yes" />
+
+            <Control Type="Text" Id="Version" Width="52" Height="10" X="310" Y="220" Text="[ProductVersion]" RightAligned="yes" NoWrap="yes" Transparent="yes" />
+            <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+            <!--<Control Id="Back" Type="PushButton" X="160" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)">
+               <Publish Event="NewDialog" Value="[WixUI_MaintenanceTypeDlg_Back]">1</Publish>
+            </Control>-->
+            <Control Id="RemoveButton" Type="PushButton" X="216" Y="243" Width="80" Height="17" ToolTip="!(loc.MaintenanceTypeDlgRemoveButtonTooltip)" Text="!(loc.MaintenanceTypeDlgRemoveButton)">
+               <!--<Publish Property="WixUI_InstallMode" Value="Remove">1</Publish>-->
+               <Publish Property="REMOVE" Value="ALL">1</Publish>
+               <!--<Publish Event="NewDialog" Value="[WixUI_MaintenanceTypeDlg_Remove]">1</Publish>-->
+               <Publish Event="EndDialog" Value="Return">1</Publish>
+            </Control>
+            <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)">
+               <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            </Control>
+         </Dialog>
+      </UI>
+   </Product>
+</Wix>
