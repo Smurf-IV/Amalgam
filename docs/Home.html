@@ -1,0 +1,41 @@
+<div class="wikidoc">
+<p><strong>Synonyms:</strong> alloy, amalgamation, blend, combination, combo, fusion<br>
+<br>
+This will make an FTP target appear as a source drive within the windows OS (i.e. in Explorer or a DOS box). It will allow Media playback, file updates, backup programs etc. to function as if they are talking to networked shared drive.</p>
+<h2>OS Requirements:</h2>
+<p>This uses the <a href="https://www.microsoft.com/download/en/details.aspx?id=17718">
+.Net4 x32 <em>Full</em> profile</a>, so please install that.<br>
+You will also need to install <a href="http://dokan-dev.net/en/download/">Dokan </a>
+for the OS you are using.</p>
+<h2>FAQs</h2>
+<p><strong>Q</strong> Aren't there other (<em><a href="http://amalgam.codeplex.com/discussions/258996">free) offerings</a></em> that do this?<br>
+<strong>A</strong> Yes there are, but I was not able to find one that worked reliably and at the full potential of both read and write speeds in Win 7 and above.<br>
+<br>
+<strong>Q</strong> Why do this?<br>
+<strong>A</strong> I wanted a drive that took an FTP target and placed it into windows as a drive in explorer (and dos); so that Media players could extract data and play large 1080p files without jitter.<br>
+<br>
+<strong>Q</strong> Why C#?<br>
+<strong>A</strong> This is so that any memory that is being used is tidied up cleanly by the OS, and to make any interface pretty via the use of WCF (later on :-))<br>
+<br>
+<strong>Q</strong> Hasn't Dokan got a <em>few</em> issues?<br>
+<strong>A</strong> Yes, but these are mainly to do with security access, and mapped file access.
+<br>
+<strong>A2</strong> By (currently) setting the Dokan driver to be a network drive, this allows a lot of the
+<em>problem</em> applications to work (e.g. notepad is the quickest to show these problems)<br>
+<br>
+<strong>Q</strong> What about WebDav?<br>
+<strong>A</strong> I suppose that this could be extended to perform such functions, but currently is beyond the scope of this first phase.<br>
+<br>
+<strong>Q</strong> What about SFTP / FTPS ?<br>
+<strong>A</strong> The StarkSoftFTP library does have this functionality, and it could be used later on - any volunteers to take that part on ?</p>
+<p><img src="http://i3.codeplex.com/Download?ProjectName=amalgam&DownloadId=352435" alt="Demo Image showing DOS usage" width="698" height="493"></p>
+<table border="0" width="758" height="195">
+<tbody>
+<tr>
+<td></td>
+<td><a href="http://www4.clustrmaps.com/user/c57db836"><img src="http://www4.clustrmaps.com/stats/maps-no_clusters/amalgam.codeplex.com--thumb.jpg" alt="Locations of visitors to this page" width="321" height="211">
+</a></td>
+</tr>
+</tbody>
+</table>
+</div><div class="ClearBoth"></div>
